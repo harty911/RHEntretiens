@@ -33,13 +33,13 @@ public class Talk extends RHModelObject {
 	@DatabaseField(foreign = true)
 	private Employee employee = null;
     @DatabaseField
-    private final int pce = 1;
+    private int pce = 1;
     @DatabaseField
-    private final int pcp = 1;
+    private int pcp = 1;
     @DatabaseField(foreign = true)
-    private final RHEClassif classif = null;
+    private RHEClassif classif = null;
     @DatabaseField
-    private final String emploi = "";
+    private String emploi = "";
 	@DatabaseField
 	private final String comment = "";
 	@ForeignCollectionField
@@ -79,6 +79,37 @@ public class Talk extends RHModelObject {
 		return employee;
 	}
 
+	public int getPCE() {
+		return pce;
+	}
+
+	public void setPCE(int pce) {
+		this.pce = pce;
+	}
+
+	public int getPCP() {
+		return pcp;
+	}
+
+	public void setPCP(int pcp) {
+		this.pcp = pcp;
+	}
+
+	public RHEClassif getClassif() {
+		return classif;
+	}
+
+	public void setClassif(RHEClassif classif) {
+		this.classif = classif;
+	}
+
+	public String getEmploi() {
+		return emploi;
+	}
+
+	public void setEmploi(String emploi) {
+		this.emploi = emploi;
+	}
 
 
 }

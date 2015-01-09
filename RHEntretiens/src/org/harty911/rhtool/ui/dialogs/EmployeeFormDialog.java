@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.objects.Employee;
-import org.harty911.rhtool.core.model.objects.RHEClassif;
 import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.ui.utils.ControlUtils;
 import org.harty911.rhtool.ui.utils.EHEnumController;
@@ -29,11 +28,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 	private Text txtMatricule;
 	private Text txtNom;
 	private Text txtPrenom;
-	private Text txtEmploi;
-	private Text txtPCE;
-	private Text txtPCP;
 	private EHEnumController<RHEContrat> cmbContract;
-	private EHEnumController<RHEClassif> cmbClassif;
 	private DateTime dtInput;
 	private DateTime dtBirth;
 
@@ -130,55 +125,9 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		Label lblInputDate = new Label(container, SWT.NONE);
 		lblInputDate.setAlignment(SWT.RIGHT);
 		lblInputDate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		lblInputDate.setText("Date d'entr\u00E9e :");
+		lblInputDate.setText("Date d'anciennet\u00E9 :");
 		
 		dtInput = new DateTime(container, SWT.BORDER);
-		
-		// PCE
-		
-		Label lblPce = new Label(container, SWT.NONE);
-		lblPce.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblPce.setText("PCE :");
-		lblPce.setAlignment(SWT.RIGHT);
-		
-		txtPCE = new Text(container, SWT.BORDER);
-		txtPCE.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		// empty area
-		
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		
-		// PCP
-		
-		Label lblPcp = new Label(container, SWT.NONE);
-		lblPcp.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblPcp.setText("PCP :");
-		lblPcp.setAlignment(SWT.RIGHT);
-		
-		txtPCP = new Text(container, SWT.BORDER);
-		txtPCP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		// CLASSIF
-		
-		Label lblClassif = new Label(container, SWT.NONE);
-		lblClassif.setAlignment(SWT.RIGHT);
-		lblClassif.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblClassif.setText("Classification :");
-	
-		ComboViewer combo2 = new ComboViewer(container, SWT.READ_ONLY);
-		combo2.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		cmbClassif = new EHEnumController<RHEClassif>(combo2, RHEClassif.class); 
-		
-		// EMPLOI
-		
-		Label lblEmploi = new Label(container, SWT.NONE);
-		lblEmploi.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblEmploi.setAlignment(SWT.RIGHT);
-		lblEmploi.setText("Emploi :");
-		
-		txtEmploi = new Text(container, SWT.BORDER);
-		txtEmploi.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
 		// set initial data
 		
@@ -187,11 +136,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( dtBirth, employee.getNaissance());
 		cmbContract.setValue( employee.getContrat());
-		ControlUtils.setControlDate( dtInput, employee.getArrivee());
-		txtPCE.setText( String.valueOf(employee.getPCE()));
-		txtPCP.setText( String.valueOf(employee.getPCP()));
-		cmbClassif.setValue( employee.getClassif());
-		txtEmploi.setText( employee.getEmploi());
+		ControlUtils.setControlDate( dtInput, employee.getAnciennete());
 
 		// Field behavior
 		
@@ -200,8 +145,6 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		txtPrenom.setEnabled( isFullEdit);
 
 		txtMatricule.addVerifyListener(new ControlUtils.LongVerifier( 0, 99999999));
-		txtPCE.addVerifyListener(new ControlUtils.LongVerifier( 1, 15));
-		txtPCP.addVerifyListener(new ControlUtils.LongVerifier( 1, 15));
 
 		
 		return area;
@@ -245,7 +188,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(420, 380);
+		return new Point(408, 293);
 	}
 
 	@Override
@@ -258,12 +201,8 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		employee.setMatricule( Long.parseLong(txtMatricule.getText()));
 		employee.setNaissance( ControlUtils.getControlDate( dtBirth));
 		employee.setContrat( cmbContract.getValue());
-		employee.setArrivee( ControlUtils.getControlDate( dtInput));
-		employee.setPCE( Integer.parseInt(txtPCE.getText()));
-		employee.setPCP( Integer.parseInt(txtPCP.getText()));
-		employee.setClassif( cmbClassif.getValue());
-		employee.setEmploi( txtEmploi.getText());
-
+		employee.setAnciennete( ControlUtils.getControlDate( dtInput));
+		
 		super.okPressed();
 	}
 

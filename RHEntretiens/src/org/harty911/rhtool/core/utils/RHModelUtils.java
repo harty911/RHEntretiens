@@ -50,7 +50,7 @@ public class RHModelUtils {
 			e.setMatricule(54670);
 			e.setPrenom("Virginie");
 			e.setNom("FORGEOT");
-		    e.setArrivee( df.parse("01/04/2014"));
+		    e.setAnciennete( df.parse("01/04/2014"));
 		    e.setNaissance( df.parse("26/08/1977"));
 			model.save(e);
 
@@ -58,7 +58,7 @@ public class RHModelUtils {
 			e.setMatricule(233670);
 			e.setPrenom("Robert");
 			e.setNom("PIPIN");
-		    e.setArrivee( df.parse("01/11/2012"));
+		    e.setAnciennete( df.parse("01/11/2012"));
 		    e.setNaissance( df.parse("26/11/1973"));
 			model.save(e);
 
@@ -66,7 +66,7 @@ public class RHModelUtils {
 			e.setMatricule(433670);
 			e.setPrenom("Delphine");
 			e.setNom("BILLAT");
-		    e.setArrivee( df.parse("01/11/2011"));
+		    e.setAnciennete( df.parse("01/11/2011"));
 		    e.setNaissance( df.parse("12/10/1989"));
 			model.save(e);
 		}

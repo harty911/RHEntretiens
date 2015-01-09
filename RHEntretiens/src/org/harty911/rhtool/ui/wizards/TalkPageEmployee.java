@@ -186,14 +186,14 @@ public class TalkPageEmployee extends WizardPage {
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( txtBirth, employee.getNaissance());
 		txtContract.setText( employee.getContrat()==null ? "" : employee.getContrat().getText());
-		ControlUtils.setControlDate( txtInput, employee.getArrivee());
+		ControlUtils.setControlDate( txtInput, employee.getAnciennete());
 
 		// Talk
 		
-		txtPCE.setText( String.valueOf(employee.getPCE()));
-		txtPCP.setText( String.valueOf(employee.getPCP()));
-		cmbClassif.setValue( employee.getClassif());
-		txtEmploi.setText( employee.getEmploi());
+		txtPCE.setText( String.valueOf(talk.getPCE()));
+		txtPCP.setText( String.valueOf(talk.getPCP()));
+		cmbClassif.setValue( talk.getClassif());
+		txtEmploi.setText( talk.getEmploi());
 		
 		ControlUtils.setControlDate(dtPoste, null);
 		

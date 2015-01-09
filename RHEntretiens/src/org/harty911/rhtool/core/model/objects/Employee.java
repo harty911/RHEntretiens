@@ -18,23 +18,13 @@ public class Employee extends RHModelObject {
     @DatabaseField
     private String nom ="";
     @DatabaseField(dataType=DataType.DATE_STRING)
-    private Date arrivee = null;
-    @DatabaseField(dataType=DataType.DATE_STRING)
     private Date naissance = null;
     @DatabaseField(foreign = true)
     private RHEContrat contrat = null;
+    @DatabaseField(dataType=DataType.DATE_STRING)
+    private Date anciennete = null;
     
-    // infos temporaires mises à jour lors de saisie du dernier entretien
     
-    @DatabaseField
-    private int pce = 1;
-    @DatabaseField
-    private int pcp = 1;
-    @DatabaseField(foreign = true)
-    private RHEClassif classif = null;
-    @DatabaseField
-    private String emploi = "";
-
     public Employee() {  
     }
 
@@ -68,12 +58,12 @@ public class Employee extends RHModelObject {
 		this.nom = nom;
 	}
 
-	public Date getArrivee() {
-		return arrivee;
+	public Date getAnciennete() {
+		return anciennete;
 	}
 
-	public void setArrivee(Date arrivee) {
-		this.arrivee = arrivee;
+	public void setAnciennete(Date date) {
+		this.anciennete = date;
 	}
 
 	public Date getNaissance() {
@@ -90,38 +80,6 @@ public class Employee extends RHModelObject {
 
 	public void setContrat(RHEContrat contrat) {
 		this.contrat = contrat;
-	}
-
-	public int getPCE() {
-		return pce;
-	}
-
-	public void setPCE(int pce) {
-		this.pce = pce;
-	}
-
-	public int getPCP() {
-		return pcp;
-	}
-
-	public void setPCP(int pcp) {
-		this.pcp = pcp;
-	}
-
-	public RHEClassif getClassif() {
-		return classif;
-	}
-
-	public void setClassif(RHEClassif classif) {
-		this.classif = classif;
-	}
-
-	public String getEmploi() {
-		return emploi;
-	}
-
-	public void setEmploi(String emploi) {
-		this.emploi = emploi;
 	}
 
 
