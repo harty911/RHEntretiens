@@ -16,20 +16,20 @@ public class Talk extends RHModelObject {
 	public enum ETypeEntretien { CARRIERE, PROFESSIONEL };
 
 	@DatabaseField(dataType=DataType.ENUM_INTEGER)
-    private final ETypeEntretien type = ETypeEntretien.PROFESSIONEL; // obligatoire
+    private ETypeEntretien type = ETypeEntretien.PROFESSIONEL; // obligatoire
 
 	// COMMUN
 
 	@DatabaseField(foreign = true, foreignAutoRefresh = true)
 	private User user1 = null;
 	@DatabaseField(foreign = true, foreignAutoRefresh = true)
-	private final User user2 = null;
+	private User user2 = null;
 	@DatabaseField(dataType = DataType.DATE_STRING)
-	private final Date date = null;
+	private Date date = null;
 	@DatabaseField(foreign = true)
-	private final RHECanal canal = null;
+	private RHECanal canal = null;
 	@DatabaseField
-	private final int duration = 15;
+	private int duration = 15;
 	@DatabaseField(foreign = true)
 	private Employee employee = null;
     @DatabaseField
@@ -40,19 +40,23 @@ public class Talk extends RHModelObject {
     private RHEClassif classif = null;
     @DatabaseField
     private String emploi = "";
+	@DatabaseField(dataType = DataType.DATE_STRING)
+	private Date datePoste = null;
+
+	
 	@DatabaseField
-	private final String comment = "";
+	private String comment = "";
 	@ForeignCollectionField
 	private ForeignCollection<TalkDoc> docs;
 
 	// CARRIERE
 
 	@DatabaseField(foreign = true)
-    private final RHEInitiative initiative = null; // facultatif	
+    private RHEInitiative initiative = null; // facultatif	
 	@DatabaseField(foreign = true)
-    private final RHEMotif motif1 = null; // obligatoire - Motif principal
+    private RHEMotif motif1 = null; // obligatoire - Motif principal
 	@DatabaseField(foreign = true)
-    private final RHEMotif motif2 = null; // facultatif - Motif secondaire 	
+    private RHEMotif motif2 = null; // facultatif - Motif secondaire 	
 	
 	// PROFESSIONEL
 
@@ -69,8 +73,15 @@ public class Talk extends RHModelObject {
 		this();
 		this.employee = emp;
 		this.user1 = user;
+		_initFromPrevious();
 	}
 
+	private void _initFromPrevious() {
+		//TODO recuperer les données du dernier entretien
+	}
+
+
+	
 	/**
 	 * Renvoie le collaborateur associé à l'entretien
 	 * @return un objet de type Employee
@@ -110,6 +121,12 @@ public class Talk extends RHModelObject {
 	public void setEmploi(String emploi) {
 		this.emploi = emploi;
 	}
+	
+	public Date getDatePoste() {
+		return datePoste;
+	}
 
-
+	public void setDatePoste(Date datePoste) {
+		this.datePoste = datePoste;
+	}
 }

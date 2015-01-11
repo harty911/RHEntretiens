@@ -1,9 +1,16 @@
 package org.harty911.rhtool.ui.wizards;
 
+import java.util.Date;
+
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -18,7 +25,7 @@ import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.ui.utils.ControlUtils;
 import org.harty911.rhtool.ui.utils.EHEnumController;
 
-public class TalkPageEmployee extends WizardPage {
+public class TalkPageEmployee extends WizardPage implements SelectionListener, ISelectionChangedListener, ModifyListener {
 	
 	private final Talk talk;
 	private Text txtInput;
@@ -44,7 +51,10 @@ public class TalkPageEmployee extends WizardPage {
 		Composite container = new Composite(parent, SWT.NONE);
 		
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
-		container.setLayout(new GridLayout(6, false));
+		GridLayout gl_container = new GridLayout(6, false);
+		gl_container.verticalSpacing = 10;
+		gl_container.horizontalSpacing = 10;
+		container.setLayout(gl_container);
 
 		// NOM
 		
@@ -110,6 +120,7 @@ public class TalkPageEmployee extends WizardPage {
 		
 		txtPCE = new Text(container, SWT.BORDER);
 		txtPCE.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		
@@ -124,7 +135,7 @@ public class TalkPageEmployee extends WizardPage {
 		Combo combo = combo2.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		cmbClassif = new EHEnumController<RHEClassif>(combo2, RHEClassif.class); 
-		
+
 		// PCP
 		
 		Label lblPcp = new Label(container, SWT.NONE);
@@ -134,6 +145,7 @@ public class TalkPageEmployee extends WizardPage {
 		
 		txtPCP = new Text(container, SWT.BORDER);
 		txtPCP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
 		new Label(container, SWT.NONE);
 		
 		// DATE POSTE
@@ -155,51 +167,102 @@ public class TalkPageEmployee extends WizardPage {
 		txtEmploi = new Text(container, SWT.BORDER);
 		txtEmploi.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
 
-		
-		// required to avoid an error in the system
-		setControl(container);
-		setPageComplete(true);
-		
-		System.out.println("CREATE");
+		// init contents from model
+		fromModel();
 
-		refresh();
+		// add listeners
+		dtPoste.addSelectionListener(this);
+		combo2.addSelectionChangedListener(this);
+		txtPCE.addModifyListener(this);
+		txtPCP.addModifyListener(this);
+		txtEmploi.addModifyListener(this);
+		
+		// fire check and save to model
+		toModel();
+
+		setControl(container);
 	}
 	
 	
 	@Override
-	public IWizardPage getNextPage() {
-		IWizardPage nextPage = super.getNextPage();
-
-		// TODO - do stuff
-
-		return nextPage;
+	public void selectionChanged(SelectionChangedEvent event) {
+		toModel();
 	}
-	
-	public void refresh() {
-		
-		// Employee
-		
+	@Override
+	public void modifyText(ModifyEvent e) {
+		toModel();
+	}
+	@Override
+	public void widgetSelected(SelectionEvent e) {
+		toModel();
+	}
+	@Override
+	public void widgetDefaultSelected(SelectionEvent e) {
+		toModel();
+	}
+
+
+
+	public void fromModel() {		
+		// load Employee data (read only)
 		Employee employee = talk.getEmployee();
 		RHToolApp.getModel().refresh(employee);
-
 		txtNom.setText( employee.getNomUsuel());
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( txtBirth, employee.getNaissance());
-		txtContract.setText( employee.getContrat()==null ? "" : employee.getContrat().getText());
+		txtContract.setText( ControlUtils.getEnumText(employee.getContrat()));
 		ControlUtils.setControlDate( txtInput, employee.getAnciennete());
-
-		// Talk
 		
-		txtPCE.setText( String.valueOf(talk.getPCE()));
-		txtPCP.setText( String.valueOf(talk.getPCP()));
+		// load Talk data
+		txtPCE.setText( String.valueOf( talk.getPCE()));
+		txtPCP.setText( String.valueOf( talk.getPCP()));
 		cmbClassif.setValue( talk.getClassif());
 		txtEmploi.setText( talk.getEmploi());
-		
-		ControlUtils.setControlDate(dtPoste, null);
-		
-		talk.getEmployee();
+		ControlUtils.setControlDate( dtPoste, talk.getDatePoste());
 	}
 
-	
-	
+
+	public void toModel() {
+		String errMsg = null;
+		
+		// Ancienneté poste
+		
+		Date dt = ControlUtils.getControlDate( dtPoste);
+		talk.setDatePoste( dt);
+
+		// Emploi
+		
+		String txt = txtEmploi.getText();
+		if( txt!=null && !txt.isEmpty()) 
+			talk.setEmploi( txt);			
+		else
+			errMsg = "L'emploi n'est pas renseigné";
+
+		// Classif
+		
+		RHEClassif classif = cmbClassif.getValue();
+		if( classif!=null) 
+			talk.setClassif( classif);			
+		else
+			errMsg = "La Classification n'est pas renseignée";
+		
+		// PCP / PCE
+		
+		try {
+			int pce = Integer.parseInt( txtPCE.getText());
+			if( pce < 1 || pce > 20) throw new NumberFormatException();
+			talk.setPCE(pce);
+			int pcp = Integer.parseInt( txtPCP.getText());
+			if( pcp < 1 || pcp > 20) throw new NumberFormatException();
+			talk.setPCP(pcp);			
+		}
+		catch( NumberFormatException e) {
+			errMsg = "PCP et PCE doivent être compris entre 1 et 20";
+		}
+		
+
+		setErrorMessage(errMsg);
+		setPageComplete( errMsg==null);
+	}
+
 }

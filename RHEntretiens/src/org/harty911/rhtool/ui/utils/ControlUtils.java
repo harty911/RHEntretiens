@@ -9,6 +9,8 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Text;
+import org.harty911.rhtool.RHToolApp;
+import org.harty911.rhtool.core.model.RHEnum;
 
 public class ControlUtils {
 	
@@ -66,4 +68,11 @@ public class ControlUtils {
 		return cal.getTime();
 	}
 
+	public static String getEnumText( RHEnum e) {
+		if( e==null)
+			return "";
+		RHToolApp.getModel().refresh(e);
+		return e.getText();
+			
+	}
 }
