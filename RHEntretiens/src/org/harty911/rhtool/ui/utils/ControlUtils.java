@@ -5,6 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.SimpleContentProposalProvider;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.DateTime;
@@ -74,5 +82,26 @@ public class ControlUtils {
 		RHToolApp.getModel().refresh(e);
 		return e.getText();
 			
+	}
+
+
+	public static void addTextAssist(Text text, String[] list) {
+		// add decoration 
+		ControlDecoration deco = new ControlDecoration(text, SWT.TOP | SWT.LEFT);
+		deco.setDescriptionText("Utilisez CTRL + ESPACE pour une assistance à la saisie.");
+		deco.setImage( FieldDecorationRegistry.getDefault()
+				.getFieldDecoration( FieldDecorationRegistry.DEC_CONTENT_PROPOSAL).getImage());
+		deco.setShowOnlyOnFocus(true);
+		
+		// create content proposal adapter
+		KeyStroke keyStroke = null;
+		try {
+			keyStroke = KeyStroke.getInstance("Ctrl+Space");
+		} catch (ParseException e) {}
+		SimpleContentProposalProvider provider = new SimpleContentProposalProvider( list); 
+	    provider.setFiltering(true);
+	    ContentProposalAdapter adapter = new ContentProposalAdapter( text, 
+			    new TextContentAdapter(), provider, keyStroke, new char[]{' '});
+	    adapter.setProposalAcceptanceStyle( ContentProposalAdapter.PROPOSAL_REPLACE); 
 	}
 }

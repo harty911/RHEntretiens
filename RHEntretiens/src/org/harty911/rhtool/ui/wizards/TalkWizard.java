@@ -28,7 +28,7 @@ public class TalkWizard extends Wizard {
 	@Override
 	public void addPages() {
 		addPage( new TalkPageEmployee(talk));
-		addPage( new TalkPageCommon());
+		addPage( new TalkPageCommon(talk));
 	}
 
 }

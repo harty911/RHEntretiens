@@ -129,4 +129,13 @@ public class Talk extends RHModelObject {
 	public void setDatePoste(Date datePoste) {
 		this.datePoste = datePoste;
 	}
+
+	public void setDate(Date dt) {
+		this.date = dt;		
+	}
+
+	public Date getDate() {
+		return this.date;		
+	}
+	
 }

@@ -1,6 +1,8 @@
 package org.harty911.rhtool.ui.wizards;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -42,7 +44,6 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 	public TalkPageEmployee( Talk talk) {
 		super("collab", "Informations collaborateur", null);
 		this.talk = talk;
-		setPageComplete(true);
 	}
 
 	
@@ -166,6 +167,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		
 		txtEmploi = new Text(container, SWT.BORDER);
 		txtEmploi.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+		ControlUtils.addTextAssist( txtEmploi, getListEmploi());
 
 		// init contents from model
 		fromModel();
@@ -182,8 +184,8 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 
 		setControl(container);
 	}
-	
-	
+
+
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		toModel();
@@ -202,7 +204,17 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 	}
 
 
-
+	public String[] getListEmploi() {
+		Set<String> list = new LinkedHashSet<String>();
+		for( Talk talk : RHToolApp.getModel().getTalks()) {
+			String emp = talk.getEmploi();
+			if( emp!=null)
+				list.add(emp);
+		}
+		return list.toArray(new String[0]);
+	}
+	
+	
 	public void fromModel() {		
 		// load Employee data (read only)
 		Employee employee = talk.getEmployee();
