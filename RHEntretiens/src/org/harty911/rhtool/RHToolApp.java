@@ -63,7 +63,8 @@ public class RHToolApp {
 			//TODO to be removed before use
 			if( opts.containsKey("-testing")) {
 				LOGGER.info("--- TESTING MODE ---");
-				new File( dbDir, "RHTool.db").delete();
+				File f = new File( dbDir, "RHTool.db");
+				f.delete();
 			}
 				
 			if( opts.containsKey("-create"))
