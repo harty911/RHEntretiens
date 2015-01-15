@@ -34,7 +34,9 @@ public class TalkCreateAction extends ContextAction {
 		if( !UIModelUtils.refreshAndCheck(emp))
 			return false;
 		
-		Talk talk = new Talk( emp, model.getUserContext());
+		Talk lastOne = model.getLastTalk(emp);
+		Talk talk = new Talk( emp, model.getUserContext(), null);
+		
 		WizardDialog dlg = new WizardDialog(shell, new TalkWizard( talk));
 		if( dlg.open() == Window.OK) {
 			model.save(talk);

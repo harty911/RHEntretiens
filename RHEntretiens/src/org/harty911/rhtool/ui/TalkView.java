@@ -1,7 +1,10 @@
 package org.harty911.rhtool.ui;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -16,7 +19,7 @@ import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.Talk;
 
-public class TalkView extends Composite {
+public class TalkView extends Composite implements ISelectionChangedListener {
 
 	private TableViewer tableViewer;
 	private TalkFilter viewerFilter;
@@ -42,12 +45,12 @@ public class TalkView extends Composite {
 		
 		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE);
 		col1.getColumn().setAlignment(SWT.RIGHT);
-		col1.getColumn().setText("Matricule");
+		col1.getColumn().setText("ID");
 		col1.getColumn().setWidth(66);
 		col1.setLabelProvider( new TalkLabelProvider(0));
 		
 		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE);
-		col2.getColumn().setText("NOM Prénom");
+		col2.getColumn().setText("Type");
 		col2.getColumn().setWidth(175);
 		col2.setLabelProvider(new TalkLabelProvider(1));
 		
@@ -100,7 +103,7 @@ public class TalkView extends Composite {
 				if( col==0)
 					return String.valueOf(talk.getId());
 				if( col==1)
-					return String.valueOf(talk.getId());
+					return String.valueOf(talk.getType());
 			}
 			return "";
 		}
@@ -109,9 +112,23 @@ public class TalkView extends Composite {
 	
 	public class TalkFilter extends ViewerFilter {
 		
+		private Employee employee = null;
+
 		@Override
 		public boolean select( Viewer viewer, Object parentElem, Object elem) {
-			return true;
+			if( employee==null || employee.isDeleted())
+				return true;
+
+			if( elem instanceof Talk) {
+				Talk talk = (Talk)elem;	
+				return employee.equals( talk.getEmployee());
+			}
+			return false;
+		}
+
+		public void setEmployee( Employee employee) {
+			this.employee= employee;
+			refresh();
 		}
 	}
 
@@ -129,9 +146,24 @@ public class TalkView extends Composite {
 	public class TalkComparator extends ViewerComparator {
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
-			Employee emp1 = (Employee)e1;	
-			Employee emp2 = (Employee)e2;
-			return emp1.compareTo(emp2);
+			return 0;
+		}
+	}
+
+
+	/**
+	 * Manage Talk Filter when Employee is selected selection
+	 */
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		IStructuredSelection sel = (IStructuredSelection)event.getSelection();
+		if( sel.getFirstElement() instanceof Employee) {
+			// Employee Filter
+			viewerFilter.setEmployee( (Employee)sel.getFirstElement());
+		}
+		else {
+			// no Filter
+			viewerFilter.setEmployee( null);
 		}
 	}
 }

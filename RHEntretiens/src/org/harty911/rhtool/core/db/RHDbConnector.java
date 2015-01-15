@@ -136,7 +136,6 @@ public class RHDbConnector {
 		return dao.queryForFieldValuesArgs(fieldValues);
 	}
 
-
 	public <T extends RHModelObject> void updateOrCreate( T object) throws SQLException {
 		@SuppressWarnings("unchecked")
 		Dao<T, ?> dao = (Dao<T, ?>) DaoManager.createDao(connectionSource, object.getClass());

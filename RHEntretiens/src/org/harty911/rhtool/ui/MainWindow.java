@@ -13,7 +13,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -41,6 +40,8 @@ import org.harty911.rhtool.ui.actions.ManageEnumsAction;
 import org.harty911.rhtool.ui.actions.ManageUsersAction;
 import org.harty911.rhtool.ui.actions.QuitAction;
 import org.harty911.rhtool.ui.actions.TalkCreateAction;
+import org.harty911.rhtool.ui.actions.TalkDeleteAction;
+import org.harty911.rhtool.ui.actions.TalkEditAction;
 import org.harty911.rhtool.ui.utils.BigToolBarManager;
 import org.harty911.rhtool.ui.utils.ContextAction;
 
@@ -56,7 +57,7 @@ public class MainWindow extends ApplicationWindow {
 	
 	private ContextAction actionTalkCreate;
 	private ContextAction actionTalkEdit;
-	private ContextAction actionTalkeDelete;
+	private ContextAction actionTalkDelete;
 	
 	private Action actionManageUser;
 	private Action actionManageContract;
@@ -67,7 +68,7 @@ public class MainWindow extends ApplicationWindow {
 	private Action actionManageMotif;
 	private Action actionManageMotifPro;
 	
-	private TreeViewer talkView;
+	private TalkView talkView;
 	private CollabView collabView;
 	
 	
@@ -100,7 +101,9 @@ public class MainWindow extends ApplicationWindow {
 		actionEmployeeEdit = new EmployeeEditAction();
 		
 		actionTalkCreate = new TalkCreateAction();
-
+		actionTalkDelete = new TalkDeleteAction();
+		actionTalkEdit =  new TalkEditAction();
+				
 		actionManageContract = new ManageEnumsAction<RHEContrat>( RHEContrat.class, RHEContrat.TITLE);
 		actionManageClassif  = new ManageEnumsAction<RHEClassif>( RHEClassif.class, RHEClassif.TITLE);
 		actionManageInitiative = new ManageEnumsAction<RHEInitiative>( RHEInitiative.class, RHEInitiative.TITLE);
@@ -120,6 +123,9 @@ public class MainWindow extends ApplicationWindow {
 		fileMenu.add( actionQuit);
 		
 		MenuManager talkMenu = new MenuManager("&Entretiens");
+		talkMenu.add(actionTalkCreate);
+		talkMenu.add(actionTalkEdit);
+		talkMenu.add(actionTalkDelete);
 		mgr.add(talkMenu);
 
 		if(RHToolApp.getModel().getUserContext().isAdmin()) { 
@@ -153,6 +159,7 @@ public class MainWindow extends ApplicationWindow {
 		mgr.add(actionEmployeeDelete);
 		mgr.add(new Separator());
 		mgr.add(actionTalkCreate);
+		mgr.add(actionTalkEdit);
 		return mgr;
 	}
 
@@ -175,13 +182,17 @@ public class MainWindow extends ApplicationWindow {
 		collabView.getViewer().addSelectionChangedListener(actionEmployeeDelete);
 		collabView.getViewer().addSelectionChangedListener(actionEmployeeEdit);
 		collabView.getViewer().addSelectionChangedListener(actionTalkCreate);
+		
 		// Entretiens
 		
 		Group grp2 = new Group(composite, SWT.NONE);
 		grp2.setText("Entretiens");
 		grp2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		grp2.setLayout(new FillLayout(SWT.HORIZONTAL));
-		talkView = createTalkViewer( grp2);
+		talkView = new TalkView( grp2, SWT.NONE);
+ 		talkView.getViewer().addSelectionChangedListener(actionTalkDelete);
+		talkView.getViewer().addSelectionChangedListener(actionTalkEdit);
+		collabView.getViewer().addSelectionChangedListener( talkView);
 		
 		return composite;
 	}
@@ -215,16 +226,6 @@ public class MainWindow extends ApplicationWindow {
 	    Display.getCurrent().dispose();		
 	}
 	
-
-	///////////////////////////////////////////////////////////////////////////
-	// TAB DES ENTRETIENS
-	///////////////////////////////////////////////////////////////////////////
-		
-	private TreeViewer createTalkViewer(Composite parent) {
-		talkView = new TreeViewer(parent, SWT.BORDER | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION );		
-		
-		return talkView;
-	}
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -262,5 +263,6 @@ public class MainWindow extends ApplicationWindow {
 	public void updateFromModel() {
 		// TODO This method is BRUTE FORCE UPDATE, can be removed when Observer is managed
 		collabView.refresh();
+		talkView.refresh();
 	}
 }

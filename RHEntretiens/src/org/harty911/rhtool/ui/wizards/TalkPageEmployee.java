@@ -25,7 +25,7 @@ import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.RHEClassif;
 import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.ui.utils.ControlUtils;
-import org.harty911.rhtool.ui.utils.EHEnumController;
+import org.harty911.rhtool.ui.utils.ObjectViewerController;
 
 public class TalkPageEmployee extends WizardPage implements SelectionListener, ISelectionChangedListener, ModifyListener {
 	
@@ -35,7 +35,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 	private Text txtMatricule;
 	private Text txtBirth;
 	private Text txtNom;
-	private EHEnumController<RHEClassif> cmbClassif;
+	private ObjectViewerController<RHEClassif> cmbCtrlClassif;
 	private Text txtPCE;
 	private Text txtEmploi;
 	private Text txtPCP;
@@ -135,7 +135,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		ComboViewer combo2 = new ComboViewer(container, SWT.READ_ONLY);
 		Combo combo = combo2.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		cmbClassif = new EHEnumController<RHEClassif>(combo2, RHEClassif.class); 
+		cmbCtrlClassif = new ObjectViewerController<RHEClassif>( combo2, RHToolApp.getModel().getEnumValues(RHEClassif.class)); 
 
 		// PCP
 		
@@ -228,7 +228,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		// load Talk data
 		txtPCE.setText( String.valueOf( talk.getPCE()));
 		txtPCP.setText( String.valueOf( talk.getPCP()));
-		cmbClassif.setValue( talk.getClassif());
+		cmbCtrlClassif.setValue( talk.getClassif());
 		txtEmploi.setText( talk.getEmploi());
 		ControlUtils.setControlDate( dtPoste, talk.getDatePoste());
 	}
@@ -252,7 +252,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 
 		// Classif
 		
-		RHEClassif classif = cmbClassif.getValue();
+		RHEClassif classif = cmbCtrlClassif.getValue();
 		if( classif!=null) 
 			talk.setClassif( classif);			
 		else

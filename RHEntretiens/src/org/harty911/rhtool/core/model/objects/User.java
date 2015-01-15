@@ -103,6 +103,10 @@ public class User extends RHModelObject {
 		}
     	return val;
     }
+	
+	public String getNomUsuel() {
+		return getNom()+" "+getPrenom();
+	}
 
 	@Override
 	public String toString() {

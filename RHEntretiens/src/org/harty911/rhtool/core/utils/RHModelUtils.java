@@ -2,6 +2,8 @@ package org.harty911.rhtool.core.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Employee;
@@ -26,6 +28,17 @@ public class RHModelUtils {
 			model.save(u);
 		}	
 	}
+	
+
+	public static List<User> getUserList(RHModel model) {
+		List<User> lst = new LinkedList<User>(); 
+		for( User u : model.getUsers()) {
+			if( ! u.getLogin().equals("admin"))
+				lst.add(u);
+		}
+		return lst;
+	}
+	
 	
 	public static void createTestingData(RHModel model) {
 
@@ -56,21 +69,21 @@ public class RHModelUtils {
 		    e.setNaissance( df.parse("26/08/1977"));
 			model.save(e);
 
-			e = new Employee();
-			e.setMatricule(233670);
-			e.setPrenom("Robert");
-			e.setNom("PIPIN");
-		    e.setAnciennete( df.parse("01/11/2012"));
-		    e.setNaissance( df.parse("26/11/1973"));
-			model.save(e);
+			Employee e2 = new Employee();
+			e2.setMatricule(233670);
+			e2.setPrenom("Robert");
+			e2.setNom("PIPIN");
+		    e2.setAnciennete( df.parse("01/11/2012"));
+		    e2.setNaissance( df.parse("26/11/1973"));
+			model.save(e2);
 
-			e = new Employee();
-			e.setMatricule(433670);
-			e.setPrenom("Delphine");
-			e.setNom("BILLAT");
-		    e.setAnciennete( df.parse("01/11/2011"));
-		    e.setNaissance( df.parse("12/10/1989"));
-			model.save(e);
+			Employee e3 = new Employee();
+			e3.setMatricule(433670);
+			e3.setPrenom("Delphine");
+			e3.setNom("BILLAT");
+		    e3.setAnciennete( df.parse("01/11/2011"));
+		    e3.setNaissance( df.parse("12/10/1989"));
+			model.save(e3);
 
 			// CONTRAT
 			model.save( new RHEContrat("CDI"));
@@ -101,23 +114,23 @@ public class RHModelUtils {
 			model.save( new RHEMotifPro("Retour longue maladie"));
 	
 			// Talks
-			Talk talk = new Talk(e, u);
+			Talk talk = new Talk(e, u, null);
 			talk.setEmploi("Conseiller clientelle");
 			model.save(talk);
 			
-			talk = new Talk(e, u);
+			talk = new Talk(e, u, null);
 			talk.setEmploi("Conseiller financier crédit");
 			model.save(talk);
 			
-			talk = new Talk(e, u);
+			talk = new Talk(e2, u, null);
 			talk.setEmploi("Conseiller financier collecte");
 			model.save(talk);		
 
-			talk = new Talk(e, u);
+			talk = new Talk(e2, u, null);
 			talk.setEmploi("Conseiller financier collecte");
 			model.save(talk);		
 
-			talk = new Talk(e, u);
+			talk = new Talk(e3, u, null);
 			talk.setEmploi("Conseiller professionnel");
 			model.save(talk);		
 		}

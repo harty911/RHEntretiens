@@ -10,6 +10,7 @@ import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.ui.dialogs.EmployeeFormDialog;
 import org.harty911.rhtool.ui.resources.Icons;
 import org.harty911.rhtool.ui.utils.ContextAction;
+import org.harty911.rhtool.ui.utils.UIModelUtils;
 
 public class EmployeeEditAction extends ContextAction {
 	
@@ -28,12 +29,9 @@ public class EmployeeEditAction extends ContextAction {
 		RHModel model = RHToolApp.getModel();
 		Employee emp = (Employee)sel.getFirstElement();
 
-		model.refresh(emp);
-		if(emp.isDeleted()) {
-			//TODO: message utilisateur
-			RHToolApp.getWindow().updateFromModel();
+		if( !UIModelUtils.refreshAndCheck(emp))
 			return false;
-		}
+		
 		EmployeeFormDialog dlg = new EmployeeFormDialog( shell, emp);
 		if( dlg.open()==Window.OK) {
 			model.save(emp);

@@ -17,7 +17,7 @@ import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.ui.utils.ControlUtils;
-import org.harty911.rhtool.ui.utils.EHEnumController;
+import org.harty911.rhtool.ui.utils.ObjectViewerController;
 
 public class EmployeeFormDialog extends TitleAreaDialog {
 	
@@ -28,7 +28,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 	private Text txtMatricule;
 	private Text txtNom;
 	private Text txtPrenom;
-	private EHEnumController<RHEContrat> cmbContract;
+	private ObjectViewerController<RHEContrat> cmbCtrlContract;
 	private DateTime dtInput;
 	private DateTime dtBirth;
 
@@ -118,7 +118,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		
 		ComboViewer combo = new ComboViewer(container, SWT.READ_ONLY);
 		combo.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		cmbContract = new EHEnumController<RHEContrat>(combo, RHEContrat.class); 
+		cmbCtrlContract = new ObjectViewerController<RHEContrat>(combo, RHToolApp.getModel().getEnumValues(RHEContrat.class)); 
 		
 		// INPUT DATE
 		
@@ -135,7 +135,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		txtPrenom.setText( employee.getPrenom());
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( dtBirth, employee.getNaissance());
-		cmbContract.setValue( employee.getContrat());
+		cmbCtrlContract.setValue( employee.getContrat());
 		ControlUtils.setControlDate( dtInput, employee.getAnciennete());
 
 		// Field behavior
@@ -200,7 +200,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		employee.setPrenom( txtPrenom.getText());
 		employee.setMatricule( Long.parseLong(txtMatricule.getText()));
 		employee.setNaissance( ControlUtils.getControlDate( dtBirth));
-		employee.setContrat( cmbContract.getValue());
+		employee.setContrat( cmbCtrlContract.getValue());
 		employee.setAnciennete( ControlUtils.getControlDate( dtInput));
 		
 		super.okPressed();

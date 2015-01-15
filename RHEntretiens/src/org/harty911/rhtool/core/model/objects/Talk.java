@@ -2,6 +2,7 @@ package org.harty911.rhtool.core.model.objects;
 
 import java.util.Date;
 
+import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModelObject;
 
 import com.j256.ormlite.dao.ForeignCollection;
@@ -18,18 +19,8 @@ public class Talk extends RHModelObject {
 	@DatabaseField(dataType=DataType.ENUM_INTEGER)
     private ETypeEntretien type = ETypeEntretien.PROFESSIONEL; // obligatoire
 
-	// COMMUN
+	// COLLABORATEUR
 
-	@DatabaseField(foreign = true, foreignAutoRefresh = true)
-	private User user1 = null;
-	@DatabaseField(foreign = true, foreignAutoRefresh = true)
-	private User user2 = null;
-	@DatabaseField(dataType = DataType.DATE_STRING)
-	private Date date = null;
-	@DatabaseField(foreign = true)
-	private RHECanal canal = null;
-	@DatabaseField
-	private int duration = 15;
 	@DatabaseField(foreign = true)
 	private Employee employee = null;
     @DatabaseField
@@ -43,16 +34,28 @@ public class Talk extends RHModelObject {
 	@DatabaseField(dataType = DataType.DATE_STRING)
 	private Date datePoste = null;
 
+	// COMMUN
 	
+	@DatabaseField(foreign = true, foreignAutoRefresh = true)
+	private User user1 = null;
+	@DatabaseField(foreign = true, foreignAutoRefresh = true)
+	private User user2 = null;
+	@DatabaseField(dataType = DataType.DATE_STRING)
+	private Date date = null;
+	@DatabaseField(foreign = true)
+	private RHECanal canal = null;
 	@DatabaseField
-	private String comment = "";
+	private int duration = 0;
+	@DatabaseField(foreign = true)
+    private RHEInitiative initiative = null;
+	@DatabaseField
+	private String initiative_detail = "";
+	
 	@ForeignCollectionField
 	private ForeignCollection<TalkDoc> docs;
 
 	// CARRIERE
 
-	@DatabaseField(foreign = true)
-    private RHEInitiative initiative = null; // facultatif	
 	@DatabaseField(foreign = true)
     private RHEMotif motif1 = null; // obligatoire - Motif principal
 	@DatabaseField(foreign = true)
@@ -63,20 +66,21 @@ public class Talk extends RHModelObject {
 	@DatabaseField(foreign = true)
     private final RHEMotifPro motifpro = null; // obligatoire - Motif Pro
 	
-	// TODO liste des champs à affiner
+	// TODO liste des champs à terminer
 	
 	public Talk() {
 		super();
 	}
 
-	public Talk(Employee emp, User user) {
+	public Talk(Employee emp, User user, Talk model) {
 		this();
 		this.employee = emp;
 		this.user1 = user;
-		_initFromPrevious();
+		if( model!=null)
+			_copyFromModel( model);
 	}
 
-	private void _initFromPrevious() {
+	private void _copyFromModel(Talk model) {
 		//TODO recuperer les données du dernier entretien
 	}
 
@@ -137,5 +141,62 @@ public class Talk extends RHModelObject {
 	public Date getDate() {
 		return this.date;		
 	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public User getUser1() {
+		return user1;
+	}
+
+	public void setUser1(User user) {
+		this.user1 = user;
+	}
+
+	public User getUser2() {
+		return user2;
+	}
+
+	public void setUser2(User user) {
+		this.user2 = user;
+	}
+
+	public RHECanal getCanal() {
+		return canal;
+	}
+
+	public void setCanal(RHECanal canal) {
+		this.canal = canal;
+	}
+
+	public RHEInitiative getInitiative() {
+		return initiative;
+	}
+
+	public void setInitiative(RHEInitiative initiative) {
+		this.initiative = initiative;
+	}
+
+	public String getInitiativeDetail() {
+		return initiative_detail;
+	}
 	
+	public void setInitiativeDetail(String intitiativeDetail) {
+		this.initiative_detail = intitiativeDetail;
+	}
+	
+	public ETypeEntretien getType() {
+		return type;
+	}
+	
+	public void setType(ETypeEntretien type) {
+		this.type = type;
+	}
+	
+
 }

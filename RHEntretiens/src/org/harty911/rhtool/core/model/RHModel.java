@@ -54,7 +54,6 @@ public class RHModel {
 		try {
 			db.updateOrCreate( object);
 			LOGGER.info(object+" saved");
-			//TODO: mettre à jour des infos Employee dans le cas d'un Talk
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable save object "+object, e);
 		}
@@ -158,7 +157,20 @@ public class RHModel {
 		}
 	}
 
+	public Talk getLastTalk( Employee emp) {
+		try {
+			Map<String, Object> fields = new LinkedHashMap<>();
+			fields.put("deleted", false);
+			fields.put("employee", emp);
+			List<Talk> talks = db.getByField(Talk.class, fields);
+			return talks.get(talks.size()-1);
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE,"Unable to get LastTalk", e);
+			return null;
+		}
+	}
 
+	
 	public void setBatchMode(boolean batch) {
 		
 		try {
@@ -174,5 +186,6 @@ public class RHModel {
 			e.printStackTrace();
 		}
 	}
+
 
 }

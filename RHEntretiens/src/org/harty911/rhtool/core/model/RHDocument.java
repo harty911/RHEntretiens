@@ -18,8 +18,5 @@ public abstract class RHDocument extends RHModelObject {
     	super(); // for ORMLite
     }
     
-    
-    
- 
-    // TODO relative path management, file copy and tmp file for open (outlook like)
+    // TODO DOCUMENT relative path management, file copy and tmp file for open (outlook like)
 }
