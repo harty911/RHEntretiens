@@ -2,7 +2,6 @@ package org.harty911.rhtool.core.model.objects;
 
 import java.util.Date;
 
-import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModelObject;
 
 import com.j256.ormlite.dao.ForeignCollection;

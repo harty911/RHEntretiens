@@ -35,7 +35,7 @@ public class TalkCreateAction extends ContextAction {
 			return false;
 		
 		Talk lastOne = model.getLastTalk(emp);
-		Talk talk = new Talk( emp, model.getUserContext(), null);
+		Talk talk = new Talk( emp, model.getUserContext(), lastOne);
 		
 		WizardDialog dlg = new WizardDialog(shell, new TalkWizard( talk));
 		if( dlg.open() == Window.OK) {

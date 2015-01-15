@@ -163,6 +163,7 @@ public class RHModel {
 			fields.put("deleted", false);
 			fields.put("employee", emp);
 			List<Talk> talks = db.getByField(Talk.class, fields);
+			//TODO chercher le dernier (tri date)
 			return talks.get(talks.size()-1);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable to get LastTalk", e);
