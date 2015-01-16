@@ -3,6 +3,7 @@ package org.harty911.rhtool.core.db;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +26,18 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.logger.LocalLog;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableUtils;
 
-
+/**
+ * Adapter class between RHModel and database (supported by ORMLite in this case
+ * @author P13
+ *
+ */
 public class RHDbConnector {
 	
 	public final static int DB_SCHEMA_VERSION = 1;
@@ -130,10 +138,26 @@ public class RHDbConnector {
 		return dao.queryForAll();
 	}
 
-
-	public <T extends RHModelObject> List<T> getByField(Class<T> clazz, Map<String, Object> fieldValues) throws SQLException {
+	public <T extends RHModelObject> List<T> getByField( Class<T> clazz, Map<String, Object> fieldValues) throws SQLException {
 		Dao<T, ?> dao = DaoManager.createDao(connectionSource, clazz);
 		return dao.queryForFieldValuesArgs(fieldValues);
+	}
+
+	public <T extends RHModelObject> List<T> getByQuery( Class<T> clazz, Map<String, Object> fieldValues, Map<String, Boolean> fieldOrders) throws SQLException {
+		if( fieldValues==null || fieldValues.size() == 0)
+			return Collections.emptyList();
+		Dao<T, ?> dao = DaoManager.createDao(connectionSource, clazz);
+		QueryBuilder<T,?> qb = dao.queryBuilder();
+		Where<T,?> w = qb.where();
+		for( Map.Entry<String,Object> entry : fieldValues.entrySet())
+			w.eq( entry.getKey(), new SelectArg(entry.getValue()));
+		w.and(fieldValues.size());
+		
+		if( fieldOrders!=null && fieldOrders.size() == 0)
+			for(  Map.Entry<String,Boolean> entry :fieldOrders.entrySet())
+				qb.orderBy(entry.getKey(), entry.getValue());
+		
+		return qb.query();
 	}
 
 	public <T extends RHModelObject> void updateOrCreate( T object) throws SQLException {

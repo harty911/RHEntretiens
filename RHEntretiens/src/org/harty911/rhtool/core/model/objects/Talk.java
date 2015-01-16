@@ -81,6 +81,7 @@ public class Talk extends RHModelObject {
 
 	private void _copyFromModel(Talk model) {
 		//TODO recuperer les données du dernier entretien
+		
 	}
 
 

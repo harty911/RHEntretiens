@@ -157,14 +157,14 @@ public class RHModel {
 		}
 	}
 
-	public Talk getLastTalk( Employee emp) {
+	public List<Talk> getTalks( Employee emp) {
 		try {
 			Map<String, Object> fields = new LinkedHashMap<>();
+			Map<String, Boolean> orders = new LinkedHashMap<>();
 			fields.put("deleted", false);
-			fields.put("employee", emp);
-			List<Talk> talks = db.getByField(Talk.class, fields);
-			//TODO chercher le dernier (tri date)
-			return talks.get(talks.size()-1);
+			fields.put("employee_id", emp);
+			orders.put("date", false);
+			return db.getByQuery(Talk.class, fields, orders);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable to get LastTalk", e);
 			return null;

@@ -1,5 +1,7 @@
 package org.harty911.rhtool.ui.actions;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -34,8 +36,8 @@ public class TalkCreateAction extends ContextAction {
 		if( !UIModelUtils.refreshAndCheck(emp))
 			return false;
 		
-		Talk lastOne = model.getLastTalk(emp);
-		Talk talk = new Talk( emp, model.getUserContext(), lastOne);
+		List<Talk> lasts = model.getTalks(emp);
+		Talk talk = new Talk( emp, model.getUserContext(), lasts.isEmpty() ? null : lasts.get(0));
 		
 		WizardDialog dlg = new WizardDialog(shell, new TalkWizard( talk));
 		if( dlg.open() == Window.OK) {
