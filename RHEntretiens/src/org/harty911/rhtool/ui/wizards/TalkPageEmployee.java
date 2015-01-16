@@ -40,10 +40,15 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 	private Text txtEmploi;
 	private Text txtPCP;
 	private DateTime dtPoste;
+	private Text txtAffect;
+	private String[] affectValues;
+	private String[] emploiValues;
 
 	public TalkPageEmployee( Talk talk) {
 		super("collab", "Informations collaborateur", null);
 		this.talk = talk;
+		
+		buildAssistList();
 	}
 
 	
@@ -167,8 +172,17 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		
 		txtEmploi = new Text(container, SWT.BORDER);
 		txtEmploi.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
-		ControlUtils.addTextAssist( txtEmploi, getListEmploi());
+		ControlUtils.addTextAssist( txtEmploi, emploiValues);
 
+		Label lblAffect = new Label(container, SWT.NONE);
+		lblAffect.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblAffect.setText("Affectation :");
+		lblAffect.setAlignment(SWT.RIGHT);
+		
+		txtAffect = new Text(container, SWT.BORDER);
+		txtAffect.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1));
+		ControlUtils.addTextAssist( txtAffect, affectValues);
+		
 		// init contents from model
 		fromModel();
 
@@ -178,11 +192,13 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		txtPCE.addModifyListener(this);
 		txtPCP.addModifyListener(this);
 		txtEmploi.addModifyListener(this);
+		txtAffect.addModifyListener(this);
 		
 		// fire check and save to model
 		toModel();
 
 		setControl(container);
+		
 	}
 
 
@@ -204,14 +220,19 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 	}
 
 
-	public String[] getListEmploi() {
-		Set<String> list = new LinkedHashSet<String>();
+	private void buildAssistList() {
+		Set<String> emplois = new LinkedHashSet<String>();
+		Set<String> affects = new LinkedHashSet<String>();
 		for( Talk talk : RHToolApp.getModel().getTalks()) {
-			String emp = talk.getEmploi();
-			if( emp!=null)
-				list.add(emp);
+			String str = talk.getEmploi();
+			if( str!=null)
+				emplois.add(str);
+			str = talk.getAffectation();
+			if( str!=null)
+				affects.add(str);
 		}
-		return list.toArray(new String[0]);
+		this.emploiValues =  emplois.toArray(new String[0]);
+		this.affectValues =  affects.toArray(new String[0]);
 	}
 	
 	
@@ -222,7 +243,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		txtNom.setText( employee.getNomUsuel());
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( txtBirth, employee.getNaissance());
-		txtContract.setText( ControlUtils.getEnumText(employee.getContrat()));
+		txtContract.setText( ControlUtils.printEnum(employee.getContrat()));
 		ControlUtils.setControlDate( txtInput, employee.getAnciennete());
 		
 		// load Talk data
@@ -230,6 +251,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		txtPCP.setText( String.valueOf( talk.getPCP()));
 		cmbCtrlClassif.setValue( talk.getClassif());
 		txtEmploi.setText( talk.getEmploi());
+		txtAffect.setText( talk.getAffectation());
 		ControlUtils.setControlDate( dtPoste, talk.getDatePoste());
 	}
 
@@ -242,9 +264,17 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		Date dt = ControlUtils.getControlDate( dtPoste);
 		talk.setDatePoste( dt);
 
+		// Affectation
+		
+		String txt = txtAffect.getText();
+		if( txt!=null && !txt.isEmpty()) 
+			talk.setAffectation( txt);			
+		else
+			errMsg = "L'affectation n'est pas renseigné";
+
 		// Emploi
 		
-		String txt = txtEmploi.getText();
+		txt = txtEmploi.getText();
 		if( txt!=null && !txt.isEmpty()) 
 			talk.setEmploi( txt);			
 		else

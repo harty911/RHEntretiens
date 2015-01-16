@@ -4,6 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
@@ -24,6 +27,19 @@ public class ControlUtils {
 	
 	private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
+	private final static Map<String,Integer> durationMap;
+	static{
+		durationMap = new LinkedHashMap<String, Integer>();
+		durationMap.put( "15'", 15);
+		durationMap.put( "30'", 30);
+		durationMap.put( "45'", 45);
+		durationMap.put( "1h00", 60);
+		durationMap.put( "1h30", 90);
+		durationMap.put( "2h00", 120);
+		durationMap.put( "2h30", 150);
+		durationMap.put( "3h00", 180);
+	}
+	
 	//public final VerifyListener LONG_VERIFIER = new LongVerifier(Long.MIN_VALUE,Long.MAX_VALUE);
 	
 	public static final class LongVerifier implements VerifyListener {
@@ -55,7 +71,7 @@ public class ControlUtils {
 	public static void setControlDate( Text control, Date date) {
 		if( date==null)
 			date = new Date();
-		control.setText( dateFormat.format(date));
+		control.setText( printDate(date));
 	}
 
 
@@ -76,7 +92,15 @@ public class ControlUtils {
 		return cal.getTime();
 	}
 
-	public static String getEnumText( RHEnum e) {
+	
+	public static String printDate(Date date) {
+		if( date==null) 
+			return "";
+		return dateFormat.format(date);
+	}
+
+	
+	public static String printEnum( RHEnum e) {
 		if( e==null)
 			return "";
 		RHToolApp.getModel().refresh(e);
@@ -104,4 +128,24 @@ public class ControlUtils {
 			    new TextContentAdapter(), provider, keyStroke, new char[]{' '});
 	    adapter.setProposalAcceptanceStyle( ContentProposalAdapter.PROPOSAL_REPLACE); 
 	}
+
+	
+
+	public static String[] getDurationTextList() {
+		return durationMap.keySet().toArray(new String[0]);
+	}
+
+	public static Integer parseDuration( String duration) {
+		return durationMap.get(duration);
+	}
+	
+	public static String printDuration( int minutes) {
+		for( Entry<String, Integer> each : durationMap.entrySet()) {
+			if( each.getValue().intValue() >= minutes) {
+				return each.getKey();
+			}
+		}
+		return null;
+	}
+
 }

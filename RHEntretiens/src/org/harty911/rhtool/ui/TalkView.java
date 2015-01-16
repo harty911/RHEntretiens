@@ -18,12 +18,18 @@ import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.core.model.objects.User;
+import org.harty911.rhtool.ui.utils.ControlUtils;
 
 public class TalkView extends Composite implements ISelectionChangedListener {
 
 	private TableViewer tableViewer;
 	private TalkFilter viewerFilter;
 
+	enum ECol {
+		DATE, TYPE, USER, CANAL, DUREE
+	};
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -43,16 +49,41 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 		tableViewer = new TableViewer(this, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.VIRTUAL);
 		tableViewer.getTable().setHeaderVisible(true);
 		
-		TableViewerColumn col1 = new TableViewerColumn(tableViewer, SWT.NONE);
-		col1.getColumn().setAlignment(SWT.RIGHT);
-		col1.getColumn().setText("ID");
-		col1.getColumn().setWidth(66);
-		col1.setLabelProvider( new TalkLabelProvider(0));
+		// DATE
 		
-		TableViewerColumn col2 = new TableViewerColumn(tableViewer, SWT.NONE);
-		col2.getColumn().setText("Type");
-		col2.getColumn().setWidth(175);
-		col2.setLabelProvider(new TalkLabelProvider(1));
+		TableViewerColumn col = new TableViewerColumn(tableViewer, SWT.NONE);
+		col.getColumn().setAlignment(SWT.RIGHT);
+		col.getColumn().setText("Date");
+		col.getColumn().setWidth(80);
+		col.setLabelProvider( new TalkLabelProvider(ECol.DATE));
+		
+		// TYPE
+		
+		col = new TableViewerColumn(tableViewer, SWT.NONE);
+		col.getColumn().setText("Type");
+		col.getColumn().setWidth(80);
+		col.setLabelProvider(new TalkLabelProvider(ECol.TYPE));
+		
+		// Canal
+		
+		col = new TableViewerColumn(tableViewer, SWT.NONE);
+		col.getColumn().setText("Canal");
+		col.getColumn().setWidth(80);
+		col.setLabelProvider(new TalkLabelProvider(ECol.CANAL));
+		
+		// Durée
+		
+		col = new TableViewerColumn(tableViewer, SWT.NONE);
+		col.getColumn().setText("Durée");
+		col.getColumn().setWidth(50);
+		col.setLabelProvider(new TalkLabelProvider(ECol.DUREE));
+
+		// User1
+		
+		col = new TableViewerColumn(tableViewer, SWT.NONE);
+		col.getColumn().setText("RH");
+		col.getColumn().setWidth(175);
+		col.setLabelProvider(new TalkLabelProvider(ECol.USER));
 		
 		tableViewer.setComparator( new TalkComparator());
 
@@ -85,9 +116,9 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 	}
 	
 	public class TalkLabelProvider extends ColumnLabelProvider {
-		final int col;
+		final ECol col;
 		
-		public TalkLabelProvider(int column) {
+		public TalkLabelProvider(ECol column) {
 			this.col = column;
 		}
 		
@@ -99,11 +130,26 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 		@Override
 		public String getText(Object o) {
 			if(o instanceof Talk) {
-				Talk talk = (Talk)o;	
-				if( col==0)
-					return String.valueOf(talk.getId());
-				if( col==1)
-					return String.valueOf(talk.getType());
+				Talk talk = (Talk)o;
+				switch( col) {
+					case DATE:
+						return ControlUtils.printDate( talk.getDate());
+					case TYPE:
+						switch( talk.getType()) {
+							case PROFESSIONEL:
+								return "Professionel";
+							case CARRIERE:
+								return "Carrière";
+						}
+					case USER:
+						User u = talk.getUser1();
+						RHToolApp.getModel().refresh(u);
+						return u.getNomUsuel();
+					case CANAL:
+						return ControlUtils.printEnum(talk.getCanal());					
+					case DUREE:
+						return ControlUtils.printDuration( talk.getDuration());					
+				}
 			}
 			return "";
 		}
@@ -146,7 +192,10 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 	public class TalkComparator extends ViewerComparator {
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
-			return 0;
+			// Date decroissante
+			Talk t1 = (Talk)e1;
+			Talk t2 = (Talk)e2;
+			return - t1.getDate().compareTo(t2.getDate());
 		}
 	}
 

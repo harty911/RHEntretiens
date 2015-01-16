@@ -116,22 +116,32 @@ public class RHModelUtils {
 			// Talks
 			Talk talk = new Talk(e, u, null);
 			talk.setEmploi("Conseiller clientelle");
-			model.save(talk);
+		    talk.setDate( df.parse("01/04/2014"));
+		    talk.setDuration(40);
+		    model.save(talk);
 			
 			talk = new Talk(e, u, null);
 			talk.setEmploi("Conseiller financier crédit");
+		    talk.setDate( df.parse("01/10/2014"));
+		    talk.setDuration(60);
 			model.save(talk);
 			
 			talk = new Talk(e2, u, null);
 			talk.setEmploi("Conseiller financier collecte");
+		    talk.setDate( df.parse("01/12/2014"));
+		    talk.setDuration(60);
 			model.save(talk);		
 
 			talk = new Talk(e2, u, null);
 			talk.setEmploi("Conseiller financier collecte");
+		    talk.setDate( df.parse("01/11/2014"));
+		    talk.setDuration(95);
 			model.save(talk);		
 
 			talk = new Talk(e3, u, null);
 			talk.setEmploi("Conseiller professionnel");
+		    talk.setDate( df.parse("01/01/2014"));
+		    talk.setDuration(70);
 			model.save(talk);		
 		}
 		catch( ParseException e) {}				

@@ -30,6 +30,8 @@ public class Talk extends RHModelObject {
     private RHEClassif classif = null;
     @DatabaseField
     private String emploi = "";
+    @DatabaseField
+    private String affectation = "";
 	@DatabaseField(dataType = DataType.DATE_STRING)
 	private Date datePoste = null;
 
@@ -40,7 +42,7 @@ public class Talk extends RHModelObject {
 	@DatabaseField(foreign = true, foreignAutoRefresh = true)
 	private User user2 = null;
 	@DatabaseField(dataType = DataType.DATE_STRING)
-	private Date date = null;
+	private Date date = new Date();
 	@DatabaseField(foreign = true)
 	private RHECanal canal = null;
 	@DatabaseField
@@ -80,8 +82,12 @@ public class Talk extends RHModelObject {
 	}
 
 	private void _copyFromModel(Talk model) {
-		//TODO recuperer les données du dernier entretien
-		
+		pce = model.pce;
+		pcp = model.pcp;
+	    classif = model.classif;
+	    emploi = model.emploi;
+	    affectation = model.affectation;
+		datePoste = model.datePoste;
 	}
 
 
@@ -196,6 +202,14 @@ public class Talk extends RHModelObject {
 	
 	public void setType(ETypeEntretien type) {
 		this.type = type;
+	}
+
+	public String getAffectation() {
+		return affectation;
+	}
+
+	public void setAffectation(String affectation) {
+		this.affectation = affectation;
 	}
 	
 

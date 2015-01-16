@@ -1,9 +1,6 @@
 package org.harty911.rhtool.ui.wizards;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -45,23 +42,11 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 	private ObjectViewerController<RHEInitiative> cmbCtrlInit;
 	private ObjectViewerController<ETypeEntretien> cmbCtrlType;
 	
-	private final Map<String,Integer> durationMap;
-
 
 
 	public TalkPageCommon( Talk talk) {
 		super("COMMUN", "Informations entretien", null);
 		this.talk = talk;
-		
-		durationMap = new LinkedHashMap<String, Integer>();
-		durationMap.put( "15'", 15);
-		durationMap.put( "30'", 30);
-		durationMap.put( "45'", 45);
-		durationMap.put( "1h00", 60);
-		durationMap.put( "1h30", 90);
-		durationMap.put( "2h00", 120);
-		durationMap.put( "2h30", 150);
-		durationMap.put( "3h00", 180);
 	}
 
 	@Override
@@ -92,7 +77,7 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		
 		cmbDuree = new Combo(container, SWT.READ_ONLY);
 		cmbDuree.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		for( String s : durationMap.keySet())
+		for( String s : ControlUtils.getDurationTextList())
 			cmbDuree.add(s);
 		
 		// USER 1 & 2 (combo) 
@@ -196,15 +181,10 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 
 		// Duree (obligatoire)
 		
-		String txt = null;
-		for( Entry<String, Integer> each : durationMap.entrySet()) {
-			if( each.getValue().intValue() == talk.getDuration()) {
-				txt = each.getKey();
-				cmbDuree.setText( txt);
-				break;
-			}
-		}
-		
+		String txt = ControlUtils.printDuration(talk.getDuration());
+		if( txt!=null)
+			cmbDuree.setText( txt);
+				
 		// User 1 & 2 (1 obligatoire)
 		cmbCtrlUser1.setValue(talk.getUser1());
 		cmbCtrlUser2.setValue(talk.getUser2());
@@ -234,7 +214,7 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 
 		// Duree (obligatoire)
 
-		Integer duree = durationMap.get( cmbDuree.getText());
+		Integer duree =ControlUtils.parseDuration( cmbDuree.getText());
 		if( duree==null) {
 			errMsg = "La durée doit être renseignée";
 		}
