@@ -31,6 +31,7 @@ import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.core.model.objects.RHEInitiative;
 import org.harty911.rhtool.core.model.objects.RHEMotif;
 import org.harty911.rhtool.core.model.objects.RHEMotifPro;
+import org.harty911.rhtool.core.model.objects.RHETypeTalkDoc;
 import org.harty911.rhtool.ui.actions.AboutAction;
 import org.harty911.rhtool.ui.actions.EmployeeCreateAction;
 import org.harty911.rhtool.ui.actions.EmployeeDeleteAction;
@@ -61,12 +62,12 @@ public class MainWindow extends ApplicationWindow {
 	
 	private Action actionManageUser;
 	private Action actionManageContract;
-	private Action actionManageClassif;
-	
+	private Action actionManageClassif;	
 	private Action actionManageInitiative;
 	private Action actionManageCanal;
 	private Action actionManageMotif;
 	private Action actionManageMotifPro;
+	private Action actionManageTypeTalkDoc;
 	
 	private TalkView talkView;
 	private CollabView collabView;
@@ -110,6 +111,7 @@ public class MainWindow extends ApplicationWindow {
 		actionManageCanal = new ManageEnumsAction<RHEMotif>( RHEMotif.class, RHEMotif.TITLE);
 		actionManageMotif = new ManageEnumsAction<RHEMotifPro>( RHEMotifPro.class, RHEMotifPro.TITLE);
 		actionManageMotifPro = new ManageEnumsAction<RHECanal>( RHECanal.class, RHECanal.TITLE);
+		actionManageTypeTalkDoc = new ManageEnumsAction<RHETypeTalkDoc>( RHETypeTalkDoc.class, RHETypeTalkDoc.TITLE);
 	}
 
 	
@@ -139,6 +141,7 @@ public class MainWindow extends ApplicationWindow {
 			enumMenu.add(actionManageCanal);
 			enumMenu.add(actionManageMotif);
 			enumMenu.add(actionManageMotifPro);
+			enumMenu.add(actionManageTypeTalkDoc);
 			adminMenu.add(enumMenu);
 			mgr.add(adminMenu);
 		}

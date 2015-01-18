@@ -13,6 +13,7 @@ import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.core.model.objects.RHEInitiative;
 import org.harty911.rhtool.core.model.objects.RHEMotif;
 import org.harty911.rhtool.core.model.objects.RHEMotifPro;
+import org.harty911.rhtool.core.model.objects.RHETypeTalkDoc;
 import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.core.model.objects.User;
 
@@ -113,6 +114,10 @@ public class RHModelUtils {
 			model.save( new RHEMotifPro("Retour CIF"));
 			model.save( new RHEMotifPro("Retour longue maladie"));
 	
+			// TYPE DOC (TALK)
+			model.save( new RHETypeTalkDoc("Passeport Formation"));
+			model.save( new RHETypeTalkDoc("Compte rendu"));
+			
 			// Talks
 			Talk talk = new Talk(e, u, null);
 			talk.setEmploi("Conseiller clientelle");

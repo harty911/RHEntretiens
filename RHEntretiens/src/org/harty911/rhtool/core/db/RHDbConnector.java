@@ -17,6 +17,7 @@ import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.core.model.objects.RHEInitiative;
 import org.harty911.rhtool.core.model.objects.RHEMotif;
 import org.harty911.rhtool.core.model.objects.RHEMotifPro;
+import org.harty911.rhtool.core.model.objects.RHETypeTalkDoc;
 import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.core.model.objects.TalkDoc;
 import org.harty911.rhtool.core.model.objects.User;
@@ -46,6 +47,8 @@ public class RHDbConnector {
 	
 	private final ConnectionSource connectionSource;
 	private DatabaseConnection batchConnection = null;
+
+	private File dbDir;
 	
 	private final static Logger LOGGER = Logger.getLogger( RHDbConnector.class.getName());
 	
@@ -85,6 +88,7 @@ public class RHDbConnector {
 		
 	    // create a connection source to our database
         connectionSource = new JdbcConnectionSource("jdbc:sqlite:"+dbFile.getPath());
+        dbDir = dbFile.getParentFile();
         
 	}
 
@@ -230,6 +234,7 @@ public class RHDbConnector {
 		TableUtils.createTableIfNotExists( connectionSource, Employee.class);
 		TableUtils.createTableIfNotExists( connectionSource, Talk.class);
 		TableUtils.createTableIfNotExists( connectionSource, TalkDoc.class);
+		
 		// Enums
 		TableUtils.createTableIfNotExists( connectionSource, RHEContrat.class);
 		TableUtils.createTableIfNotExists( connectionSource, RHEClassif.class);
@@ -237,6 +242,7 @@ public class RHDbConnector {
 		TableUtils.createTableIfNotExists( connectionSource, RHECanal.class);
 		TableUtils.createTableIfNotExists( connectionSource, RHEMotif.class);
 		TableUtils.createTableIfNotExists( connectionSource, RHEMotifPro.class);
+		TableUtils.createTableIfNotExists( connectionSource, RHETypeTalkDoc.class);
 		
 	}
 	
@@ -263,5 +269,15 @@ public class RHDbConnector {
 		}
 */		
 		setProperty(SCHEMA_VERSION, String.valueOf(DB_SCHEMA_VERSION));
+	}
+
+	/**
+	 * @return the document directory near the DB file (create it if needed)
+	 */
+	public File getDocDir() {
+		File docDir = new File( dbDir, "DBDocs");
+		if( !docDir.exists())
+			docDir.mkdir();
+		return docDir;
 	}
 }

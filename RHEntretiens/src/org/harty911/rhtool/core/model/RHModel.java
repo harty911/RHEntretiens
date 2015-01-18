@@ -20,6 +20,7 @@ public class RHModel {
 	public final static Logger LOGGER = Logger.getLogger( RHModel.class.getName());
 		
 	RHDbConnector db;
+
 	User userContext;
 
 	boolean isBatchMode = false;
@@ -27,6 +28,11 @@ public class RHModel {
 	public RHModel( RHDbConnector rhDb) {
 		db = rhDb;
 		RHModelUtils.createAdminIfNotExists(this);
+	}
+
+
+	public RHDbConnector getDbConnector() {
+		return db;
 	}
 
 	/**

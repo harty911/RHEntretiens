@@ -10,5 +10,22 @@ public class TalkDoc extends RHDocument {
 	
 	@DatabaseField(foreign=true)
 	private Talk talk;
-	 
+	@DatabaseField(foreign=true, foreignAutoRefresh=true)
+	private RHETypeTalkDoc type;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true)
+	private String comment;
+
+	protected TalkDoc() {	
+	}
+	
+	public TalkDoc(Talk talk) {
+		this();
+		this.talk = talk;
+	}
+
+	public Talk getTalk() {
+		return talk;
+	}
+
+		
 }
