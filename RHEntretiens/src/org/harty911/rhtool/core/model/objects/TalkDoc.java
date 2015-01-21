@@ -12,7 +12,7 @@ public class TalkDoc extends RHDocument {
 	private Talk talk;
 	@DatabaseField(foreign=true, foreignAutoRefresh=true)
 	private RHETypeTalkDoc type;
-	@DatabaseField(foreign=true, foreignAutoRefresh=true)
+	@DatabaseField
 	private String comment;
 
 	protected TalkDoc() {	
@@ -27,5 +27,12 @@ public class TalkDoc extends RHDocument {
 		return talk;
 	}
 
-		
+	public RHETypeTalkDoc getType() {
+		return type;
+	}
+
+	public void setType(RHETypeTalkDoc type) {
+		this.type = type;
+	}
+
 }

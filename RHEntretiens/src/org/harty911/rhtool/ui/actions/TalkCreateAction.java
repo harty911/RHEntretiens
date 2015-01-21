@@ -41,7 +41,6 @@ public class TalkCreateAction extends ContextAction {
 		
 		WizardDialog dlg = new WizardDialog(shell, new TalkWizard( talk));
 		if( dlg.open() == Window.OK) {
-			model.save(talk);
 			RHToolApp.getWindow().updateFromModel();
 		}
 		return true;

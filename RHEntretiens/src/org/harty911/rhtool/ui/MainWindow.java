@@ -79,14 +79,13 @@ public class MainWindow extends ApplicationWindow {
 		createActions(); 		
 		addToolBar( SWT.FLAT | SWT.WRAP); 		
 		addMenuBar(); 		
-		addStatusLine(); 
+		addStatusLine();
 	}
 	
 
 	@Override
 	protected StatusLineManager createStatusLineManager() {
 		StatusLineManager mgr = super.createStatusLineManager();
-		// TODO Create Status Line
 		return mgr;
 	}
 

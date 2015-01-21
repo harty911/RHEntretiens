@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.harty911.rhtool.core.db.RHDbConnector;
 import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.core.model.objects.TalkDoc;
 import org.harty911.rhtool.core.model.objects.User;
 import org.harty911.rhtool.core.utils.RHModelUtils;
 
@@ -191,6 +192,20 @@ public class RHModel {
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable to switch BatchMode to "+batch, e);
 			e.printStackTrace();
+		}
+	}
+
+
+	public void emptyTrashDoc() {
+		try {
+			Map<String, Object> fields = new LinkedHashMap<>();
+			fields.put("deleted", true);
+			for( RHDocument doc : db.getByField(TalkDoc.class, fields)) {
+				doc.trash();
+				db.delete(doc);
+			}
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE,"Unable to trash TalkDocs", e);
 		}
 	}
 

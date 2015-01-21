@@ -56,6 +56,13 @@ public abstract class RHDocument extends RHModelObject {
     }
     
     /**
+     * @return true if a file was uploaded to DB
+     */
+    public boolean isUploaded() {
+		return (origName!=null);
+	}
+		
+    /**
      * Download the DB file
      * @param dest destination file or directory (if a directory is specified, the original filename will be used)
      * @throws IOException if fail
@@ -92,8 +99,16 @@ public abstract class RHDocument extends RHModelObject {
     private File getDBFile() {
     	File docDir = RHToolApp.getModel().getDbConnector().getDocDir();
     	File dstDir = new File( docDir, getClass().getSimpleName());
+    	if( !dstDir.exists())
+    		dstDir.mkdir();
     	if( baseref==null)
     		baseref = String.format("%06d.dbdoc", getId());
     	return new File( dstDir, baseref);
     }
+
+	public void trash() {
+		File dbF = getDBFile();
+		if( isDeleted() && dbF.exists())
+			dbF.delete();
+	}
 }
