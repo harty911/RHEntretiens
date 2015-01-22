@@ -16,10 +16,9 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -171,35 +170,43 @@ public class MainWindow extends ApplicationWindow {
 
 	@Override
 	protected Control createContents(Composite parent) {
-		Composite composite = new Composite(parent, SWT.FLAT);
-		GridLayout gl_composite = new GridLayout(2, false);
-		composite.setLayout(gl_composite);
+		final SashForm mainSash = new SashForm(parent, SWT.HORIZONTAL);
 		
 		// Collaborateurs
 				
-		Group grp1 = new Group(composite, SWT.NONE);
-		grp1.setText("Collaborateurs");
-		GridData gd_grp1 = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
-		gd_grp1.widthHint = 273;
-		grp1.setLayoutData(gd_grp1);
-		grp1.setLayout(new FillLayout(SWT.HORIZONTAL));
-		collabView = new CollabView( grp1, SWT.NONE);
+		final Group grpCollab = new Group(mainSash, SWT.NONE);
+		grpCollab.setText("Collaborateurs");
+		grpCollab.setLayout(new FillLayout(SWT.HORIZONTAL));
+		
+		collabView = new CollabView( grpCollab, SWT.NONE);
 		collabView.getViewer().addSelectionChangedListener(actionEmployeeDelete);
 		collabView.getViewer().addSelectionChangedListener(actionEmployeeEdit);
 		collabView.getViewer().addSelectionChangedListener(actionTalkCreate);
 		
 		// Entretiens
 		
-		Group grp2 = new Group(composite, SWT.NONE);
-		grp2.setText("Entretiens");
-		grp2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		grp2.setLayout(new FillLayout(SWT.HORIZONTAL));
-		talkView = new TalkView( grp2, SWT.NONE);
+		final Group grpTalk = new Group(mainSash, SWT.NONE);
+		grpTalk.setText("Entretiens");
+		grpTalk.setLayout(new FillLayout(SWT.VERTICAL));
+		final SashForm talkSash = new SashForm(grpTalk, SWT.VERTICAL);
+		
+		// liste des entretiens
+		
+		talkView = new TalkView( talkSash, SWT.NONE);
  		talkView.getViewer().addSelectionChangedListener(actionTalkDelete);
 		talkView.getViewer().addSelectionChangedListener(actionTalkEdit);
 		collabView.getViewer().addSelectionChangedListener( talkView);
+
+		// preview de l'entretien
 		
-		return composite;
+		TalkPreview talkPreview = new TalkPreview( talkSash, SWT.BORDER);
+		talkView.getViewer().addSelectionChangedListener( talkPreview);
+		
+		// TODO ENHANCE save restore window layout
+		talkSash.setWeights( new int[] { 30, 70 });
+		mainSash.setWeights( new int[] { 30, 70 });
+		
+		return mainSash;
 	}
 
 
@@ -218,7 +225,7 @@ public class MainWindow extends ApplicationWindow {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(734,448);
+		return new Point(800,600);
 	}
 
 

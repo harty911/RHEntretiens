@@ -3,6 +3,9 @@ package org.harty911.rhtool;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -11,10 +14,11 @@ import java.util.logging.Logger;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.harty911.framework.logging.LogUtil;
+import org.harty911.framework.utils.Chrono;
 import org.harty911.rhtool.core.db.RHDbConnector;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.utils.RHModelUtils;
-import org.harty911.rhtool.logging.LogUtil;
 import org.harty911.rhtool.ui.MainWindow;
 import org.harty911.rhtool.ui.dialogs.LoginDialog;
 
@@ -37,6 +41,8 @@ public class RHToolApp {
 
 		LogUtil.setup();
 		
+		System.setProperty("user.language", "fr");
+
 		if( !lockInstance()) {
 			Display disp = new Display();
 			MessageBox msg = new MessageBox(new Shell());
@@ -44,11 +50,12 @@ public class RHToolApp {
 			msg.setMessage( "L'application '"+APP_NAME+"' est déjà lancée sur cette machine !");
 			msg.open();
 			disp.dispose();
+			return;
 		}
 		
 		LOGGER.info("=========== Start Application ==========");
 		
-		System.setProperty("user.language", "fr");
+		Chrono chr = new Chrono();
 		
 		try {
 			// Database root directory
@@ -60,24 +67,37 @@ public class RHToolApp {
 			else
 				dbDir = new File( ".");
 			
-			//TODO to be removed before use
 			if( opts.containsKey("-testing")) {
-				LOGGER.info("--- TESTING MODE ---");
-				File f = new File( dbDir, "RHTool.db");
-				f.delete();
+				/* MODE TESTING (Developppement)
+				 * en mode testing on ecrase la base avec celle de testing à chaque démarrage
+				 * pour ne pas polluer la base à chaque essai 
+				 */ 
+				dbDir = new File( ".");
+				File dbSrcDir = new File("./testingDB");
+				LOGGER.info("--- TESTING MODE --- : Create new DB from "+dbSrcDir);
+				File srcDB = new File(dbSrcDir, RHDbConnector.DB_FILENAME);
+				if( !srcDB.exists()) {
+					RHDbConnector db = RHDbConnector.createDatabase(dbSrcDir);
+					RHModel mdl = new RHModel(db);
+					RHModelUtils.createTestingData(mdl);
+					mdl.close();
+				}
+				Files.copy( srcDB.toPath(), new File(dbDir, RHDbConnector.DB_FILENAME).toPath(), 
+								new CopyOption[] { StandardCopyOption.REPLACE_EXISTING });
 			}
-				
-			if( opts.containsKey("-create"))
+
+			if( opts.containsKey("-create")) {
 				rhDb = RHDbConnector.createDatabase(dbDir);
-			else
+			}
+			else {
 				rhDb = RHDbConnector.openDatabase(dbDir);
+			}
 			rhModel = new RHModel(rhDb);
+
+			LOGGER.info("start_time="+chr );
 			
 			if( opts.containsKey("-testing")) {
-				RHModelUtils.createTestingData(rhModel);
 				rhModel.setUserContext( rhModel.getUsers().get(0));
-				
-				simpleTest();
 			} 
 			else {
 				// login first (no default user)
@@ -102,20 +122,6 @@ public class RHToolApp {
 			LOGGER.log(Level.SEVERE,"Fatal Exception !",e);
 		}
 		LOGGER.info("=========== Quit Application ==========");
-	}
-
-	
-	private static void simpleTest() {
-/*
- 		RHEContrat[] cs = getModel().getEnumValues(RHEContrat.class).toArray(new RHEContrat[0]);
- 
-		Employee[] es = getModel().getEmployees().toArray(new Employee[0]);
-		es[0].setContrat( cs[0]);
-		getModel().save(es[0]);
-		
-		Employee[] es2 = getModel().getEmployees().toArray(new Employee[0]);
-		System.out.println( es2[0].getContrat().equals(cs[0]));
-*/				
 	}
 
 

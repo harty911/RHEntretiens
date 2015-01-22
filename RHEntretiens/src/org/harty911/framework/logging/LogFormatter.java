@@ -1,4 +1,4 @@
-package org.harty911.rhtool.logging;
+package org.harty911.framework.logging;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;

@@ -2,6 +2,7 @@ package org.harty911.rhtool.ui.wizards;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,8 +50,10 @@ public class TalkPageDocs extends WizardPage {
 		super("DOCUMENTS", "Documents joints", null);
 		this.talk = talk;
 		
-		// pre-load all documents 
-		docs.addAll( talk.getDocs());
+		// pre-load all documents
+		Collection<TalkDoc> talkDocs = talk.getDocs();
+		if( talkDocs!=null)
+			docs.addAll( talkDocs);
 		
 		// create an "not uploaded" file for the end of list
 		appendEmptyDoc();

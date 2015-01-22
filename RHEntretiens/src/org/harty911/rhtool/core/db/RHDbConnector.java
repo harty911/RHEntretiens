@@ -41,6 +41,8 @@ import com.j256.ormlite.table.TableUtils;
  */
 public class RHDbConnector {
 	
+	public static final String DB_FILENAME = "RHTool.db";
+
 	public final static int DB_SCHEMA_VERSION = 1;
 	
 	private static final String SCHEMA_VERSION = "SCHEMA_VERSION";
@@ -54,7 +56,7 @@ public class RHDbConnector {
 	
 	
 	public static RHDbConnector createDatabase( File dbDir) throws SQLException {
-		File dbFile = new File( dbDir, "RHTool.db");
+		File dbFile = new File( dbDir, DB_FILENAME);
 		if( dbFile.exists())
 			throw new SQLException("Database file already exists: " + dbFile);
 		
@@ -66,7 +68,7 @@ public class RHDbConnector {
 	
 	
 	public static RHDbConnector openDatabase( File dbDir) throws SQLException {
-		File dbFile = new File( dbDir, "RHTool.db");
+		File dbFile = new File( dbDir, DB_FILENAME);
 		if( !dbFile.exists())
 			throw new SQLException("Database file not found: " + dbFile);
 

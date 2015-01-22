@@ -1,4 +1,4 @@
-package org.harty911.rhtool.core.utils;
+package org.harty911.framework.utils;
 
 public class Chrono {
 
