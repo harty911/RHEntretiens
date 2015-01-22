@@ -1,5 +1,6 @@
 package org.harty911.rhtool.core.model.objects;
 
+import java.util.Collection;
 import java.util.Date;
 
 import org.harty911.rhtool.core.model.RHModelObject;
@@ -20,7 +21,7 @@ public class Talk extends RHModelObject {
 
 	// COLLABORATEUR
 
-	@DatabaseField(foreign = true)
+	@DatabaseField(foreign = true, foreignAutoRefresh=true, maxForeignAutoRefreshLevel=1)
 	private Employee employee = null;
     @DatabaseField
     private int pce = 1;
@@ -52,7 +53,7 @@ public class Talk extends RHModelObject {
 	@DatabaseField
 	private String initiative_detail = "";
 	
-	@ForeignCollectionField
+	@ForeignCollectionField(eager = false)
 	private ForeignCollection<TalkDoc> docs;
 
 	// CARRIERE
@@ -210,6 +211,10 @@ public class Talk extends RHModelObject {
 
 	public void setAffectation(String affectation) {
 		this.affectation = affectation;
+	}
+
+	public Collection<TalkDoc> getDocs() {
+		return docs;
 	}
 	
 

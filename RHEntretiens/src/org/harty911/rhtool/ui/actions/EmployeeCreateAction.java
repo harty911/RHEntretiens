@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Employee;
+import org.harty911.rhtool.ui.MainWindow;
 import org.harty911.rhtool.ui.dialogs.EmployeeFormDialog;
 import org.harty911.rhtool.ui.resources.Icons;
 
@@ -25,6 +26,7 @@ public class EmployeeCreateAction extends Action {
 		EmployeeFormDialog dlg = new EmployeeFormDialog( shell, emp);
 		if( dlg.open()==Window.OK) {
 			model.save(emp);
+			MainWindow.LOGGER.info( emp+" created");
 			RHToolApp.getWindow().updateFromModel();
 		}
 	}	

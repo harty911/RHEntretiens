@@ -60,7 +60,7 @@ public class RHModel {
 	public <T extends RHModelObject> void save( T object) {
 		try {
 			db.updateOrCreate( object);
-			LOGGER.info(object+" saved");
+			LOGGER.fine(object+" saved");
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable save object "+object, e);
 		}
@@ -70,7 +70,7 @@ public class RHModel {
 	public <T extends RHModelObject> void refresh( T object) {
 		try {
 			db.refresh( object);
-			LOGGER.info(object+" refreshed");
+			LOGGER.fine(object+" refreshed");
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable refresh object "+object, e);
 		}
@@ -92,6 +92,7 @@ public class RHModel {
 	 */
 	public List<User> getUsers() {
 		try {
+			LOGGER.fine( "List User[]");
 			return db.getAll(User.class);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable to get Users", e);
@@ -107,6 +108,7 @@ public class RHModel {
 	 */
 	public <T extends RHEnum> List<T> getEnumValues(Class<T> clazz) {
 		try {
+			LOGGER.fine( "List "+clazz.getSimpleName()+"[]");
 			Map<String, Object> fields = new LinkedHashMap<>();
 			fields.put("deleted", false);
 			return db.getByField(clazz, fields);
@@ -140,6 +142,7 @@ public class RHModel {
 	 */
 	public List<Employee> getEmployees() {
 		try {
+			LOGGER.fine( "List Employee[]");
 			Map<String, Object> fields = new LinkedHashMap<>();
 			fields.put("deleted", false);
 			return db.getByField(Employee.class, fields);
@@ -155,6 +158,7 @@ public class RHModel {
 	 */
 	public List<Talk> getTalks() {
 		try {
+			LOGGER.fine( "List Talk[]");
 			Map<String, Object> fields = new LinkedHashMap<>();
 			fields.put("deleted", false);
 			return db.getByField(Talk.class, fields);
@@ -166,6 +170,7 @@ public class RHModel {
 
 	public List<Talk> getTalks( Employee emp) {
 		try {
+			LOGGER.fine( "List "+emp+" -> Talk[]");
 			Map<String, Object> fields = new LinkedHashMap<>();
 			Map<String, Boolean> orders = new LinkedHashMap<>();
 			fields.put("deleted", false);
@@ -197,6 +202,7 @@ public class RHModel {
 
 
 	public void emptyTrashDoc() {
+		LOGGER.fine("Remove files for deleted docs");
 		try {
 			Map<String, Object> fields = new LinkedHashMap<>();
 			fields.put("deleted", true);

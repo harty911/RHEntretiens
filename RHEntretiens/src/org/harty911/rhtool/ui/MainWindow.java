@@ -3,6 +3,7 @@ package org.harty911.rhtool.ui;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -48,6 +49,8 @@ import org.harty911.rhtool.ui.utils.ContextAction;
 
 public class MainWindow extends ApplicationWindow {
 	
+	public final static Logger LOGGER = Logger.getLogger( MainWindow.class.getName());
+
 	private Action actionAbout;
 	private Action actionQuit;
 	private Action actionImport;

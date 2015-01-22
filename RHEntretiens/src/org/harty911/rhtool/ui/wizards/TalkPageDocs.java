@@ -48,7 +48,9 @@ public class TalkPageDocs extends WizardPage {
 	public TalkPageDocs(Talk talk) {
 		super("DOCUMENTS", "Documents joints", null);
 		this.talk = talk;
-		// TODO : intialiaze with existing docs
+		
+		// pre-load all documents 
+		docs.addAll( talk.getDocs());
 		
 		// create an "not uploaded" file for the end of list
 		appendEmptyDoc();
@@ -81,16 +83,35 @@ public class TalkPageDocs extends WizardPage {
 		newDocs.add( emptyDoc);
 	}
 	
+
 	/**
-	 * In case of CANCEL delete new created documents
+	 * @return All docs including marked as deleted
 	 */
-	public void deleteNewDocs() {
-		for( RHDocument doc : newDocs) {
-			doc.delete();
-			RHToolApp.getModel().save(doc);
-		}
+	public List<TalkDoc> getAllDocs() {
+		return docs;
 	}
 
+
+	/**
+	 * to be called when wizard is finished 
+	 * @param ok true for Terminate, false for Cancel
+	 */
+	public void finish(boolean ok) {
+		if( ok) {
+			// mark last new doc (the empty one) as deleted
+			RHDocument doc = newDocs.get(newDocs.size()-1);
+			doc.delete();
+			RHToolApp.getModel().save(doc);			
+		}
+		else {
+			// if cancel, mark new docs as deleted 
+			for( RHDocument doc : newDocs) {
+				doc.delete();
+				RHToolApp.getModel().save(doc);
+			}
+		}
+	}
+	
 	
 	/**
 	 * rebuild controls based on list
@@ -226,13 +247,4 @@ public class TalkPageDocs extends WizardPage {
 				doc.setType( cmbCtrlType.getValue());
 		}
 	}
-
-
-	/**
-	 * @return All docs including marked as deleted
-	 */
-	public List<TalkDoc> getAllDocs() {
-		return docs;
-	}
-
 }

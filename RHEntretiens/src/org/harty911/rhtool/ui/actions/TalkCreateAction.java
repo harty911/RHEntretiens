@@ -11,6 +11,7 @@ import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.ui.MainWindow;
 import org.harty911.rhtool.ui.resources.Icons;
 import org.harty911.rhtool.ui.utils.ContextAction;
 import org.harty911.rhtool.ui.utils.UIModelUtils;
@@ -41,6 +42,8 @@ public class TalkCreateAction extends ContextAction {
 		
 		WizardDialog dlg = new WizardDialog(shell, new TalkWizard( talk));
 		if( dlg.open() == Window.OK) {
+			MainWindow.LOGGER.info( talk+" created");
+			// save is done in wizard
 			RHToolApp.getWindow().updateFromModel();
 		}
 		return true;

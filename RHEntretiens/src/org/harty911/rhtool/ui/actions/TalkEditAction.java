@@ -6,8 +6,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.harty911.rhtool.RHToolApp;
-import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.ui.MainWindow;
 import org.harty911.rhtool.ui.resources.Icons;
 import org.harty911.rhtool.ui.utils.ContextAction;
 import org.harty911.rhtool.ui.utils.UIModelUtils;
@@ -27,7 +27,6 @@ public class TalkEditAction extends ContextAction {
 	@Override
 	protected boolean execute(IStructuredSelection sel) {
 		Shell shell = Display.getCurrent().getActiveShell();
-		RHModel model = RHToolApp.getModel();
 		Talk talk = (Talk)sel.getFirstElement();
 
 		if( !UIModelUtils.refreshAndCheck(talk))
@@ -35,7 +34,8 @@ public class TalkEditAction extends ContextAction {
 
 		WizardDialog dlg = new WizardDialog(shell, new TalkWizard( talk));
 		if( dlg.open() == Window.OK) {
-			model.save(talk);
+			MainWindow.LOGGER.info( talk+" modified");
+			// save is done in wizard
 			RHToolApp.getWindow().updateFromModel();
 		}
 		return true;

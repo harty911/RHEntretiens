@@ -19,6 +19,7 @@ public class TalkWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
+		docPage.finish(true);
 		RHToolApp.getModel().save(talk);
 		for( RHDocument doc : docPage.getAllDocs())
 			RHToolApp.getModel().save(doc);
@@ -30,8 +31,7 @@ public class TalkWizard extends Wizard {
 	
 	@Override
 	public boolean performCancel() {
-		// if cancel, mark new docs as deleted 
-		docPage.deleteNewDocs();
+		docPage.finish(false);
 		// delete uneeded files
 		RHToolApp.getModel().emptyTrashDoc();
 		return true;
@@ -71,8 +71,6 @@ public class TalkWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		docPage = new TalkPageDocs(talk);
-		addPage( docPage);
 
 		addPage( new TalkPageEmployee(talk));
 		addPage( new TalkPageCommon(talk));
@@ -81,6 +79,8 @@ public class TalkWizard extends Wizard {
 		
 		addPage( new TalkCarA(talk));
 		
+		docPage = new TalkPageDocs(talk);
+		addPage( docPage);
 	}
 
 

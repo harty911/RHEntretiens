@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Employee;
+import org.harty911.rhtool.ui.MainWindow;
 import org.harty911.rhtool.ui.dialogs.EmployeeFormDialog;
 import org.harty911.rhtool.ui.resources.Icons;
 import org.harty911.rhtool.ui.utils.ContextAction;
@@ -35,6 +36,7 @@ public class EmployeeEditAction extends ContextAction {
 		EmployeeFormDialog dlg = new EmployeeFormDialog( shell, emp);
 		if( dlg.open()==Window.OK) {
 			model.save(emp);
+			MainWindow.LOGGER.info( emp+" modified");
 			RHToolApp.getWindow().updateFromModel();
 		}
 		return true;

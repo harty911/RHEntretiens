@@ -143,7 +143,7 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 						}
 					case USER:
 						User u = talk.getUser1();
-						RHToolApp.getModel().refresh(u);
+						// ORMLite autorefresh : RHToolApp.getModel().refresh(u);
 						return u.getNomUsuel();
 					case CANAL:
 						return ControlUtils.printEnum(talk.getCanal());					

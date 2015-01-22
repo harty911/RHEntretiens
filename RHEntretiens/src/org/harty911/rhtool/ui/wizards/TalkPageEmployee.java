@@ -239,7 +239,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 	public void fromModel() {		
 		// load Employee data (read only)
 		Employee employee = talk.getEmployee();
-		RHToolApp.getModel().refresh(employee);
+		// ORMLite autorefresh : RHToolApp.getModel().refresh(employee);
 		txtNom.setText( employee.getNomUsuel());
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( txtBirth, employee.getNaissance());

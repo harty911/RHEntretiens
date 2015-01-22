@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.ui.MainWindow;
 import org.harty911.rhtool.ui.resources.Icons;
 import org.harty911.rhtool.ui.utils.ContextAction;
 
@@ -32,6 +33,7 @@ public class TalkDeleteAction extends ContextAction {
 		if( res) {
 			talk.delete();
 			model.save(talk);
+			MainWindow.LOGGER.info( talk+" deleted");
 			RHToolApp.getWindow().updateFromModel();
 		}
 		return false;
