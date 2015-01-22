@@ -23,8 +23,6 @@ public class TalkWizard extends Wizard {
 		RHToolApp.getModel().save(talk);
 		for( RHDocument doc : docPage.getAllDocs())
 			RHToolApp.getModel().save(doc);
-		// delete uneeded files
-		RHToolApp.getModel().emptyTrashDoc();
 		return true;
 	}
 	
@@ -32,8 +30,6 @@ public class TalkWizard extends Wizard {
 	@Override
 	public boolean performCancel() {
 		docPage.finish(false);
-		// delete uneeded files
-		RHToolApp.getModel().emptyTrashDoc();
 		return true;
 	}
 	

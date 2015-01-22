@@ -92,6 +92,9 @@ public class RHToolApp {
 				mainWin.run();		
 			}
 			
+			// delete uneeded files
+			rhModel.emptyTrashDoc();
+			
 			if( rhModel!=null)
 				rhModel.close();
 
