@@ -120,6 +120,31 @@ public class RHModel {
 
 	
 	/**
+	 * Get RHEnum value by text
+	 * @param clazz
+	 * @return RHEnum value
+	 */
+	public <T extends RHEnum> T getEnumValue( Class<T> clazz, String text) {
+		try {
+			LOGGER.fine( "List "+clazz.getSimpleName()+"[]");
+			Map<String, Object> fields = new LinkedHashMap<>();
+			fields.put("deleted", false);
+			fields.put("text", text);
+			List<T> list = db.getByField(clazz, fields);
+			if( list.size()!=1) {
+				LOGGER.log(Level.SEVERE,"No "+clazz.getSimpleName()+" named "+text);
+				return null;
+			}
+			return list.get(0);
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE,"Unable to get "+clazz.getSimpleName()+"s", e);
+			return null;
+		}
+	}	
+
+	
+
+	/**
 	 * Get a user by Login
 	 * @param login the user login
 	 * @return 

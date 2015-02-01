@@ -17,8 +17,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellReference;
 import org.harty911.framework.utils.Chrono;
+import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.RHModelObject;
+import org.harty911.rhtool.core.model.objects.RHEContrat;
 
 public class XLSImporter <T extends RHModelObject> {
 
@@ -180,6 +182,11 @@ public class XLSImporter <T extends RHModelObject> {
 					throw createCellException( cell, "doit être au format Numérique");
 				field.setDouble( obj, cell.getNumericCellValue());			
 			} 
+			// RHEnum
+			else if( field.getType().isAssignableFrom(RHEContrat.class)) {
+				RHEContrat e = RHToolApp.getModel().getEnumValue( RHEContrat.class, cell.toString());
+				field.set(obj, e);
+			}
 			// alert for unmanaged types
 			else 
 				throw new Exception( "Le champ '"+field.getName()+"' ("+field.getType().getSimpleName()+") n'est pas géré par l'import");
