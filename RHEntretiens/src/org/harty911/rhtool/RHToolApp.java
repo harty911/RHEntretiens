@@ -40,6 +40,7 @@ public class RHToolApp {
 	public static void main(String[] args) {
 
 		LogUtil.setup();
+		//Logger.getLogger("").setLevel(Level.ALL);
 		
 		System.setProperty("user.language", "fr");
 

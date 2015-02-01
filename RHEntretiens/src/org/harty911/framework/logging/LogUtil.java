@@ -23,7 +23,8 @@ public class LogUtil {
 	    }
 	    */
 	    
-	    logger.setLevel(Level.INFO);
+	    logger.setLevel(Level.INFO); 
+	    //logger.setLevel(Level.FINEST); 
 	    
 		
 	    try {
@@ -34,10 +35,12 @@ public class LogUtil {
 		    Handler[] handlers = logger.getHandlers(); 
 		    if( handlers.length > 0 && handlers[0] instanceof ConsoleHandler ) {
 		    	handlers[0].setFormatter(formatter);
+		    	handlers[0].setLevel(Level.ALL);
 		    }
 
 		    // add log file
 		    FileHandler fileTxt = new FileHandler("RHtool_%g.log",40960,5);
+		    fileTxt.setLevel(Level.ALL);
 		    fileTxt.setFormatter(formatter);
 		    logger.addHandler(fileTxt);
 		    
