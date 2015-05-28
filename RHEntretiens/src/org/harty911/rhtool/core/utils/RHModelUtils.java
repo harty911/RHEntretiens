@@ -12,7 +12,6 @@ import org.harty911.rhtool.core.model.objects.RHEClassif;
 import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.core.model.objects.RHEInitiative;
 import org.harty911.rhtool.core.model.objects.RHEMotif;
-import org.harty911.rhtool.core.model.objects.RHEMotifPro;
 import org.harty911.rhtool.core.model.objects.RHETypeTalkDoc;
 import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.core.model.objects.User;
@@ -109,11 +108,7 @@ public class RHModelUtils {
 			// MOTIF
 			model.save( new RHEMotif("Rémunération"));
 			model.save( new RHEMotif("Conditions de travail"));
-	
-			// MOTIF PRO
-			model.save( new RHEMotifPro("Retour CIF"));
-			model.save( new RHEMotifPro("Retour longue maladie"));
-	
+		
 			// TYPE DOC (TALK)
 			model.save( new RHETypeTalkDoc("Passeport Formation"));
 			model.save( new RHETypeTalkDoc("Compte rendu"));

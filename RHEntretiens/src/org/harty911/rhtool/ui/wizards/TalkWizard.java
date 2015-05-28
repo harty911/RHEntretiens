@@ -1,6 +1,5 @@
 package org.harty911.rhtool.ui.wizards;
 
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHDocument;
@@ -45,36 +44,11 @@ public class TalkWizard extends Wizard {
 	
 	
 	@Override
-	public IWizardPage getNextPage(IWizardPage page) {
-		if( "COMMUN".equals(page.getName())) {
-			// choose next page from type
-			switch( talk.getType()) {
-			case CARRIERE:
-				return getPage("CARRIERE");
-			case PROFESSIONEL:
-				return getPage("PROFESSIONEL");
-			default:
-				break;
-			}
-		}
-		else if( "CARRIERE".equals(page.getName())
-			  || "PROFESSIONEL".equals(page.getName())) {
-			return getPage("DOCUMENTS");
-		}
-		
-		return super.getNextPage(page);
-	}
-
-	@Override
 	public void addPages() {
 
 		addPage( new TalkPageEmployee(talk));
 		addPage( new TalkPageCommon(talk));
-		
-		addPage( new TalkProA(talk));
-		
-		addPage( new TalkCarA(talk));
-		
+		addPage( new TalkPageDetail(talk));
 		docPage = new TalkPageDocs(talk);
 		addPage( docPage);
 	}

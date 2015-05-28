@@ -22,8 +22,8 @@ import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.RHECanal;
 import org.harty911.rhtool.core.model.objects.RHEInitiative;
+import org.harty911.rhtool.core.model.objects.RHEMotif;
 import org.harty911.rhtool.core.model.objects.Talk;
-import org.harty911.rhtool.core.model.objects.Talk.ETypeEntretien;
 import org.harty911.rhtool.core.model.objects.User;
 import org.harty911.rhtool.core.utils.RHModelUtils;
 import org.harty911.rhtool.ui.utils.ControlUtils;
@@ -40,7 +40,8 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 	private ObjectViewerController<User> cmbCtrlUser2;
 	private ObjectViewerController<RHECanal> cmbCtrlCanal;
 	private ObjectViewerController<RHEInitiative> cmbCtrlInit;
-	private ObjectViewerController<ETypeEntretien> cmbCtrlType;
+	private ObjectViewerController<RHEMotif> cmbCtrlMotif1;
+	private ObjectViewerController<RHEMotif> cmbCtrlMotif2;
 	
 
 
@@ -139,15 +140,25 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		Label sep2 = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
 		sep2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1));
 				
-		// TYPE (combo enum)
+		// MOTIF (combo)
 
-		Label lblType = new Label(container, SWT.NONE);
-		lblType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblType.setText("Type d'entretien:");
+		Label lblMotif1 = new Label(container, SWT.NONE);
+		lblMotif1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblMotif1.setText("Motif principal:");
 		
-		ComboViewer cmbType = new ComboViewer( container, SWT.READ_ONLY);
-		cmbType.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-		cmbCtrlType = new ObjectViewerController<Talk.ETypeEntretien>( cmbType, Talk.ETypeEntretien.values());
+		ComboViewer cmbMotif1 = new ComboViewer( container, SWT.READ_ONLY);
+		cmbMotif1.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		cmbCtrlMotif1 = new ObjectViewerController<RHEMotif>( cmbMotif1, model.getEnumValues(RHEMotif.class));
+		
+		new Label(container, SWT.NONE);
+
+		Label lblMotif2 = new Label(container, SWT.NONE);
+		lblMotif2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblMotif2.setText("Motif secondaire:");
+
+		ComboViewer cmbMotif2 = new ComboViewer( container, SWT.READ_ONLY);
+		cmbMotif2.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		cmbCtrlMotif2 = new ObjectViewerController<RHEMotif>( cmbMotif2, model.getEnumValues(RHEMotif.class));
 		
 		new Label(container, SWT.NONE);
 
@@ -162,7 +173,8 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		cmbCanal.addSelectionChangedListener(this);
 		cmbInit.addSelectionChangedListener(this);
 		txtInit.addModifyListener(this);
-		cmbType.addSelectionChangedListener(this);
+		cmbMotif1.addSelectionChangedListener(this);
+		cmbMotif2.addSelectionChangedListener(this);
 		
 		// fire check and save to model
 		toModel();
@@ -196,8 +208,9 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		cmbCtrlInit.setValue( talk.getInitiative());
 		txtInit.setText(talk.getInitiativeDetail());
 		
-		// Type (obligatoire)
-		cmbCtrlType.setValue(talk.getType());
+		// Motif (1:obligatoire/2:facultatif)
+		cmbCtrlMotif1.setValue(talk.getMotif1());
+		cmbCtrlMotif2.setValue(talk.getMotif2());
 	}
 
 
@@ -240,7 +253,7 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		// Canal (obligatoire)
 		RHECanal c = cmbCtrlCanal.getValue();
 		if( c==null)
-			errMsg = "La canal doit être renseigné";
+			errMsg = "Le canal doit être renseigné";
 		else
 			talk.setCanal(c);
 		
@@ -248,8 +261,13 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		talk.setInitiative( cmbCtrlInit.getValue());
 		talk.setInitiativeDetail( txtInit.getText());
 		
-		// Type (obligatoire)
-		talk.setType( cmbCtrlType.getValue());
+		// Motif (1:obligatoire/2:facultatif)
+		RHEMotif m = cmbCtrlMotif1.getValue();
+		if( m==null)
+			errMsg = "Le motif principal doit être renseigné";
+		else
+			talk.setMotif1( m);
+		talk.setMotif2( cmbCtrlMotif1.getValue());
 		
 		setErrorMessage(errMsg);
 		setPageComplete( errMsg==null);

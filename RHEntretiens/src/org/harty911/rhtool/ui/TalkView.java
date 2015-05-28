@@ -27,7 +27,7 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 	private TalkFilter viewerFilter;
 
 	enum ECol {
-		DATE, TYPE, USER, CANAL, DUREE
+		DATE, USER, CANAL, DUREE
 	};
 	
 	/**
@@ -56,14 +56,7 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 		col.getColumn().setText("Date");
 		col.getColumn().setWidth(80);
 		col.setLabelProvider( new TalkLabelProvider(ECol.DATE));
-		
-		// TYPE
-		
-		col = new TableViewerColumn(tableViewer, SWT.NONE);
-		col.getColumn().setText("Type");
-		col.getColumn().setWidth(80);
-		col.setLabelProvider(new TalkLabelProvider(ECol.TYPE));
-		
+				
 		// Canal
 		
 		col = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -75,7 +68,7 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 		
 		col = new TableViewerColumn(tableViewer, SWT.NONE);
 		col.getColumn().setText("Durée");
-		col.getColumn().setWidth(50);
+		col.getColumn().setWidth(70);
 		col.setLabelProvider(new TalkLabelProvider(ECol.DUREE));
 
 		// User1
@@ -134,13 +127,6 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 				switch( col) {
 					case DATE:
 						return ControlUtils.printDate( talk.getDate());
-					case TYPE:
-						switch( talk.getType()) {
-							case PROFESSIONEL:
-								return "Professionel";
-							case CARRIERE:
-								return "Carrière";
-						}
 					case USER:
 						User u = talk.getUser1();
 						// ORMLite autorefresh : RHToolApp.getModel().refresh(u);

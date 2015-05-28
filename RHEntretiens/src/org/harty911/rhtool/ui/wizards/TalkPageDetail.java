@@ -5,16 +5,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.harty911.rhtool.core.model.objects.Talk;
 
-public class TalkProA extends WizardPage {
+public class TalkPageDetail extends WizardPage {
 
-	public TalkProA(Talk talk) {
-		super("PROFESSIONEL", "Entretien Professionnel", null);
+	public TalkPageDetail(Talk talk) {
+		super("CARRIERE", "Entretien de carrière", null);
 	}
 
 	@Override
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
-		// TODO Pages wizard PRO
+		// TODO Pages wizard CAR
 		setControl(container);
 	}
 

@@ -11,7 +11,6 @@ import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.Talk;
-import org.harty911.rhtool.core.model.objects.Talk.ETypeEntretien;
 import org.harty911.rhtool.core.model.objects.User;
 
 public class TalkPrinter extends TemplatePrinter {
@@ -54,7 +53,7 @@ public class TalkPrinter extends TemplatePrinter {
 		RHModel model = RHToolApp.getModel();
 		
 		model.refresh(talk);
-		TITLE = talk.getType()==ETypeEntretien.CARRIERE ? "Entretien de Carrière" :"Entretien Professionnel";
+		TITLE = "Entretien de Carrière";
 		DATE = ControlUtils.printDate( talk.getDate());
 		DUREE = ControlUtils.printDuration( talk.getDuration());
 		

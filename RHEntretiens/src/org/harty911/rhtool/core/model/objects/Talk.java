@@ -14,11 +14,6 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "t_entretien")
 public class Talk extends RHModelObject {
 
-	public enum ETypeEntretien { CARRIERE, PROFESSIONEL };
-
-	@DatabaseField(dataType=DataType.ENUM_INTEGER)
-    private ETypeEntretien type = ETypeEntretien.PROFESSIONEL; // obligatoire
-
 	// COLLABORATEUR
 
 	@DatabaseField(foreign = true, foreignAutoRefresh=true, maxForeignAutoRefreshLevel=1)
@@ -62,12 +57,7 @@ public class Talk extends RHModelObject {
     private RHEMotif motif1 = null; // obligatoire - Motif principal
 	@DatabaseField(foreign = true)
     private RHEMotif motif2 = null; // facultatif - Motif secondaire 	
-	
-	// PROFESSIONEL
-
-	@DatabaseField(foreign = true)
-    private final RHEMotifPro motifpro = null; // obligatoire - Motif Pro
-	
+		
 	// TODO liste des champs à terminer
 	
 	public Talk() {
@@ -197,14 +187,6 @@ public class Talk extends RHModelObject {
 		this.initiative_detail = intitiativeDetail;
 	}
 	
-	public ETypeEntretien getType() {
-		return type;
-	}
-	
-	public void setType(ETypeEntretien type) {
-		this.type = type;
-	}
-
 	public String getAffectation() {
 		return affectation;
 	}
@@ -216,6 +198,21 @@ public class Talk extends RHModelObject {
 	public Collection<TalkDoc> getDocs() {
 		return docs;
 	}
+
+	public RHEMotif getMotif1() {
+		return motif1;
+	}
 	
+	public void setMotif1(RHEMotif motif) {
+		this.motif1 = motif;
+	}
+
+	public RHEMotif getMotif2() {
+		return motif2;
+	}
+
+	public void setMotif2(RHEMotif motif) {
+		this.motif2 = motif;
+	}
 
 }

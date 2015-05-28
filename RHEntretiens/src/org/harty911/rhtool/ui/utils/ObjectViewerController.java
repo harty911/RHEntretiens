@@ -9,7 +9,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.harty911.rhtool.core.model.RHEnum;
 import org.harty911.rhtool.core.model.objects.Employee;
-import org.harty911.rhtool.core.model.objects.Talk.ETypeEntretien;
 import org.harty911.rhtool.core.model.objects.User;
 
 public class ObjectViewerController <T> {
@@ -25,16 +24,6 @@ public class ObjectViewerController <T> {
 				return ((Employee)element).getNomUsuel();
 			else if( element instanceof User)
 				return ((User)element).getNomUsuel();
-			else if( element instanceof ETypeEntretien) {
-				switch((ETypeEntretien)element) {
-					case CARRIERE:
-						return "Entretien de carrière";
-					case PROFESSIONEL:
-						return "Entretien professionnel";
-					default:
-						return "";
-				}
-			}
 			else 
 				return element.toString();
 		}

@@ -30,7 +30,6 @@ import org.harty911.rhtool.core.model.objects.RHEClassif;
 import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.core.model.objects.RHEInitiative;
 import org.harty911.rhtool.core.model.objects.RHEMotif;
-import org.harty911.rhtool.core.model.objects.RHEMotifPro;
 import org.harty911.rhtool.core.model.objects.RHETypeTalkDoc;
 import org.harty911.rhtool.ui.actions.AboutAction;
 import org.harty911.rhtool.ui.actions.EmployeeCreateAction;
@@ -68,7 +67,6 @@ public class MainWindow extends ApplicationWindow {
 	private Action actionManageInitiative;
 	private Action actionManageCanal;
 	private Action actionManageMotif;
-	private Action actionManageMotifPro;
 	private Action actionManageTypeTalkDoc;
 	
 	private TalkView talkView;
@@ -109,9 +107,8 @@ public class MainWindow extends ApplicationWindow {
 		actionManageContract = new ManageEnumsAction<RHEContrat>( RHEContrat.class, RHEContrat.TITLE);
 		actionManageClassif  = new ManageEnumsAction<RHEClassif>( RHEClassif.class, RHEClassif.TITLE);
 		actionManageInitiative = new ManageEnumsAction<RHEInitiative>( RHEInitiative.class, RHEInitiative.TITLE);
-		actionManageCanal = new ManageEnumsAction<RHEMotif>( RHEMotif.class, RHEMotif.TITLE);
-		actionManageMotif = new ManageEnumsAction<RHEMotifPro>( RHEMotifPro.class, RHEMotifPro.TITLE);
-		actionManageMotifPro = new ManageEnumsAction<RHECanal>( RHECanal.class, RHECanal.TITLE);
+		actionManageMotif = new ManageEnumsAction<RHEMotif>( RHEMotif.class, RHEMotif.TITLE);
+		actionManageCanal = new ManageEnumsAction<RHECanal>( RHECanal.class, RHECanal.TITLE);
 		actionManageTypeTalkDoc = new ManageEnumsAction<RHETypeTalkDoc>( RHETypeTalkDoc.class, RHETypeTalkDoc.TITLE);
 	}
 
@@ -141,7 +138,6 @@ public class MainWindow extends ApplicationWindow {
 			enumMenu.add(actionManageInitiative);
 			enumMenu.add(actionManageCanal);
 			enumMenu.add(actionManageMotif);
-			enumMenu.add(actionManageMotifPro);
 			enumMenu.add(actionManageTypeTalkDoc);
 			adminMenu.add(enumMenu);
 			mgr.add(adminMenu);

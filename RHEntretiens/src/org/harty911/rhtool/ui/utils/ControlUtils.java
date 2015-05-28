@@ -30,14 +30,11 @@ public class ControlUtils {
 	private final static Map<String,Integer> durationMap;
 	static{
 		durationMap = new LinkedHashMap<String, Integer>();
-		durationMap.put( "15'", 15);
-		durationMap.put( "30'", 30);
-		durationMap.put( "45'", 45);
-		durationMap.put( "1h00", 60);
-		durationMap.put( "1h30", 90);
-		durationMap.put( "2h00", 120);
-		durationMap.put( "2h30", 150);
-		durationMap.put( "3h00", 180);
+		durationMap.put( "0 - 30mn", 30);
+		durationMap.put( "30mn - 1h", 60);
+		durationMap.put( "1h - 1h30", 90);
+		durationMap.put( "1h30 - 2h", 120);
+		durationMap.put( "> 2h", 240);
 	}
 	
 	//public final VerifyListener LONG_VERIFIER = new LongVerifier(Long.MIN_VALUE,Long.MAX_VALUE);
