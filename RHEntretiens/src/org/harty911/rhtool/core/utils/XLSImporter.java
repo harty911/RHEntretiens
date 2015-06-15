@@ -99,6 +99,8 @@ public class XLSImporter <T extends RHModelObject> {
 			Field field = null;
 			String colTitle = cell.toString().trim();
 			for( Field each : fields) {
+				if( colFields.contains(each))
+					break;
 				if( each.getName().equalsIgnoreCase(colTitle)) {
 					field = each;
 					field.setAccessible(true);

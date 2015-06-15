@@ -55,8 +55,6 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		RHModel model = RHToolApp.getModel();
 		
 		Composite container = new Composite(parent, SWT.NONE);
-		
-		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		GridLayout gl_container = new GridLayout(4, false);
 		gl_container.verticalSpacing = 10;
 		gl_container.horizontalSpacing = 10;
@@ -68,7 +66,7 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		lblDate.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 		lblDate.setText("Date de l'entretien :");
 		
-		dtTalk = new DateTime(container, SWT.BORDER);
+		dtTalk = new DateTime(container, SWT.BORDER | SWT.DROP_DOWN);
 		
 		// DUREE 
 

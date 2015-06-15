@@ -19,6 +19,9 @@ public class TalkWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		docPage.finish(true);
+		
+		//FIXME: bien reverifier tous le systeme des docs!
+		
 		RHToolApp.getModel().save(talk);
 		for( RHDocument doc : docPage.getAllDocs())
 			RHToolApp.getModel().save(doc);

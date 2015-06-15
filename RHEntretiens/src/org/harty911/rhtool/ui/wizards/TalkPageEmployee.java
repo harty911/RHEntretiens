@@ -160,7 +160,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		lblDtPoste.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 2, 1));
 		lblDtPoste.setText("Dur\u00E9e dans le poste:");
 		
-		dtPoste = new DateTime(container, SWT.BORDER);
+		dtPoste = new DateTime(container, SWT.BORDER | SWT.DROP_DOWN);
 		dtPoste.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		// EMPLOI

@@ -42,7 +42,7 @@ public class RHDbConnector {
 	
 	public static final String DB_FILENAME = "RHTool.db";
 
-	public final static int DB_SCHEMA_VERSION = 1;
+	public final static int DB_SCHEMA_VERSION = 2;
 	
 	private static final String SCHEMA_VERSION = "SCHEMA_VERSION";
 	
@@ -254,19 +254,31 @@ public class RHDbConnector {
 			// default value = 0
 		}
 		LOGGER.info( "SchemaVersion="+dbVersion);
-
-/*
+		if( dbVersion > DB_SCHEMA_VERSION) { 
+			String msg = "Incompatible application level: "+DB_SCHEMA_VERSION +", need to be upgraded";
+			throw new SQLException(msg);
+		}
+		
 		if( dbVersion < 2) {
 			LOGGER.info("Upgrade to DB schema version 2");
 			Dao<Employee,?> dao = DaoManager.createDao(connectionSource, Employee.class);
-			dao.executeRaw("ALTER TABLE `t_employee` ADD COLUMN weight INTEGER;");
+			// Ajout des champs manquant (version 2)
+			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN detail VARCHAR DEFAULT '';");
+			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN next_date VARCHAR;");
+			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN action_status INTEGER;");
+			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN action_detail VARCHAR DEFAULT '';");
+			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN action_date VARCHAR;");
+			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN accomp_status INTEGER;");
+			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN accomp_detail VARCHAR DEFAULT '';");
 		} 
+/*
 		if( dbVersion < 3) {
 			LOGGER.info("Upgrade to DB schema version 3");
 			Dao<Employee,?> dao = DaoManager.createDao(connectionSource, Employee.class);
 			dao.executeRaw("ALTER TABLE `t_employee` ADD COLUMN weight INTEGER;");
 		}
 */		
+		
 		setProperty(SCHEMA_VERSION, String.valueOf(DB_SCHEMA_VERSION));
 	}
 

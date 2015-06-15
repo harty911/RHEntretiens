@@ -102,7 +102,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		lblBirthDate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lblBirthDate.setText("Date de Naissance :");
 		
-		dtBirth = new DateTime(container, SWT.BORDER);
+		dtBirth = new DateTime(container, SWT.BORDER | SWT.DROP_DOWN);
 		
 		// separator
 		
@@ -127,7 +127,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		lblInputDate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lblInputDate.setText("Date d'anciennet\u00E9 :");
 		
-		dtInput = new DateTime(container, SWT.BORDER);
+		dtInput = new DateTime(container, SWT.BORDER | SWT.DROP_DOWN);
 
 		// set initial data
 		
@@ -160,6 +160,10 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		}
 		
 		int mat = Integer.parseInt(txtMatricule.getText());
+		if( mat < 100000) {
+			setMessage("Le matricule doit comporter au moins 6 chiffres");
+			return false;
+		}
 		for( Employee emp : RHToolApp.getModel().getEmployees()) {
 			if( emp.equals(employee)) continue;
 			if( emp.getMatricule() == mat) {

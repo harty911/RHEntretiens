@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?> 
+<!--**********************************************************************************-->
+<!--***                   DISTRIBUTION FILE HARTY911                               ***-->
+<!--**********************************************************************************-->
+
+<project default="all" basedir=".">
+	
+	<!-- Distribution param file -->
+	<property file="dist.properties" />
+		
+	<target name="all" depends="zip" description="Build All">
+		<echo message="Generation completed." />
+	</target>
+
+	<!--**********************************************************************************-->
+	<!--*** INIT : prepare environnement before package                                ***-->
+
+	<target name="init" description="Initialisation">
+
+		<!-- Get date and increment BuildNumber -->
+		<tstamp>
+			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+		</tstamp>
+		<buildnumber file="buildnumber.txt" />
+		<property name="fullversion"   value="${version}_b${build.number}" />
+		<echo message="Start build ${project} version ${fullversion} [${TODAY}]" />
+		
+		<!-- (re)create a temp build directory -->
+		<delete failonerror="false" dir="build" />
+		<mkdir dir="build" />
+	    <mkdir dir="build/src" />
+	    <mkdir dir="build/bin" />
+		<mkdir dir="build/exp" />
+		<mkdir dir="build/exp/lib" />
+		<mkdir dir="build/exp/templates" />
+		
+		<!-- List needed JARs and DLLs in libdir -->
+		<fileset id="project.extjars" dir="${libdir}">
+			<exclude name="**/.svn" />
+			<exclude name="**source**" />
+			<include name="*.jar" />
+		</fileset>
+		
+		<!-- Then set the classpath -->
+		<path id="project.classpath">
+			<fileset refid="project.extjars" />
+		</path>
+
+		<!-- prepare MANIFEST.MF file -->
+		<pathconvert property="manifest.lib.classpath" pathsep=" ">
+			<path refid="project.classpath"/>
+			<flattenmapper/>
+		</pathconvert>
+		  	
+		<!-- import data file to export -->
+		<copy todir="build/exp">
+			<fileset dir=".">
+				<include name="*.bat"/>
+			</fileset>
+			<fileset dir="..">
+				<include name="templates/*.*"/>
+			</fileset>
+		</copy>
+
+	</target>
+	
+	<!--**********************************************************************************-->
+	<!--*** ZIP : zip the package (after APPJAR)                                       ***-->
+		
+	<target name="zip" description="Package Application" depends="appjars">
+		
+	    <!-- make the zip file -->
+		<zip destfile="${zipdir}/${project}-${fullversion}_jre.zip">
+			<zipfileset dir="build/exp" prefix="${project}"/>
+			<zipfileset dir="jre" prefix="${project}/jre"/>
+	 	</zip>
+	    <!-- make the small zip file -->
+		<zip destfile="${zipdir}/${project}-${fullversion}.zip">
+			<zipfileset dir="build/exp" prefix="${project}"/>
+	 	</zip>
+		
+	</target>
+
+	<!--**********************************************************************************-->
+	<!--*** CLEAN : cleanup build files                                                ***-->
+
+	<target name="clean" description="Cleanup after work">
+		<delete failonerror="false" dir="build" />
+	</target>
+
+	<!--**********************************************************************************-->
+	<!--*** APPJARS : create application jar file from eclipse bin dir                 ***-->
+
+	<target name="appjars" description="Create Application jar and copy dependencies" depends="init">
+			
+		<manifest file="build/MANIFEST.MF">
+	        <attribute name="Built-By" value="harty911"/>
+	        <attribute name="Implementation-Version" value="${version}_b${build.number}"/> 
+			<attribute name="Built-Date" value="${TODAY}"/>
+			<attribute name="Main-Class" value="${mainClass}"/>
+			<attribute name="Class-Path" value="${manifest.lib.classpath}"/>
+		</manifest>
+		
+		<jar destfile="build/exp/lib/${project}.jar" manifest="build/MANIFEST.MF">
+			<fileset dir="../bin" includes="**/*.*" />
+		</jar>
+			
+		<!-- import JAR needed by ressources for Application JAR -->
+		<copy todir="build/exp/lib">
+			<fileset refid="project.extjars" />
+		</copy>
+
+	</target>
+
+</project>

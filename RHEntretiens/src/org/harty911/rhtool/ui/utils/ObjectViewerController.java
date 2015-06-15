@@ -17,7 +17,7 @@ public class ObjectViewerController <T> {
 
 	public class ObjectLabelProvider extends LabelProvider {
 		@Override
-		public String getText(Object element) {
+		public String getText(Object element) { 
 			if( element instanceof RHEnum)
 				return ((RHEnum)element).getText();
 			else if( element instanceof Employee)

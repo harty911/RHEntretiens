@@ -36,6 +36,6 @@ public class Icons {
 		if( imgReg==null)
 			imgReg = new ImageRegistry(Display.getDefault());
 		if( imgReg.getDescriptor(imgName)==null)
-			imgReg.put(imgName, ImageDescriptor.createFromFile( null, "icons/"+imgName));
+			imgReg.put(imgName, ImageDescriptor.createFromFile( Icons.class, imgName));
 	}
 }
