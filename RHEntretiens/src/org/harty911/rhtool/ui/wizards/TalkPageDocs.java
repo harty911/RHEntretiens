@@ -55,7 +55,7 @@ public class TalkPageDocs extends WizardPage {
 		if( talkDocs!=null)
 			docs.addAll( talkDocs);
 		
-		// create an "not uploaded" file for the end of list
+		// create a "not uploaded" file for the end of list
 		appendEmptyDoc();
 	}
 
@@ -100,17 +100,12 @@ public class TalkPageDocs extends WizardPage {
 	 * @param ok true for Terminate, false for Cancel
 	 */
 	public void finish(boolean ok) {
-		if( ok) {
-			// mark last new doc (the empty one) as deleted
-			RHDocument doc = newDocs.get(newDocs.size()-1);
-			doc.delete();
-			RHToolApp.getModel().save(doc);			
-		}
-		else {
-			// if cancel, mark new docs as deleted 
-			for( RHDocument doc : newDocs) {
+		for( RHDocument doc : newDocs) {
+			// if cancel, mark ALL new docs as deleted 
+			// if ok, mark each empty new doc as deleted
+			if( !ok || !doc.isUploaded()) { 
 				doc.delete();
-				RHToolApp.getModel().save(doc);
+				RHToolApp.getModel().save(doc);			
 			}
 		}
 	}

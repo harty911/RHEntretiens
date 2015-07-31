@@ -22,10 +22,12 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Text;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHEnum;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 
 public class ControlUtils {
 	
 	private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	private static DateFormat monthFormat = new SimpleDateFormat("MMMM yyyy");
 
 	private final static Map<String,Integer> durationMap;
 	static{
@@ -95,14 +97,48 @@ public class ControlUtils {
 			return "";
 		return dateFormat.format(date);
 	}
-
+		
+	public static String printMonth(Date date) {
+		if( date==null) 
+			return "";
+		return monthFormat.format(date);
+	}
 	
+	public static String printDateDiff( Date dateOld, Date dateNew) {
+		int diffMonth = RHModelUtils.toMonths( dateOld, dateNew);
+		if( diffMonth <= 0)
+			return "0 mois";
+		else if( diffMonth < 12)
+			return diffMonth + " mois";
+		else {
+			int diffYear = diffMonth/12;
+			diffMonth = diffMonth%12;
+			return diffYear + " an(s) et " + diffMonth + " mois";
+		}
+	}
+
 	public static String printEnum( RHEnum e) {
 		if( e==null)
 			return "";
 		RHToolApp.getModel().refresh(e);
 		return e.getText();
 			
+	}
+	
+	public static String print( Object obj) {
+		if(obj==null)
+			return "";
+		
+		if(obj instanceof String)
+			return (String)obj;
+			
+		if(obj instanceof RHEnum)
+			return  printEnum( (RHEnum)obj);
+		
+		if( obj instanceof Date)
+			return printDate( (Date)obj);
+		
+		return obj.toString();
 	}
 
 

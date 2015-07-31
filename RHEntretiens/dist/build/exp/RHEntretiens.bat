@@ -1,1 +1,1 @@
-start /b jre\bin\javaw.exe -jar .\lib\RHEntretiens.jar
+start /b jre\bin\javaw.exe -jar .\lib\RHEntretiens.jar -db "."

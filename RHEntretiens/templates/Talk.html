@@ -1,39 +1,275 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<style media='screen' type='text/css'>
-	body { background-color: white }
-	h1{ color: darkgreen }
-	</style>
-	<meta content='text/html;charset=ISO-8859-1' http-equiv='content-type'>
-	<title>Fiche entretien</title>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"><title>Fiche entretien RH - $COLLAB - $SHORTDATE</title>
+
+<style type="text/css">
+body {
+	background-color: white;
+	font-family: "Arial",Arial,Sans-serif;
+	font-size: 12px;
+}
+a {
+	font-style: italic;
+}
+h1 {
+	color: teal;
+	font-size: 150%;
+	font-weight: normal;
+	margin-left: 20px;
+}
+h5 {
+	font-size: 12px;
+	line-height: 1.0;
+	margin-top:0.5em;
+	margin-left: 15px;
+	margin-right:0;
+	margin-bottom:0.5em;
+}
+ul {
+	margin-top:0.5em;
+	margin-left: 25px;
+	margin-right:0;
+	margin-bottom:0.5em;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 25px;
+	padding-right: 10px;
+}
+.collab {
+	font-weight: bold;
+}
+.matricule {
+	color: black;
+	font-style: italic;
+	font-weight: normal;
+	font-size: 75%;
+}
+.textbox {
+	border-width:1px; 
+	border-color:black;
+	border-style:dashed;
+	margin-top:0.5em;
+	margin-left:15px;
+	margin-right:15px;
+	margin-bottom:1em;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	min-height: 50px;
+}
+.actionbox{
+	border-style:solid;
+	border-color:gray;
+}
+.open{
+	background-color: yellow;
+}
+.close{
+	background-color: lightgreen;
+}
+.late{
+	background-color: red;
+}
+.off{
+	color: gray;
+	background-color: lightgray;
+}
+
+hr {
+	width: 100%;
+}
+table {
+	width: 100%;
+}
+th {
+	text-align: right;
+	vertical-align: top;
+	font-size: 12px;
+	white-space: nowrap;
+}
+td {
+	text-align: left;
+	vertical-align: top;
+	font-size: 12px;
+}
+</style>
 </head>
+
 <body>
-<H1>Fiche entretien</H1>
-<a href='javascript:window.print();'>Imprimer</a>
-<br>
-<hr width="100%">
-<table>
-	<tbody>
+<table><tbody>
+<h1>Fiche d'entretien RH - $SHORTDATE<br><span class="collab">$COLLAB</span>&nbsp;&nbsp;&nbsp; <span class="matricule">($MATRICULE)</span></h1>
+<hr>
+<table><tbody>
 	<tr>
-		<td>Collaborateur:</td>
-		<td><small><i>$COLLAB</i></small></td>
+		<th style="width: 100px;">Initiateur:</th>
+		<td>$INIT</td>
+		<th>Canal:</th>
+		<td style="width: 120px;">$CANAL</td>
 	</tr>
 	<tr>
-		<td>Représentant(s) RH:</td>
-		<td><small><i>$RHS</i></small></td>
-	</tr><tr>
-		<td>Date:</td>
-		<td><small><i>$DATE</i></td>
+		<th></th>
+		<td><i>$INIT_TEXT</i></td>
+		<th>Durée:</th>
+		<td>$DUREE</td>
 	</tr>
-	</tr><tr>
-		<td>Durée:</td>
-		<td><small><i>$DUREE</i></td>
+	<tr>
+		<th style="width: 100px;">Motif(s):</th>
+		<td>$MOTIFS</td>
+		<th></th>
+		<td></td>
 	</tr>
-	</tbody>
-</table>
-<br>
-<hr width='100%'>
-<small>&copy; 2014&nbsp;Crédit Agricole de Lorraine</small><br>
-</body>
-</html>
+</tbody></table>
+<hr>
+<table><tbody>
+	<tr>
+		<th rowspan="2" style="width: 100px;">RH(s):</th>
+		<td rowspan="2">$RHS</td>
+		<th>Date:</th>
+		<td style="width: 120px;">$DATE</td>
+	</tr>
+	<tr>
+	</tr>
+</tbody></table>
+<hr>
+<h5>Compte-rendu de l'entretien:</h5>
+<p class='textbox'>
+$RESUME
+<br>&nbsp
+</p>
+<h5>Actions à mener:</h5>
+<p class='textbox actionbox $ACTION_CLASS'>
+##HAS_ACTION{
+	<b>$ACTION&nbsp&nbsp-&nbsp&nbspEchéance: $ACTION_DATE )</b><br><br>
+	$ACTION_TEXT
+##}
+##HASNT_ACTION{
+	Pas d'action à mener.
+##}
+	<br>&nbsp
+</p>
+<h5>Mesures d'accompagnement:</h5>
+<p class='textbox actionbox $ACCOMP_CLASS'>
+##HAS_ACCOMP{
+	<b>$ACCOMP</b><br><br>
+	$ACCOMP_TEXT
+##}
+##HASNT_ACCOMP{
+	Pas d'action à mener.
+##}
+	<br>&nbsp
+</p>
+
+<hr>
+##HAS_PJ{
+<h5>Documents joints:</h5>
+<ul>
+##FOREACH_PJ{
+	<li>$PJ_TYPE: <a href='$PJ_URI'>$PJ_NAME</a></li>
+##}
+</ul>
+<hr>
+##}
+<small>©&nbsp;2014&nbsp;Crédit Agricole de Lorraine&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:window.print();">Imprimer</a></small>
+
+
+
+
+
+
+
+
+##DEBUG{
+<!--
+	Liste des variables pour la fiche:
+
+	$$COLLAB="$COLLAB"
+	$$MATRICULE="$MATRICULE"
+	$$CONTRAT="$CONTRAT"
+	$$DATE_NAISS="$DATE_NAISS"
+	$$DATE_ENTREE="$DATE_ENTREE"
+	$$PCE="$PCE"
+	$$PCP="$PCP"
+	$$CLASSIF="$CLASSIF"
+	$$DATE_POSTE="$DATE_POSTE"
+	$$DUREE_POSTE="$DUREE_POSTE"
+	$$EMPLOI="$EMPLOI"
+	$$AFFECTATION="$AFFECTATION"
+
+	$$DATE="$DATE"
+	$$SHORTDATE="$SHORTDATE"
+	$$DUREE="$DUREE"
+	$$RHS="$RHS"
+	$$CANAL="$CANAL"
+	$$INIT="$INIT"
+	$$INIT_TEXT="$INIT_TEXT"
+	$$MOTIFS="$MOTIFS"
+
+	$$RESUME="$RESUME"
+	##HAS(NT)_ACTION{}=
+##HAS_ACTION{ 
+		OUI 
+##} 
+##HASNT_ACTION{ 
+NON 
+##}
+	##IS(NT)_ACTION_OPEN{}=
+##IS_ACTION_OPEN{ 
+OUI 
+##} 
+##ISNT_ACTION_OPEN{ 
+NON 
+##}
+	##IS(NT)_ACTION_OVER{}=
+##IS_ACTION_OVER{ 
+OUI 
+##}
+##ISNT_ACTION_OVER{ 
+NON
+##}
+	$$ACTION="$ACTION"
+	$$ACTION_CLASS="$ACTION_CLASS"
+	$$ACTION_TEXT="$ACTION_TEXT"
+	##HAS(NT)_ACCOMP{}=
+##HAS_ACCOMP{
+OUI
+##}
+##HASNT_ACCOMP{
+NON
+##}
+	##IS(NT)_ACCOMP_OPEN{}=
+##IS_ACCOMP_OPEN{ 
+OUI 
+##} 
+##ISNT_ACCOMP_OPEN{ 
+NON 
+##}
+	$$ACCOMP="$ACCOMP"
+	$$ACCOMP_CLASS="$ACCOMP_CLASS"
+	$$ACCOMP_TEXT="$ACCOMP_TEXT"
+	##HAS(NT)_NEXTDATE{}=
+##HAS_NEXTDATE{ 
+OUI 
+##} 
+##HASNT_NEXTDATE{ 
+NON 
+##}
+	$$NEXTDATE="$NEXTDATE"
+<BR><BR>
+	##HAS(NT)_PJ{}=
+##HAS_PJ{ 
+OUI 
+##} 
+##HASNT_PJ{ 
+NON 
+##}
+	##FOREACH_PJ{}=<ul>
+##FOREACH_PJ {
+	$$PJ_NUM="$PJ_NUM"
+	$$PJ_NAME="$PJ_NAME"
+	$$PJ_URI="$PJ_URI"
+	$$PJ_TYPE="$PJ_TYPE"
+##}
+##}
+-->
+</body></html>

@@ -24,12 +24,11 @@
 		<buildnumber file="buildnumber.txt" />
 		<property name="fullversion"   value="${version}_b${build.number}" />
 		<echo message="Start build ${project} version ${fullversion} [${TODAY}]" />
+		<replaceregexp file="${versionSrc}" match="@@@.+?@@" replace="@@@${fullversion}@@@" />
 		
 		<!-- (re)create a temp build directory -->
 		<delete failonerror="false" dir="build" />
 		<mkdir dir="build" />
-	    <mkdir dir="build/src" />
-	    <mkdir dir="build/bin" />
 		<mkdir dir="build/exp" />
 		<mkdir dir="build/exp/lib" />
 		<mkdir dir="build/exp/templates" />
@@ -89,10 +88,26 @@
 	</target>
 
 	<!--**********************************************************************************-->
+	<!--*** COMPIL : compile all sources to bin dir (after INIT)                       ***-->
+
+		<target name="compil" depends="init" description="Compile sources">
+			
+			<javac debug="true" srcdir="../src" destdir="../bin">
+				<classpath refid="project.classpath"/>
+			</javac>
+			
+		</target>
+		
+	<!--**********************************************************************************-->
 	<!--*** APPJARS : create application jar file from eclipse bin dir                 ***-->
 
-	<target name="appjars" description="Create Application jar and copy dependencies" depends="init">
-			
+	<target name="appjars" description="Create Application jar and copy dependencies" depends="compil">
+
+		<javac destdir="../bin" includeantruntime="false">
+			<src path="../src"/>
+		    <classpath refid="project.classpath"/>
+		</javac>	
+		
 		<manifest file="build/MANIFEST.MF">
 	        <attribute name="Built-By" value="harty911"/>
 	        <attribute name="Implementation-Version" value="${version}_b${build.number}"/> 

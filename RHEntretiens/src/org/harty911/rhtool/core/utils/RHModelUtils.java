@@ -2,6 +2,9 @@ package org.harty911.rhtool.core.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,6 +42,41 @@ public class RHModelUtils {
 		return lst;
 	}
 	
+	/**
+	 * Remove Time part of a DateTime (Date)
+	 * @param datetime
+	 * @return the date part
+	 */
+	public static Date toDate( Date datetime) {
+		if( datetime==null)
+			return null;
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime( datetime);
+		cal.set(Calendar.HOUR_OF_DAY, cal.getActualMinimum(Calendar.HOUR_OF_DAY));
+		cal.set(Calendar.MINUTE, cal.getActualMinimum(Calendar.MINUTE));
+		cal.set(Calendar.SECOND, cal.getActualMinimum(Calendar.SECOND));
+		cal.set(Calendar.MILLISECOND, cal.getActualMinimum(Calendar.MILLISECOND));		
+		return cal.getTime();
+	}
+	
+	/**
+	 * Compute months between two Dates (Date)
+	 * @param dateOld
+	 * @param dateNew
+	 * @return the number months between Old and New
+	 */
+	public static int toMonths( Date dateOld, Date dateNew) {
+		if( dateOld==null)
+			return 0;
+		if( dateNew==null)
+			return 0;
+		Calendar start = new GregorianCalendar();
+		start.setTime( dateOld);
+		Calendar end = new GregorianCalendar();
+		end.setTime( dateNew);
+		return ( end.get(Calendar.YEAR) - start.get(Calendar.YEAR)) * 12 
+			   + end.get(Calendar.MONTH) - start.get(Calendar.MONTH);
+	}
 	
 	public static void createTestingData(RHModel model) {
 

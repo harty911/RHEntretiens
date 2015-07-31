@@ -10,6 +10,8 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -75,11 +77,19 @@ public class CollabView extends Composite {
 		col2.getColumn().setText("NOM Prénom");
 		col2.getColumn().setWidth(175);
 		col2.setLabelProvider(new CollabLabelProvider(1));
-		
-		tableViewer.setComparator( new CollabComparator());
 
+		// DoubleClic anywhere => unselect All
+		//  (not using addDoubleClickListener, because linked to a row and not anywhere) 
+		tableViewer.getControl().addMouseListener( new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				tableViewer.setSelection(null);
+			}
+		});
+			
+
+		tableViewer.setComparator( new CollabComparator());
 		viewerFilter = new TextFilter();
-		
 		tableViewer.setFilters( new ViewerFilter[] { viewerFilter });
 		tableViewer.setContentProvider( new CollabContentProvider());
 		tableViewer.setInput(RHToolApp.getModel());
@@ -136,7 +146,7 @@ public class CollabView extends Composite {
 		private String filter = null;
 		
 		void setFilterText( String txt) {
-			filter = txt;
+			filter = txt.toUpperCase();
 		}
 		
 		@Override
@@ -146,7 +156,7 @@ public class CollabView extends Composite {
 
 			if( elem instanceof Employee) {
 				Employee emp = (Employee)elem;	
-				if( emp.getNomUsuel().contains(filter) 
+				if( emp.getNomUsuel().toUpperCase().contains(filter) 
 				 || String.valueOf(emp.getMatricule()).contains(filter))
 					return true;
 			}

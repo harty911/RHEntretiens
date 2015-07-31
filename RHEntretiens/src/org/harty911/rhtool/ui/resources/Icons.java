@@ -19,6 +19,9 @@ public class Icons {
 	public static final String EDIT		= "edit_obj.gif";
 	public static final String DELETE	= "delete_obj.gif";
 	public static final String TRASH 	= "trash.gif";
+
+	public static final String COPY 	= "copy.gif";
+	public static final String PASTE 	= "paste.gif";
 	
 	private static ImageRegistry imgReg;
 

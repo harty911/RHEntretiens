@@ -94,6 +94,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 
 		txtMatricule = new Text(container, SWT.BORDER);
 		txtMatricule.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		txtMatricule.setToolTipText("Matricule à 6 chiffres");
 		
 		// DATE NAISSANCE
 		
@@ -136,7 +137,7 @@ public class EmployeeFormDialog extends TitleAreaDialog {
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( dtBirth, employee.getNaissance());
 		cmbCtrlContract.setValue( employee.getContrat());
-		ControlUtils.setControlDate( dtInput, employee.getAnciennete());
+		ControlUtils.setControlDate( dtInput, employee.getEntree());
 
 		// Field behavior
 		

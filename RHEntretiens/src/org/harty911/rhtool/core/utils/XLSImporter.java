@@ -89,7 +89,6 @@ public class XLSImporter <T extends RHModelObject> {
 		List<Field> fields = model.getDBFields( clazz);
 		colFields.clear();
 
-		boolean first = true;
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ ");
 		// for each column header, attach a Field
@@ -100,7 +99,7 @@ public class XLSImporter <T extends RHModelObject> {
 			String colTitle = cell.toString().trim();
 			for( Field each : fields) {
 				if( colFields.contains(each))
-					break;
+					continue;
 				if( each.getName().equalsIgnoreCase(colTitle)) {
 					field = each;
 					field.setAccessible(true);
@@ -109,18 +108,24 @@ public class XLSImporter <T extends RHModelObject> {
 			}
 
 			colFields.add(field);
-			
-			// Manage reporting
+		}
+		
+		// Manage reporting
+		boolean first = true;
+		for( Field field : fields) {
 			if( !first)
 				sb.append(", ");
 			first = false;
 			
-			sb.append( colTitle);
-			sb.append( " => ");
-			if( field!=null)
-				sb.append( field.getName());
-			else
+			sb.append( field.getName());
+			sb.append( ": ");
+
+			int col = colFields.indexOf(field);
+			
+			if( col==-1)
 				sb.append("?");
+			else
+				sb.append(col+1);			
 		}
 		
 		// report mapping to log

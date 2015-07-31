@@ -1,3 +1,4 @@
+
 package org.harty911.rhtool.core.model.objects;
 
 import java.security.MessageDigest;

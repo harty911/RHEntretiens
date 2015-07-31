@@ -29,6 +29,7 @@ import org.harty911.rhtool.ui.utils.ObjectViewerController;
 
 public class TalkPageEmployee extends WizardPage implements SelectionListener, ISelectionChangedListener, ModifyListener {
 	
+	private static final String DUREE_LABEL = "Soit une durée de %%";
 	private final Talk talk;
 	private Text txtInput;
 	private Text txtContract;
@@ -43,6 +44,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 	private Text txtAffect;
 	private String[] affectValues;
 	private String[] emploiValues;
+	private Label lblDuree;
 
 	public TalkPageEmployee( Talk talk) {
 		super("collab", "Informations collaborateur", null);
@@ -158,10 +160,18 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		
 		Label lblDtPoste = new Label(container, SWT.NONE);
 		lblDtPoste.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 2, 1));
-		lblDtPoste.setText("Dur\u00E9e dans le poste:");
+		lblDtPoste.setText("Ancienneté dans le poste:");
 		
 		dtPoste = new DateTime(container, SWT.BORDER | SWT.DROP_DOWN);
 		dtPoste.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
+		lblDuree = new Label(container, SWT.NONE);
+		lblDuree.setText(DUREE_LABEL);
+		lblDuree.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
+		lblDuree.setAlignment(SWT.RIGHT);
 		
 		// EMPLOI
 		
@@ -244,7 +254,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		txtMatricule.setText( String.valueOf(employee.getMatricule()));
 		ControlUtils.setControlDate( txtBirth, employee.getNaissance());
 		txtContract.setText( ControlUtils.printEnum(employee.getContrat()));
-		ControlUtils.setControlDate( txtInput, employee.getAnciennete());
+		ControlUtils.setControlDate( txtInput, employee.getEntree());
 		
 		// load Talk data
 		txtPCE.setText( String.valueOf( talk.getPCE()));
@@ -253,6 +263,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		txtEmploi.setText( talk.getEmploi());
 		txtAffect.setText( talk.getAffectation());
 		ControlUtils.setControlDate( dtPoste, talk.getDatePoste());
+		refresh();
 	}
 
 
@@ -302,9 +313,22 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 			errMsg = "PCP et PCE doivent être compris entre 1 et 20";
 		}
 		
+		refresh();
 
 		setErrorMessage(errMsg);
 		setPageComplete( errMsg==null);
 	}
+	
+	
+	public void refresh() {
+		String duree = ControlUtils.printDateDiff(talk.getDatePoste(), talk.getDate());
+		if( duree.isEmpty())
+			lblDuree.setText("");
+		else
+			lblDuree.setText(DUREE_LABEL.replace("%%", duree));
+	}
+
+
+
 
 }

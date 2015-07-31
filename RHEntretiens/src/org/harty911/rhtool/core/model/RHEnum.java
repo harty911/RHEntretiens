@@ -23,6 +23,4 @@ public abstract class RHEnum extends RHModelObject {
 	public String getText() {
 		return text;
 	}
-
-	
 }

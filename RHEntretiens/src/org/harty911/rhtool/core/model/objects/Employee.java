@@ -3,6 +3,7 @@ package org.harty911.rhtool.core.model.objects;
 import java.util.Date;
 
 import org.harty911.rhtool.core.model.RHModelObject;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -19,7 +20,7 @@ public class Employee extends RHModelObject {
     private String nom ="";
     @DatabaseField(dataType=DataType.DATE_STRING)
     private Date naissance = null;
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RHEContrat contrat = null;
     @DatabaseField(dataType=DataType.DATE_STRING)
     private Date anciennete = null;
@@ -58,20 +59,20 @@ public class Employee extends RHModelObject {
 		this.nom = nom;
 	}
 
-	public Date getAnciennete() {
+	public Date getEntree() {
 		return anciennete;
 	}
 
 	public void setAnciennete(Date date) {
-		this.anciennete = date;
+		this.anciennete =  RHModelUtils.toDate(date);
 	}
 
 	public Date getNaissance() {
 		return naissance;
 	}
 
-	public void setNaissance(Date naissance) {
-		this.naissance = naissance;
+	public void setNaissance(Date date) {
+		this.naissance =  RHModelUtils.toDate(date);
 	}
 
 	public RHEContrat getContrat() {

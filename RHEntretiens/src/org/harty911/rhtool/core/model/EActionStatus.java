@@ -15,7 +15,15 @@ public enum EActionStatus {
 	    case IN_PROGRESS: return"En cours";
 	    case DONE: 		return"Finalisé";
 	    case CANCELED: 	return"Annulé";
-      default: throw new IllegalArgumentException();
+	    default: throw new IllegalArgumentException();
 	    }
 	  }
+
+	public boolean isOpen() {
+		return( this==OPEN || this==IN_PROGRESS);
+	}
+
+	public boolean isNothing() {
+		return( this==NOTHING);
+	}
 }

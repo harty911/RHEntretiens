@@ -260,12 +260,16 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		talk.setInitiativeDetail( txtInit.getText());
 		
 		// Motif (1:obligatoire/2:facultatif)
-		RHEMotif m = cmbCtrlMotif1.getValue();
-		if( m==null)
+		RHEMotif m1 = cmbCtrlMotif1.getValue();
+		if( m1==null)
 			errMsg = "Le motif principal doit être renseigné";
 		else
-			talk.setMotif1( m);
-		talk.setMotif2( cmbCtrlMotif1.getValue());
+			talk.setMotif1( m1);
+		RHEMotif m2 = cmbCtrlMotif2.getValue();
+		if( m2!=null && m2!=m1)
+			talk.setMotif2( m2);
+		else
+			talk.setMotif2( null);
 		
 		setErrorMessage(errMsg);
 		setPageComplete( errMsg==null);

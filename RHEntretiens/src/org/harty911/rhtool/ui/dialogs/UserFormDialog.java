@@ -26,6 +26,8 @@ public class UserFormDialog extends TitleAreaDialog {
 	private final User user;
 	private Button btnAdmin;
 	
+	private boolean adminMode = false;
+	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
@@ -42,7 +44,7 @@ public class UserFormDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		
-		setTitle("Modification d'utilisateur : " + user.getLogin());
+		setTitle("Profil utilisateur : " + user.getLogin());
 		
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
@@ -60,12 +62,16 @@ public class UserFormDialog extends TitleAreaDialog {
 		GridData gd_txtLogin = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_txtLogin.minimumWidth = 100;
 		txtLogin.setLayoutData(gd_txtLogin);
+		if( !adminMode)
+			txtLogin.setEnabled(false);
 		
 		new Label(container, SWT.NONE);
 		
 		btnAdmin = new Button(container, SWT.CHECK);
 		btnAdmin.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		btnAdmin.setText("Administrateur");
+		if( !adminMode)
+			btnAdmin.setEnabled(false);
 		
 		Label lblMotDePasse = new Label(container, SWT.NONE);
 		lblMotDePasse.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -173,6 +179,10 @@ public class UserFormDialog extends TitleAreaDialog {
 		user.setNom( txtNom.getText());
 		
 		super.okPressed();
+	}
+
+	public void setAdminMode(boolean admin) {
+		adminMode  = admin;		
 	}
 
 

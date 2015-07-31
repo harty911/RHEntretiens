@@ -1,7 +1,5 @@
 package org.harty911.rhtool.ui.utils;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.RHModelObject;
@@ -19,8 +17,6 @@ public class UIModelUtils {
 			if( !rhobj.isDeleted())
 				return true;
 		}
-		MessageDialog.openWarning( Display.getCurrent().getActiveShell(), "", "La vue va être mise à jour.\nVeuillez réitérer l'action svp.");
-		RHToolApp.getWindow().updateFromModel();
 		return false;
 	}
 

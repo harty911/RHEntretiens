@@ -56,6 +56,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		// RESUME 
 		
 		txtDetail = new Text(container, SWT.BORDER | SWT.MULTI);
+		txtDetail.setToolTipText(MESSAGE_DETAIL_ENTRETIEN);
 		txtDetail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
 		txtDetail.setMessage(MESSAGE_DETAIL_ENTRETIEN);
 		
@@ -81,7 +82,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		Group grpAccomp = new Group(container, SWT.NONE);
 		grpAccomp.setLayout(new GridLayout(1, false));
 		grpAccomp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
-		grpAccomp.setText("Mesures d'acompagnement");
+		grpAccomp.setText("Mesures d'accompagnement");
 		
 		ComboViewer cmbAccomp = new ComboViewer(grpAccomp, SWT.READ_ONLY);
 		cmbAccomp.getCombo().setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
@@ -147,7 +148,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 			btnNextTalk.setSelection(false);
 			Calendar cal = Calendar.getInstance(); 
 			cal.setTime(today); 
-			cal.add(Calendar.DATE, 7);
+			cal.add(Calendar.DATE, 365);
 			ControlUtils.setControlDate(dtNext, cal.getTime());
 		}
 		else {

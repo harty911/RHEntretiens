@@ -201,6 +201,7 @@ public class ManageUsersDialog extends Dialog {
 		public void run() {
 			User user = new User();
 			UserFormDialog dlg = new UserFormDialog( getShell(), user);
+			dlg.setAdminMode(true);
 			if( dlg.open()==Window.OK) {
 				model.save(user);
 			}
@@ -227,6 +228,7 @@ public class ManageUsersDialog extends Dialog {
 			User user = (User)sel.getFirstElement();
 			model.refresh(user);
 			UserFormDialog dlg = new UserFormDialog( getShell(), user);
+			dlg.setAdminMode(true);
 			if( dlg.open()==Window.OK) {
 				model.save(user);
 				refresh();

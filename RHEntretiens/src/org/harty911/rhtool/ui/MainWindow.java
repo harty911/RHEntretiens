@@ -14,6 +14,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -32,6 +33,7 @@ import org.harty911.rhtool.core.model.objects.RHEInitiative;
 import org.harty911.rhtool.core.model.objects.RHEMotif;
 import org.harty911.rhtool.core.model.objects.RHETypeTalkDoc;
 import org.harty911.rhtool.ui.actions.AboutAction;
+import org.harty911.rhtool.ui.actions.EditProfileAction;
 import org.harty911.rhtool.ui.actions.EmployeeCreateAction;
 import org.harty911.rhtool.ui.actions.EmployeeDeleteAction;
 import org.harty911.rhtool.ui.actions.EmployeeEditAction;
@@ -47,6 +49,11 @@ import org.harty911.rhtool.ui.utils.ContextAction;
 
 public class MainWindow extends ApplicationWindow {
 	
+	private static final String PREF_RATIO_TOP = "MainWindow.ratioTop";
+	private static final String PREF_RATIO_LEFT = "MainWindow.ratioLeft";
+	private static final String PREF_HEIGHT = "MainWindow.height";
+	private static final String PREF_WIDTH = "MainWindow.width";
+
 	public final static Logger LOGGER = Logger.getLogger( MainWindow.class.getName());
 
 	private Action actionAbout;
@@ -61,6 +68,8 @@ public class MainWindow extends ApplicationWindow {
 	private ContextAction actionTalkEdit;
 	private ContextAction actionTalkDelete;
 	
+	private Action actionEditProfile;
+
 	private Action actionManageUser;
 	private Action actionManageContract;
 	private Action actionManageClassif;	
@@ -69,13 +78,22 @@ public class MainWindow extends ApplicationWindow {
 	private Action actionManageMotif;
 	private Action actionManageTypeTalkDoc;
 	
+	private SashForm mainSash;
+	private SashForm talkSash;
+
 	private TalkView talkView;
 	private CollabView collabView;
-	
-	
+	private TalkPreview talkPreview;
 	
 	public MainWindow() {
-		super(null);		
+		super(null);	
+		
+		PreferenceStore ps = RHToolApp.getPreferenceStore();
+		ps.setDefault(PREF_HEIGHT, 768);
+		ps.setDefault(PREF_WIDTH, 1024);
+		ps.setDefault(PREF_RATIO_LEFT, 25);
+		ps.setDefault(PREF_RATIO_TOP, 25);
+		
 		createActions(); 		
 		addToolBar( SWT.FLAT | SWT.WRAP); 		
 		addMenuBar(); 		
@@ -95,6 +113,7 @@ public class MainWindow extends ApplicationWindow {
 		actionImport = new ImportEmployeeAction();
 		actionAbout = new AboutAction();
 		actionManageUser = new ManageUsersAction();
+		actionEditProfile = new EditProfileAction();
 		
 		actionEmployeeCreate = new EmployeeCreateAction();
 		actionEmployeeDelete = new EmployeeDeleteAction();
@@ -119,7 +138,7 @@ public class MainWindow extends ApplicationWindow {
 		   
 		MenuManager fileMenu = new MenuManager("&Fichier");
 		mgr.add(fileMenu);
-		if(RHToolApp.getModel().getUserContext().isAdmin())
+		fileMenu.add(actionEditProfile);
 		fileMenu.add( actionQuit);
 		
 		MenuManager talkMenu = new MenuManager("&Entretiens");
@@ -166,7 +185,7 @@ public class MainWindow extends ApplicationWindow {
 
 	@Override
 	protected Control createContents(Composite parent) {
-		final SashForm mainSash = new SashForm(parent, SWT.HORIZONTAL);
+		mainSash = new SashForm(parent, SWT.HORIZONTAL);
 		
 		// Collaborateurs
 				
@@ -184,7 +203,7 @@ public class MainWindow extends ApplicationWindow {
 		final Group grpTalk = new Group(mainSash, SWT.NONE);
 		grpTalk.setText("Entretiens");
 		grpTalk.setLayout(new FillLayout(SWT.VERTICAL));
-		final SashForm talkSash = new SashForm(grpTalk, SWT.VERTICAL);
+		talkSash = new SashForm(grpTalk, SWT.VERTICAL);
 		
 		// liste des entretiens
 		
@@ -195,12 +214,13 @@ public class MainWindow extends ApplicationWindow {
 
 		// preview de l'entretien
 		
-		TalkPreview talkPreview = new TalkPreview( talkSash, SWT.BORDER);
+		talkPreview = new TalkPreview( talkSash, SWT.BORDER);
 		talkView.getViewer().addSelectionChangedListener( talkPreview);
 		
 		// TODO ENHANCE save restore window layout
-		talkSash.setWeights( new int[] { 30, 70 });
-		mainSash.setWeights( new int[] { 30, 70 });
+		PreferenceStore ps = RHToolApp.getPreferenceStore();
+		mainSash.setWeights( new int[] { ps.getInt(PREF_RATIO_LEFT), 100-ps.getInt(PREF_RATIO_LEFT) });
+		talkSash.setWeights( new int[] { ps.getInt(PREF_RATIO_TOP),  100-ps.getInt(PREF_RATIO_TOP) });
 		
 		return mainSash;
 	}
@@ -220,8 +240,25 @@ public class MainWindow extends ApplicationWindow {
 
 
 	@Override
+	public boolean close() {
+	    // Update Layout preferences
+		PreferenceStore ps = RHToolApp.getPreferenceStore();
+		ps.setValue(PREF_WIDTH, getShell().getSize().x);
+		ps.setValue(PREF_HEIGHT, getShell().getSize().y);
+		int[] ws = talkSash.getWeights(); 
+		ps.setValue(PREF_RATIO_TOP, ws[0]*100/(ws[0]+ws[1]));
+		ws = mainSash.getWeights();
+		ps.setValue(PREF_RATIO_LEFT, ws[0]*100/(ws[0]+ws[1]));
+		
+		// and close
+		return super.close();
+	}
+
+
+	@Override
 	protected Point getInitialSize() {
-		return new Point(800,600);
+		PreferenceStore ps = RHToolApp.getPreferenceStore();
+		return new Point( ps.getInt(PREF_WIDTH), ps.getInt(PREF_HEIGHT));
 	}
 
 
@@ -263,7 +300,6 @@ public class MainWindow extends ApplicationWindow {
 	            String msg = (userMsg==null) ? "Une erreur s'est produite (voir détail)" : userMsg;
 	            ErrorDialog.openError( Display.getDefault().getActiveShell(), "Rapport d'erreur", msg, ms);
 	        }
-
 	    });
 	}
 
@@ -272,5 +308,6 @@ public class MainWindow extends ApplicationWindow {
 		// TODO This method is BRUTE FORCE UPDATE, can be removed when Observer is managed
 		collabView.refresh();
 		talkView.refresh();
+		talkPreview.refresh();
 	}
 }

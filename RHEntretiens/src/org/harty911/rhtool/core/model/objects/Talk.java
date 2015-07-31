@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.harty911.rhtool.core.model.EActionStatus;
 import org.harty911.rhtool.core.model.RHModelObject;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DataType;
@@ -20,10 +21,10 @@ public class Talk extends RHModelObject {
 	@DatabaseField(foreign = true, foreignAutoRefresh=true, maxForeignAutoRefreshLevel=1)
 	private Employee employee = null;
     @DatabaseField
-    private int pce = 1;
+    private int pce = 0;
     @DatabaseField
-    private int pcp = 1;
-    @DatabaseField(foreign = true)
+    private int pcp = 0;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RHEClassif classif = null;
     @DatabaseField
     private String emploi = "";
@@ -44,14 +45,14 @@ public class Talk extends RHModelObject {
 	private RHECanal canal = null;
 	@DatabaseField
 	private int duration = 0;
-	@DatabaseField(foreign = true)
+	@DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RHEInitiative initiative = null;
 	@DatabaseField
 	private String initiative_detail = "";
 	
-	@DatabaseField(foreign = true)
+	@DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RHEMotif motif1 = null; // obligatoire - Motif principal
-	@DatabaseField(foreign = true)
+	@DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RHEMotif motif2 = null; // facultatif - Motif secondaire 	
 
 	@ForeignCollectionField(eager = false)
@@ -142,12 +143,12 @@ public class Talk extends RHModelObject {
 		return datePoste;
 	}
 
-	public void setDatePoste(Date datePoste) {
-		this.datePoste = datePoste;
+	public void setDatePoste(Date date) {
+		this.datePoste =  RHModelUtils.toDate(date);
 	}
 
-	public void setDate(Date dt) {
-		this.date = dt;		
+	public void setDate(Date date) {
+		this.date =  RHModelUtils.toDate(date);	
 	}
 
 	public Date getDate() {
@@ -227,7 +228,12 @@ public class Talk extends RHModelObject {
 	}
 
 	public void setMotif2(RHEMotif motif) {
-		this.motif2 = motif;
+		if( motif == motif1)
+			this.motif2 = null;
+		else
+			this.motif2 = motif;
+		if( motif1 == null)
+			setMotif1( motif);
 	}
 
 	public EActionStatus getActionStatus() {
@@ -251,7 +257,7 @@ public class Talk extends RHModelObject {
 	}
 
 	public void setNextDate(Date date) {
-		next_date = date;
+		next_date =  RHModelUtils.toDate(date);
 	}
 
 	public void setDetail( String text) {
@@ -263,7 +269,7 @@ public class Talk extends RHModelObject {
 	}
 
 	public void setActionDate(Date date) {
-		action_date = date;
+		action_date =  RHModelUtils.toDate(date);
 	}
 
 	public Date getActionDate() {

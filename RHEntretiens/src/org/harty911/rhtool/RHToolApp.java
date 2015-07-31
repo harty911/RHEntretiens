@@ -1,6 +1,7 @@
 package org.harty911.rhtool;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 import java.nio.file.CopyOption;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -32,10 +34,11 @@ public class RHToolApp {
 	
 	public static final String ID = "org.harty911.rhtool";
 	public static final String APP_NAME = "Gestion des entretiens RH";
-	public static final String APP_VERSION = "0.2";
+	public static final String APP_VERSION = "@@@0.2_b23@@@@@@@@@@@".replaceAll("@@@", "");
 	
 	final public static Logger LOGGER = Logger.getLogger(RHToolApp.class.getName());
 
+	final private static PreferenceStore prefStore = new PreferenceStore("preferences.properties");
 	
 	public static void main(String[] args) {
 
@@ -57,8 +60,11 @@ public class RHToolApp {
 		LOGGER.info("=========== Start Application ==========");
 		
 		Chrono chr = new Chrono();
-		
+
+		initPrefs();
+
 		try {
+
 			// Database root directory
 			Map<String,String> opts = parseOptions( args);
 			
@@ -110,7 +116,7 @@ public class RHToolApp {
 			{
 				// User logged : Start with main application dialog
 				mainWin = new MainWindow();
-				mainWin.run();		
+				mainWin.run();
 			}
 			
 			// delete uneeded files
@@ -119,10 +125,21 @@ public class RHToolApp {
 			if( rhModel!=null)
 				rhModel.close();
 
+			prefStore.save();
+			
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE,"Fatal Exception !",e);
 		}
 		LOGGER.info("=========== Quit Application ==========");
+	}
+
+
+	public static void initPrefs() {
+		try {
+			prefStore.load();
+		} catch (IOException e) {
+			
+		}
 	}
 
 
@@ -183,5 +200,9 @@ public class RHToolApp {
 
 	public static MainWindow getWindow() {
 		return mainWin;
+	}
+
+	public static PreferenceStore getPreferenceStore() {
+		return prefStore;
 	}
 }

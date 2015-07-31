@@ -1,6 +1,7 @@
 package org.harty911.rhtool.core.model;
 
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -15,6 +16,7 @@ import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.core.model.objects.TalkDoc;
 import org.harty911.rhtool.core.model.objects.User;
 import org.harty911.rhtool.core.utils.RHModelUtils;
+
 
 public class RHModel {
 	
@@ -143,7 +145,19 @@ public class RHModel {
 	}	
 
 	
-
+	/**
+	 * Check if RHEnum value exists
+	 * @param clazz
+	 * @return RHEnum value
+	 */
+	public <T extends RHEnum> boolean enumValueExists( Class<T> clazz, String text) {
+		for( RHEnum rhe : getEnumValues(clazz)) {
+			if( rhe.getText().equals(text)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Get a user by Login
 	 * @param login the user login
@@ -203,12 +217,12 @@ public class RHModel {
 			orders.put("date", false);
 			return db.getByQuery(Talk.class, fields, orders);
 		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE,"Unable to get LastTalk", e);
+			LOGGER.log(Level.SEVERE,"Unable to get Talk", e);
 			return null;
 		}
 	}
 
-	
+
 	public void setBatchMode(boolean batch) {
 		
 		try {
@@ -226,6 +240,43 @@ public class RHModel {
 	}
 
 
+	public RHDocument getDoc( URI uri) {
+			LOGGER.fine( "Get Document "+uri);
+			if( !uri.getScheme().equals(RHDocument.SCHEME)){
+				LOGGER.log(Level.SEVERE, "Bad URI (scheme should be rhdoc)");
+				return null;
+			}
+			
+			Class<?> cls = null;
+			try {
+				String pkg = User.class.getPackage().getName();
+				cls = Class.forName(pkg+"."+uri.getSchemeSpecificPart());
+			} catch (ClassNotFoundException e1) {}
+			if( cls==null || !RHDocument.class.isAssignableFrom(cls)) {
+				LOGGER.log(Level.SEVERE, "Type '" + uri.getSchemeSpecificPart() + "' is not a Document");
+				return null;
+			}
+			// was checked before...
+			@SuppressWarnings("unchecked")
+			Class<? extends RHDocument> doccls = (Class<? extends RHDocument>)cls;
+			
+		try {
+			Map<String, Object> fields = new LinkedHashMap<>();
+			fields.put("deleted", false);
+			fields.put("id", uri.getFragment());
+			List<? extends RHDocument> docs = db.getByField( doccls, fields);
+			if( docs==null || docs.isEmpty()){
+				LOGGER.log(Level.WARNING,"No document found for "+uri);
+				return null;
+			}
+			return docs.get(0);	
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE,"Unable to get Document", e);
+			return null;
+		}
+	}
+
+	
 	public void emptyTrashDoc() {
 		LOGGER.fine("Remove files for deleted docs");
 		try {
