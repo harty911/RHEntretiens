@@ -24,7 +24,8 @@
 		<buildnumber file="buildnumber.txt" />
 		<property name="fullversion"   value="${version}_b${build.number}" />
 		<echo message="Start build ${project} version ${fullversion} [${TODAY}]" />
-		<replaceregexp file="${versionSrc}" match="@@@.+?@@" replace="@@@${fullversion}@@@" />
+		<replaceregexp file="${versionSrc}" match="(APP_VERSION\s+=\s+)&quot;.+?&quot;" replace="\1&quot;${fullversion}&quot;" />
+		<!-- <replaceregexp file="${versionSrc}" match="@@@.+?@@@" replace="@@@${fullversion}@@@" /> -->
 		
 		<!-- (re)create a temp build directory -->
 		<delete failonerror="false" dir="build" />
@@ -66,13 +67,15 @@
 	<!--**********************************************************************************-->
 	<!--*** ZIP : zip the package (after APPJAR)                                       ***-->
 		
-	<target name="zip" description="Package Application" depends="appjars">
+	<target name="zip" description="Package Application" depends="multijar">
 		
-	    <!-- make the zip file -->
+	    <!-- make the zip file with JRE -->
+		<!--
 		<zip destfile="${zipdir}/${project}-${fullversion}_jre.zip">
 			<zipfileset dir="build/exp" prefix="${project}"/>
 			<zipfileset dir="jre" prefix="${project}/jre"/>
 	 	</zip>
+		-->
 	    <!-- make the small zip file -->
 		<zip destfile="${zipdir}/${project}-${fullversion}.zip">
 			<zipfileset dir="build/exp" prefix="${project}"/>
@@ -92,16 +95,16 @@
 
 		<target name="compil" depends="init" description="Compile sources">
 			
-			<javac debug="true" srcdir="../src" destdir="../bin">
+			<javac includeantruntime="false" debug="true" srcdir="../src" destdir="../bin">
 				<classpath refid="project.classpath"/>
 			</javac>
 			
 		</target>
 		
 	<!--**********************************************************************************-->
-	<!--*** APPJARS : create application jar file from eclipse bin dir                 ***-->
+	<!--*** MULTIJAR : create application jar + external jars 						   ***-->
 
-	<target name="appjars" description="Create Application jar and copy dependencies" depends="compil">
+	<target name="multijar" description="Create Application jar and copy dependencies" depends="compil">
 
 		<javac destdir="../bin" includeantruntime="false">
 			<src path="../src"/>
@@ -124,7 +127,31 @@
 		<copy todir="build/exp/lib">
 			<fileset refid="project.extjars" />
 		</copy>
+		
+	</target>
 
+	<!--**********************************************************************************-->
+	<!--*** SINGLEJAR : create one application jar                                     ***-->
+
+	<target name="singlejar" description="Create ONE Application jar including dependencies" depends="compil">
+
+		<javac destdir="../bin" includeantruntime="false">
+			<src path="../src"/>
+		    <classpath refid="project.classpath"/>
+		</javac>	
+		
+		<manifest file="build/MANIFEST.MF">
+	        <attribute name="Built-By" value="harty911"/>
+	        <attribute name="Implementation-Version" value="${version}_b${build.number}"/> 
+			<attribute name="Built-Date" value="${TODAY}"/>
+			<attribute name="Main-Class" value="${mainClass}"/>
+		</manifest>
+		
+		<jar destfile="build/exp/lib/${project}.jar" manifest="build/MANIFEST.MF">
+			<fileset dir="../bin" includes="**/*.*" />
+			<zipgroupfileset refid="project.extjars"/>
+		</jar>
+		
 	</target>
 
 </project>

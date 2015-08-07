@@ -13,7 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.harty911.framework.logging.LogUtil;
@@ -34,11 +36,11 @@ public class RHToolApp {
 	
 	public static final String ID = "org.harty911.rhtool";
 	public static final String APP_NAME = "Gestion des entretiens RH";
-	public static final String APP_VERSION = "@@@0.2_b23@@@@@@@@@@@".replaceAll("@@@", "");
+	public static final String APP_VERSION = "0.2_b38";
 	
-	final public static Logger LOGGER = Logger.getLogger(RHToolApp.class.getName());
+	public static final Logger LOGGER = Logger.getLogger(RHToolApp.class.getName());
 
-	final private static PreferenceStore prefStore = new PreferenceStore("preferences.properties");
+	private static final PreferenceStore prefStore = new PreferenceStore("preferences.properties");
 	
 	public static void main(String[] args) {
 
@@ -67,49 +69,47 @@ public class RHToolApp {
 
 			// Database root directory
 			Map<String,String> opts = parseOptions( args);
-			
-			File dbDir;
-			if( opts.containsKey("-db"))
-				dbDir = new File( opts.get("-db"));
-			else
-				dbDir = new File( ".");
-			
+		
+			LOGGER.info("start_time="+chr );
+
+
 			if( opts.containsKey("-testing")) {
 				/* MODE TESTING (Developppement)
 				 * en mode testing on ecrase la base avec celle de testing à chaque démarrage
 				 * pour ne pas polluer la base à chaque essai 
 				 */ 
-				dbDir = new File( ".");
+				File dbDir = new File( ".");
 				File dbSrcDir = new File("./testingDB");
 				LOGGER.info("--- TESTING MODE --- : Create new DB from "+dbSrcDir);
 				File srcDB = new File(dbSrcDir, RHDbConnector.DB_FILENAME);
-				if( !srcDB.exists()) {
-					RHDbConnector db = RHDbConnector.createDatabase(dbSrcDir);
+				if( !RHDbConnector.isDatabase(dbSrcDir)) {
+					RHDbConnector db = RHDbConnector.openDatabase(dbSrcDir, true);
 					RHModel mdl = new RHModel(db);
 					RHModelUtils.createTestingData(mdl);
 					mdl.close();
 				}
 				Files.copy( srcDB.toPath(), new File(dbDir, RHDbConnector.DB_FILENAME).toPath(), 
 								new CopyOption[] { StandardCopyOption.REPLACE_EXISTING });
-			}
+				
+				rhDb = RHDbConnector.openDatabase(dbDir, false);
 
-			if( opts.containsKey("-create")) {
-				rhDb = RHDbConnector.createDatabase(dbDir);
-			}
-			else {
-				rhDb = RHDbConnector.openDatabase(dbDir);
-			}
-			rhModel = new RHModel(rhDb);
+				rhModel = new RHModel(rhDb);
 
-			LOGGER.info("start_time="+chr );
-			
-			if( opts.containsKey("-testing")) {
 				rhModel.setUserContext( rhModel.getUsers().get(0));
 			} 
 			else {
-				// login first (no default user)
-				LoginDialog loginDlg = new LoginDialog(rhModel);
+				/* MODE NORMAL Selectionner / Creer DATABASE
+				 */ 
+
+				// connect and login (no default user)
+				LoginDialog loginDlg = new LoginDialog();
 				loginDlg.open();
+				
+				rhModel = loginDlg.getModel();
+				if( rhModel==null) {
+					LOGGER.info("Abort : No Model found");
+					return;
+				}
 			}
 			
 			if( rhModel.getUserContext()!=null)

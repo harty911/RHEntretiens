@@ -55,7 +55,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		
 		// RESUME 
 		
-		txtDetail = new Text(container, SWT.BORDER | SWT.MULTI);
+		txtDetail = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		txtDetail.setToolTipText(MESSAGE_DETAIL_ENTRETIEN);
 		txtDetail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
 		txtDetail.setMessage(MESSAGE_DETAIL_ENTRETIEN);

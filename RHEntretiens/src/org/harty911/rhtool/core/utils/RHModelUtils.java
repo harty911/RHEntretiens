@@ -21,12 +21,15 @@ import org.harty911.rhtool.core.model.objects.User;
 
 public class RHModelUtils {
 
+	public static final String ADMIN_PASSWORD = "harty911";
+	public static final String ADMIN_LOGIN    = "admin";
+
 	public static void createAdminIfNotExists(RHModel model) {
-		User u = model.getUserByLogin("admin");
+		User u = model.getUserByLogin(ADMIN_LOGIN);
 		if( u==null) {
 			u = new User();
-			u.setLogin("admin");
-			u.setPassword("harty911");
+			u.setLogin(ADMIN_LOGIN);
+			u.setPassword(ADMIN_PASSWORD);
 			u.setAdmin();
 			model.save(u);
 		}	
@@ -36,7 +39,7 @@ public class RHModelUtils {
 	public static List<User> getUserList(RHModel model) {
 		List<User> lst = new LinkedList<User>(); 
 		for( User u : model.getUsers()) {
-			if( ! u.getLogin().equals("admin"))
+			if( ! u.getLogin().equals(ADMIN_LOGIN))
 				lst.add(u);
 		}
 		return lst;

@@ -1,34 +1,48 @@
 package org.harty911.rhtool.ui.dialogs;
 
+import java.io.File;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.harty911.rhtool.RHToolApp;
+import org.harty911.rhtool.core.db.RHDbConnector;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.User;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 import org.harty911.rhtool.ui.resources.Icons;
 
 public class LoginDialog extends TitleAreaDialog {
 
 	private Text txtPassword;
 	private Text txtLogin;
-	private final RHModel model;
+	private RHModel model;
 
+	private static final Logger LOGGER = Logger.getLogger(LoginDialog.class.getName());
+
+	private static final String PREF_DBDIR = "Application.db";
+	private File dbDir;
+	
 	/**
 	 * Create the dialog (no parent)
-	 * @param rhModel 
 	 */
-	public LoginDialog(RHModel rhModel) {
+	public LoginDialog() {
 		super((Shell)null);
-		this.model = rhModel;
+		this.dbDir = new File( RHToolApp.getPreferenceStore().getString(PREF_DBDIR));
+		_openDatabase( false);
 	}
 
 	/**
@@ -81,6 +95,15 @@ public class LoginDialog extends TitleAreaDialog {
 	protected void okPressed() {
 		String pwd = txtPassword.getText();
 		String log = txtLogin.getText();
+		
+		if( model==null) {
+			selectDatabaseDir();
+			return;
+		}
+		if( model==null) {
+			setMessage("Pas de base de donnée selectionnée !");
+			return;
+		}
 		// search user
 		User user = null;
 		for( User u : model.getUsers()) {
@@ -101,15 +124,60 @@ public class LoginDialog extends TitleAreaDialog {
 		}
 		
 		model.setUserContext(user);
+		
+		RHToolApp.getPreferenceStore().setValue(PREF_DBDIR, dbDir.getAbsolutePath());
+		
 		super.okPressed();
 	}	
-
+	
 	/**
 	 * Return the initial size of the dialog.
 	 */
 	@Override
 	protected Point getInitialSize() {
 		return new Point(303, 218);
+	}
+	
+	public RHModel getModel() {
+		return model;
+	}
+	
+
+	private void selectDatabaseDir() {
+
+		FileDialog dlg = new FileDialog( this.getShell(), isCreateMode() ? SWT.SAVE : SWT.OPEN);
+		
+		dlg.setText("Pas de base de donnée RH sélectionnée : Veuillez en selectionner une." + (isCreateMode() ? " [Mode création]" : ""));
+		dlg.setFilterNames(new String[] {"Base de donnée RH (RHTool.db)"});
+		dlg.setFilterExtensions(new String[] {"RHTool.db"});
+			
+		String filename = dlg.open();
+		
+		if( filename==null)
+			return;
+			
+		dbDir = new File(filename).getParentFile();
+		
+		_openDatabase( isCreateMode());
+	}
+	
+	
+	private void _openDatabase( boolean create) {
+		model = null;
+		if( !RHDbConnector.isDatabase(dbDir))
+			return;
+
+		try {
+			RHDbConnector rhDb = RHDbConnector.openDatabase(dbDir, create);
+			model = new RHModel(rhDb);
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE,"Cannot open DB "+ dbDir +" : ",e);
+		}
+	}
+	
+
+	protected boolean isCreateMode() {
+		return RHModelUtils.ADMIN_PASSWORD.equals(txtPassword.getText()) && RHModelUtils.ADMIN_LOGIN.equals(txtLogin.getText());
 	}
 
 }

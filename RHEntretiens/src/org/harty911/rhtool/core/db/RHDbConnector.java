@@ -54,29 +54,30 @@ public class RHDbConnector {
 	private final static Logger LOGGER = Logger.getLogger( RHDbConnector.class.getName());
 	
 	
-	public static RHDbConnector createDatabase( File dbDir) throws SQLException {
+	public static RHDbConnector openDatabase( File dbDir, boolean createIfNotExists) throws SQLException {
 		File dbFile = new File( dbDir, DB_FILENAME);
-		if( dbFile.exists())
-			throw new SQLException("Database file already exists: " + dbFile);
-		
-		RHDbConnector db = new RHDbConnector( dbFile);
-		db._createDB();
-		db._upgradeDB();
-		return db;
-	}
-	
-	
-	public static RHDbConnector openDatabase( File dbDir) throws SQLException {
-		File dbFile = new File( dbDir, DB_FILENAME);
-		if( !dbFile.exists())
-			throw new SQLException("Database file not found: " + dbFile);
+		boolean create = false;
+		if( !dbFile.exists()) {
+			if( ! createIfNotExists)
+				throw new SQLException("Database file not found: " + dbFile);
+			create = true;
+		}
 
 		RHDbConnector db = new RHDbConnector( dbFile);
+		if( create) 
+			db._createDB();
 		db._upgradeDB();
 		return db;
 	}
 
 	
+	public static boolean isDatabase( File dbDir) {
+		if( dbDir==null)
+			return false;
+		File dbFile = new File( dbDir, DB_FILENAME);
+		return dbFile.exists();
+	}
+
 	private RHDbConnector( File dbFile) throws SQLException {
 		try {
 			Class.forName( "org.sqlite.JDBC");
