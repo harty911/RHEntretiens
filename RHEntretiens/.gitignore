@@ -1,12 +1,5 @@
 /bin
-/RHtool_0.log
-/RHtool_0.log.1
-/RHtool_1.log
-/RHtool_1.log.1
-/RHtool_2.log
-/RHtool_2.log.1
-/RHtool_3.log
-/RHtool_3.log.1
-/RHtool_4.log
-/RHtool_4.log.1
-/lib/
+/DBDocs/
+/dist/build
+/RHtool_*.log*
+/preferences.properties
