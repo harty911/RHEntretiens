@@ -75,6 +75,10 @@ ul {
 	color: gray;
 	background-color: lightgray;
 }
+.nodate{
+	color: gray;
+	background-color: lightgray;	
+}
 
 hr {
 	width: 100%;
@@ -129,6 +133,15 @@ td {
 		<td style="width: 120px;">$DATE</td>
 	</tr>
 	<tr>
+		<th>Prochain entretien:</th>
+		<td style="width: 120px;">
+##HAS_NEXTDATE{ 
+$NEXTDATE 
+##} 
+##HASNT_NEXTDATE{ 
+<span class='nodate'>non planifié<span>
+##}
+		</td>
 	</tr>
 </tbody></table>
 <hr>
@@ -140,7 +153,7 @@ $RESUME
 <h5>Actions à mener:</h5>
 <p class='textbox actionbox $ACTION_CLASS'>
 ##HAS_ACTION{
-	<b>$ACTION&nbsp&nbsp-&nbsp&nbspEchéance: $ACTION_DATE )</b><br><br>
+	<b>$ACTION&nbsp&nbsp-&nbsp&nbsp(Echéance: $ACTION_DATE )</b><br><br>
 	$ACTION_TEXT
 ##}
 ##HASNT_ACTION{
@@ -171,9 +184,6 @@ $RESUME
 <hr>
 ##}
 <small>©&nbsp;2014&nbsp;Crédit Agricole de Lorraine&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:window.print();">Imprimer</a></small>
-
-
-
 
 
 
