@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.harty911.rhtool.RHToolApp;
+import org.harty911.rhtool.AppInfos;
 import org.harty911.rhtool.ui.resources.Icons;
 
 public class AboutDialog extends TitleAreaDialog {
@@ -30,8 +30,8 @@ public class AboutDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		setTitleImage( Icons.getImage( Icons.LOGO_CAL));
-		setTitle(RHToolApp.APP_NAME);
-		setMessage("Version " + RHToolApp.APP_VERSION);
+		setTitle(AppInfos.APP_NAME);
+		setMessage("Version " + AppInfos.APP_VERSION);
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
 		container.setLayout(new GridLayout(1, false));

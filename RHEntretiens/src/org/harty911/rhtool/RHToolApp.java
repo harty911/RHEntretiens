@@ -13,9 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.preference.PreferenceStore;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.harty911.framework.logging.LogUtil;
@@ -28,15 +26,9 @@ import org.harty911.rhtool.ui.dialogs.LoginDialog;
 
 public class RHToolApp {
 	
-	public static final boolean TESTING = false;
-	
 	private static RHDbConnector rhDb = null; 
 	private static RHModel rhModel = null;
 	private static MainWindow mainWin = null;
-	
-	public static final String ID = "org.harty911.rhtool";
-	public static final String APP_NAME = "Gestion des entretiens RH";
-	public static final String APP_VERSION = "0.2_b38";
 	
 	public static final Logger LOGGER = Logger.getLogger(RHToolApp.class.getName());
 
@@ -52,8 +44,8 @@ public class RHToolApp {
 		if( !lockInstance()) {
 			Display disp = new Display();
 			MessageBox msg = new MessageBox(new Shell());
-			msg.setText(APP_NAME);
-			msg.setMessage( "L'application '"+APP_NAME+"' est déjà lancée sur cette machine !");
+			msg.setText(AppInfos.APP_NAME);
+			msg.setMessage( "L'application '"+AppInfos.APP_NAME+"' est déjà lancée sur cette machine !");
 			msg.open();
 			disp.dispose();
 			return;

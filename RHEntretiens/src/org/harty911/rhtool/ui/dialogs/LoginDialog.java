@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.harty911.rhtool.AppInfos;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.db.RHDbConnector;
 import org.harty911.rhtool.core.model.RHModel;
@@ -53,7 +54,7 @@ public class LoginDialog extends TitleAreaDialog {
 	protected Control createDialogArea(Composite parent) {
 		setTitleImage( Icons.getImage( Icons.LOGO_CAL));
 		setMessage("Connection");
-		setTitle(RHToolApp.APP_NAME);
+		setTitle(AppInfos.APP_NAME);
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));

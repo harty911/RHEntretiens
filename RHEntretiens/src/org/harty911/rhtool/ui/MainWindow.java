@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
+import org.harty911.rhtool.AppInfos;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.objects.RHECanal;
 import org.harty911.rhtool.core.model.objects.RHEClassif;
@@ -229,7 +230,7 @@ public class MainWindow extends ApplicationWindow {
 
 	@Override
 	protected void configureShell(Shell shell) {
-		String title = RHToolApp.APP_NAME;
+		String title = AppInfos.APP_NAME;
 		if(RHToolApp.getModel().getUserContext().isAdmin())
 			title = title + " (admin)";
 		shell.setText(title);
@@ -289,9 +290,9 @@ public class MainWindow extends ApplicationWindow {
 	    // Convert to multi-statuses
 	    Status[] statuses = new Status[lines.length];
 	    for( int i=0; i<lines.length; i++) {
-	        statuses[i] = new Status( IStatus.ERROR,  RHToolApp.ID, lines[i]);
+	        statuses[i] = new Status( IStatus.ERROR,  AppInfos.ID, lines[i]);
 	    }
-	    final MultiStatus ms = new MultiStatus( RHToolApp.ID, IStatus.ERROR,
+	    final MultiStatus ms = new MultiStatus( AppInfos.ID, IStatus.ERROR,
 	            statuses, t.getClass().getSimpleName() + " : " + t.getLocalizedMessage(), t);
 
 		Display.getDefault().syncExec(new Runnable() {
