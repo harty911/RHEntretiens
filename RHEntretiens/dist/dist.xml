@@ -8,7 +8,7 @@
 	<!-- Distribution param file -->
 	<property file="dist.properties" />
 		
-	<target name="all" depends="zip" description="Build All">
+	<target name="all" depends="zip, latest, clean" description="Build All">
 		<echo message="Generation completed." />
 	</target>
 
@@ -71,15 +71,30 @@
 		
 	    <!-- make the zip file with JRE -->
 		<!--
-		<zip destfile="${zipdir}/${project}-${fullversion}_jre.zip">
+		<zip destfile="${expdir}/${project}-${fullversion}_jre.zip">
 			<zipfileset dir="build/exp" prefix="${project}"/>
 			<zipfileset dir="jre" prefix="${project}/jre"/>
 	 	</zip>
 		-->
 	    <!-- make the small zip file -->
-		<zip destfile="${zipdir}/${project}-${fullversion}.zip">
+		<zip destfile="${expdir}/${project}-${fullversion}.zip">
 			<zipfileset dir="build/exp" prefix="${project}"/>
 	 	</zip>
+		
+	</target>
+
+	<!--**********************************************************************************-->
+	<!--*** LATEST : copy to latest directory (after APPJAR)                           ***-->
+		
+	<target name="latest" description="Copy last application content" depends="multijar">
+		
+		<delete failonerror="false" dir="${expdir}/latest" />
+		<mkdir dir="${expdir}/latest" />
+		<copy todir="${expdir}/latest">
+			<fileset dir="build/exp">
+				<include name="**"/>
+			</fileset>
+		</copy>
 		
 	</target>
 
