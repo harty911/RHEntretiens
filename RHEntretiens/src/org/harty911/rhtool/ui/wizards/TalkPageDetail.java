@@ -74,7 +74,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		dtAction = new DateTime(grpAction, SWT.BORDER | SWT.DROP_DOWN);
 		dtAction.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
-		txtAction = new Text(grpAction, SWT.BORDER | SWT.MULTI);
+		txtAction = new Text(grpAction, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		txtAction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		// MESURE D'ACCOMPAGNEMENT
@@ -88,7 +88,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		cmbAccomp.getCombo().setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		cmbCtrlAccomp = new ObjectViewerController<EActionStatus>( cmbAccomp, EActionStatus.values());
 		
-		txtAccomp = new Text(grpAccomp, SWT.BORDER | SWT.MULTI);
+		txtAccomp = new Text(grpAccomp, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		txtAccomp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		// PROCHAIN ENTRETIEN
