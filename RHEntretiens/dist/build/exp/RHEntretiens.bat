@@ -1,1 +1,0 @@
-start /b jre\bin\javaw.exe -jar .\lib\RHEntretiens.jar
