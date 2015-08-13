@@ -1,17 +1,16 @@
 package org.harty911.rhtool.ui.dialogs;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
@@ -20,6 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.harty911.rhtool.AppInfos;
 import org.harty911.rhtool.RHToolApp;
+import org.harty911.rhtool.core.db.DbVersionException;
 import org.harty911.rhtool.core.db.RHDbConnector;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.User;
@@ -171,7 +171,15 @@ public class LoginDialog extends TitleAreaDialog {
 		try {
 			RHDbConnector rhDb = RHDbConnector.openDatabase(dbDir, create);
 			model = new RHModel(rhDb);
-		} catch (Exception e) {
+		}
+		catch ( DbVersionException e) {
+			Shell parent = getShell();
+			if( parent==null) 
+				parent = new Shell();
+			MessageDialog.openError( parent, "Version d'application obsolète", "L'application doit être mise à jour, veuillez contacter l'administrateur");
+			throw new RuntimeException("Exit : Obsolete application version", e);
+		}
+		catch ( Exception e) {
 			LOGGER.log(Level.SEVERE,"Cannot open DB "+ dbDir +" : ",e);
 		}
 	}

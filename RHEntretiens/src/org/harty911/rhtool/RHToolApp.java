@@ -99,9 +99,10 @@ public class RHToolApp {
 				
 				rhModel = loginDlg.getModel();
 				if( rhModel==null) {
-					LOGGER.info("Abort : No Model found");
+					LOGGER.info("Exit : No Model found");
 					return;
 				}
+				
 			}
 			
 			if( rhModel.getUserContext()!=null)

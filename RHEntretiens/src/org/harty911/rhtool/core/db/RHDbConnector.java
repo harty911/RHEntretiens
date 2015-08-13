@@ -256,8 +256,7 @@ public class RHDbConnector {
 		}
 		LOGGER.info( "SchemaVersion="+dbVersion);
 		if( dbVersion > DB_SCHEMA_VERSION) { 
-			String msg = "Incompatible application level: "+DB_SCHEMA_VERSION +", need to be upgraded";
-			throw new SQLException(msg);
+			throw new DbVersionException( DB_SCHEMA_VERSION, dbVersion);
 		}
 		
 		if( dbVersion < 2) {
