@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.User;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 import org.harty911.rhtool.ui.resources.Icons;
 import org.harty911.rhtool.ui.utils.BigToolBarManager;
 import org.harty911.rhtool.ui.utils.ContextAction;
@@ -220,7 +221,7 @@ public class ManageUsersDialog extends Dialog {
 		@Override
 		protected boolean isValidSelection(IStructuredSelection sel) {
 			User user = (User)sel.getFirstElement();
-			return ( user!=null);
+			return ( user!=null && RHModelUtils.getDefaultAdmin(RHToolApp.getModel()).getId() != user.getId());
 		}
 
 		@Override

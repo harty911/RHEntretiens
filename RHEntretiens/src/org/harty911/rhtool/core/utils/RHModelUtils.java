@@ -25,6 +25,10 @@ public class RHModelUtils {
 	public static final String ADMIN_LOGIN    = "admin";
 
 	public static void createAdminIfNotExists(RHModel model) {
+		getDefaultAdmin(model);
+	}
+	
+	public static User getDefaultAdmin(RHModel model) {
 		User u = model.getUserByLogin(ADMIN_LOGIN);
 		if( u==null) {
 			u = new User();
@@ -32,9 +36,13 @@ public class RHModelUtils {
 			u.setPassword(ADMIN_PASSWORD);
 			u.setAdmin();
 			model.save(u);
-		}	
+		}
+		return u;
 	}
-	
+
+	public static boolean isDefaultAdminContext(RHModel model) {
+		return getDefaultAdmin(model).getId() == model.getUserContext().getId();
+	}
 
 	public static List<User> getUserList(RHModel model) {
 		List<User> lst = new LinkedList<User>(); 
@@ -189,5 +197,4 @@ public class RHModelUtils {
 		
 		model.setBatchMode(false);
 	}
-
 }

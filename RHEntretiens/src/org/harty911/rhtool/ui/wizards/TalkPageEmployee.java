@@ -24,6 +24,7 @@ import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.RHEClassif;
 import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 import org.harty911.rhtool.ui.utils.ControlUtils;
 import org.harty911.rhtool.ui.utils.ObjectViewerController;
 
@@ -316,7 +317,7 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		refresh();
 
 		setErrorMessage(errMsg);
-		setPageComplete( errMsg==null);
+		setPageComplete( errMsg==null || RHModelUtils.isDefaultAdminContext(RHToolApp.getModel()));
 	}
 	
 	

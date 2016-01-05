@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.User;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 import org.harty911.rhtool.ui.dialogs.UserFormDialog;
 import org.harty911.rhtool.ui.resources.Icons;
 import org.harty911.rhtool.ui.utils.UIModelUtils;
@@ -27,6 +28,11 @@ public class EditProfileAction extends Action {
 
 		if( !UIModelUtils.refreshAndCheck(user)) {
 			MessageDialog.openError(shell, "Profil utilisateur", "Votre profil a été désactivé, seul l'administrateur peut le modifier !");
+			return;
+		}
+		
+		if( RHModelUtils.isDefaultAdminContext(RHToolApp.getModel())) {
+			MessageDialog.openError(shell, "Profil utilisateur", "Impossible de modifier l'administrateur par défaut");
 			return;
 		}
 		

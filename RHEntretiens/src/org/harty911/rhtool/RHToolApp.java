@@ -87,7 +87,10 @@ public class RHToolApp {
 
 				rhModel = new RHModel(rhDb);
 
-				rhModel.setUserContext( rhModel.getUsers().get(0));
+				if( rhModel.getUsers().size()>1)
+					rhModel.setUserContext( rhModel.getUsers().get(1));
+				else
+					rhModel.setUserContext( rhModel.getUsers().get(0));
 			} 
 			else {
 				/* MODE NORMAL Selectionner / Creer DATABASE
@@ -105,8 +108,7 @@ public class RHToolApp {
 				
 			}
 			
-			if( rhModel.getUserContext()!=null)
-			{
+			if( rhModel.getUserContext()!=null)	{
 				// User logged : Start with main application dialog
 				mainWin = new MainWindow();
 				mainWin.run();

@@ -272,7 +272,7 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 			talk.setMotif2( null);
 		
 		setErrorMessage(errMsg);
-		setPageComplete( errMsg==null);
+		setPageComplete( errMsg==null || RHModelUtils.isDefaultAdminContext(RHToolApp.getModel()));
 	}
 
 	@Override

@@ -19,8 +19,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
+import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.EActionStatus;
 import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.core.utils.RHModelUtils;
 import org.harty911.rhtool.ui.utils.ControlUtils;
 import org.harty911.rhtool.ui.utils.ObjectViewerController;
 
@@ -159,7 +161,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 	
 	public void toModel() {		
 		String errMsg = null;
-		Date today = new Date();
+		Date orig = talk.getDate();
 		
 		// Resumé
 		String txt = txtDetail.getText();
@@ -178,7 +180,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 			dtAction.setEnabled(true);
 			txtAction.setEnabled(true);
 			Date dt = ControlUtils.getControlDate( dtAction);
-			if( today.after(dt))
+			if( orig.after(dt))
 				errMsg = "La date d'echeance action ne peut pas être dans le passé.";
 		}
 		talk.setActionDate( ControlUtils.getControlDate( dtAction));
@@ -196,7 +198,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		// Date Next
 		if(	btnNextTalk.getSelection()) {
 			Date dt = ControlUtils.getControlDate( dtNext);
-			if( today.after(dt))
+			if( orig.after(dt))
 				errMsg = "La date du prochain entretien ne peut pas être dans le passé.";
 			talk.setNextDate( dt);
 			dtNext.setEnabled(true);
@@ -207,7 +209,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		}
 
 		setErrorMessage( errMsg);
-		setPageComplete( errMsg==null);
+		setPageComplete( errMsg==null || RHModelUtils.isDefaultAdminContext(RHToolApp.getModel()));
 	}
 
 	@Override
