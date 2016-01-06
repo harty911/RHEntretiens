@@ -2,6 +2,7 @@ package org.harty911.rhtool.ui;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -12,9 +13,12 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -29,6 +33,8 @@ public class CollabView extends Composite {
 	private Text filterText;
 	private TextFilter viewerFilter;
 
+	private Object[] lastFiltereds = new Object[]{};
+
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -38,7 +44,7 @@ public class CollabView extends Composite {
 		super(parent, style);
 		
 		//setText("Collaborateurs");
-		setLayout(new GridLayout(2, false));
+		setLayout(new GridLayout(3, false));
 		
 		createContents();
 	}
@@ -57,12 +63,22 @@ public class CollabView extends Composite {
 			public void modifyText(ModifyEvent e) {
 				viewerFilter.setFilterText(filterText.getText());
 				tableViewer.refresh();
+				selectAll();
 			}
 		});
 		
-		tableViewer = new TableViewer(this, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.VIRTUAL);
+		Button butAll = new Button(this, SWT.NONE);
+		butAll.setText("Tous");
+		butAll.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				filterText.setText(""); // will fire FilterModify
+			}			
+		});
+		
+		tableViewer = new TableViewer(this, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.VIRTUAL | SWT.MULTI );
 		Table table = tableViewer.getTable();
-		GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
+		GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 		gd_table.widthHint = 259;
 		table.setLayoutData(gd_table);
 		tableViewer.getTable().setHeaderVisible(true);
@@ -83,7 +99,7 @@ public class CollabView extends Composite {
 		tableViewer.getControl().addMouseListener( new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				tableViewer.setSelection(null);
+				selectAll();
 			}
 		});
 			
@@ -95,6 +111,11 @@ public class CollabView extends Composite {
 		tableViewer.setInput(RHToolApp.getModel());
 	}
 
+	private void selectAll() {
+		tableViewer.getTable().selectAll();
+		tableViewer.setSelection( new StructuredSelection(lastFiltereds));		
+	}
+	
 	/** Employee from RHModel content provider */
 	public class CollabContentProvider implements IStructuredContentProvider {
 
@@ -161,6 +182,13 @@ public class CollabView extends Composite {
 					return true;
 			}
 			return false;
+		}
+
+		@Override
+		public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
+			lastFiltereds = super.filter(viewer, parent, elements);
+			selectAll();
+			return lastFiltereds;
 		}
 
 	}

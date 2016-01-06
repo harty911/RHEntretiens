@@ -42,7 +42,7 @@ public class RHDbConnector {
 	
 	public static final String DB_FILENAME = "RHTool.db";
 
-	public final static int DB_SCHEMA_VERSION = 2;
+	public final static int DB_SCHEMA_VERSION = 3;
 	
 	private static final String SCHEMA_VERSION = "SCHEMA_VERSION";
 	
@@ -254,7 +254,7 @@ public class RHDbConnector {
 		} catch( NumberFormatException e) {
 			// default value = 0
 		}
-		LOGGER.info( "SchemaVersion="+dbVersion);
+		LOGGER.info( "current DB version="+dbVersion);
 		if( dbVersion > DB_SCHEMA_VERSION) { 
 			throw new DbVersionException( DB_SCHEMA_VERSION, dbVersion);
 		}
@@ -271,13 +271,13 @@ public class RHDbConnector {
 			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN accomp_status INTEGER;");
 			dao.executeRaw("ALTER TABLE `t_entretien` ADD COLUMN accomp_detail VARCHAR DEFAULT '';");
 		} 
-/*
+
 		if( dbVersion < 3) {
 			LOGGER.info("Upgrade to DB schema version 3");
 			Dao<Employee,?> dao = DaoManager.createDao(connectionSource, Employee.class);
-			dao.executeRaw("ALTER TABLE `t_employee` ADD COLUMN weight INTEGER;");
+			dao.executeRaw("ALTER TABLE `t_collaborateur` ADD COLUMN replace INTEGER DEFAULT -1;");
 		}
-*/		
+		
 		
 		setProperty(SCHEMA_VERSION, String.valueOf(DB_SCHEMA_VERSION));
 	}

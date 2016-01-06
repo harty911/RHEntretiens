@@ -1,5 +1,8 @@
 package org.harty911.rhtool.ui;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -144,22 +147,22 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 	
 	public class TalkFilter extends ViewerFilter {
 		
-		private Employee employee = null;
+		private Collection<Employee> employees = null;
 
 		@Override
 		public boolean select( Viewer viewer, Object parentElem, Object elem) {
-			if( employee==null || employee.isDeleted())
-				return true;
-
+			if( employees==null || employees.isEmpty())
+				return false;
+			
 			if( elem instanceof Talk) {
-				Talk talk = (Talk)elem;	
-				return employee.equals( talk.getEmployee());
+				Talk talk = (Talk)elem;
+				return( !talk.getEmployee().isDeleted() && employees.contains( talk.getEmployee()));
 			}
 			return false;
 		}
 
-		public void setEmployee( Employee employee) {
-			this.employee= employee;
+		public void setEmployees( Collection<Employee> employees) {
+			this.employees = employees;
 			refresh();
 		}
 	}
@@ -189,16 +192,17 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 	/**
 	 * Manage Talk Filter when Employee is selected selection
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection sel = (IStructuredSelection)event.getSelection();
 		if( sel.getFirstElement() instanceof Employee) {
 			// Employee Filter
-			viewerFilter.setEmployee( (Employee)sel.getFirstElement());
+			viewerFilter.setEmployees( (List<Employee>)sel.toList());
 		}
 		else {
-			// no Filter
-			viewerFilter.setEmployee( null);
+			// no Filter (all displayed collabs or null)
+			viewerFilter.setEmployees( null);
 		}
 	}
 }

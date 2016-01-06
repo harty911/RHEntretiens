@@ -19,7 +19,7 @@ public class TalkDeleteAction extends ContextAction {
 
 	@Override
 	protected boolean isValidSelection(IStructuredSelection sel) {
-		return (sel.getFirstElement() instanceof Talk);
+		return (sel.size()==1 && sel.getFirstElement() instanceof Talk);
 	}
 
 	@Override

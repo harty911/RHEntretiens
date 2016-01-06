@@ -19,7 +19,7 @@ public class EmployeeDeleteAction extends ContextAction {
 
 	@Override
 	protected boolean isValidSelection(IStructuredSelection sel) {
-		return (sel.getFirstElement() instanceof Employee);
+		return (sel.size()==1 && sel.getFirstElement() instanceof Employee);
 	}
 
 	@Override
