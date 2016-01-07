@@ -59,7 +59,9 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		
 		txtDetail = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		txtDetail.setToolTipText(MESSAGE_DETAIL_ENTRETIEN);
-		txtDetail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3);
+		gd.widthHint = 400;
+		txtDetail.setLayoutData(gd);
 		txtDetail.setMessage(MESSAGE_DETAIL_ENTRETIEN);
 		
 		// ACTION A MENER
@@ -67,7 +69,9 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		Group grpAction = new Group(container, SWT.NONE);
 		grpAction.setText("Actions \u00E0 mener");
 		grpAction.setLayout(new GridLayout(2, false));
-		grpAction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd.widthHint = 150;
+		grpAction.setLayoutData(gd);
 		
 		ComboViewer cmbAction = new ComboViewer(grpAction, SWT.READ_ONLY);
 		cmbAction.getCombo().setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
@@ -83,8 +87,10 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		
 		Group grpAccomp = new Group(container, SWT.NONE);
 		grpAccomp.setLayout(new GridLayout(1, false));
-		grpAccomp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
 		grpAccomp.setText("Mesures d'accompagnement");
+		gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd.widthHint = 150;
+		grpAccomp.setLayoutData(gd);
 		
 		ComboViewer cmbAccomp = new ComboViewer(grpAccomp, SWT.READ_ONLY);
 		cmbAccomp.getCombo().setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
@@ -97,6 +103,7 @@ public class TalkPageDetail extends WizardPage implements ModifyListener, Select
 		
 		Composite composite = new Composite(container, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
+//		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, , false, 1, 1));
 		
 		btnNextTalk = new Button(composite, SWT.CHECK);
 		btnNextTalk.setText("Date du prochain entretien:");

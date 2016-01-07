@@ -43,7 +43,6 @@ public class TalkWizard extends Wizard {
 	}
 
 	
-	
 	@Override
 	public void addPages() {
 
@@ -56,3 +55,4 @@ public class TalkWizard extends Wizard {
 
 
 }
+

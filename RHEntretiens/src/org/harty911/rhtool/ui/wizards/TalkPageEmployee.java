@@ -209,7 +209,6 @@ public class TalkPageEmployee extends WizardPage implements SelectionListener, I
 		toModel();
 
 		setControl(container);
-		
 	}
 
 

@@ -30,7 +30,7 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 	private TalkFilter viewerFilter;
 
 	enum ECol {
-		DATE, USER, CANAL, DUREE
+		DATE, USER, CANAL, DUREE, MOTIF, COLLAB
 	};
 	
 	/**
@@ -60,6 +60,20 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 		col.getColumn().setWidth(80);
 		col.setLabelProvider( new TalkLabelProvider(ECol.DATE));
 				
+		// Collab
+		
+		col = new TableViewerColumn(tableViewer, SWT.NONE);
+		col.getColumn().setText("Collaborateur");
+		col.getColumn().setWidth(180);
+		col.setLabelProvider(new TalkLabelProvider(ECol.COLLAB));
+
+		// Motif
+		
+		col = new TableViewerColumn(tableViewer, SWT.NONE);
+		col.getColumn().setText("Motif");
+		col.getColumn().setWidth(180);
+		col.setLabelProvider(new TalkLabelProvider(ECol.MOTIF));
+
 		// Canal
 		
 		col = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -78,7 +92,7 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 		
 		col = new TableViewerColumn(tableViewer, SWT.NONE);
 		col.getColumn().setText("RH");
-		col.getColumn().setWidth(175);
+		col.getColumn().setWidth(180);
 		col.setLabelProvider(new TalkLabelProvider(ECol.USER));
 		
 		tableViewer.setComparator( new TalkComparator());
@@ -138,6 +152,11 @@ public class TalkView extends Composite implements ISelectionChangedListener {
 						return ControlUtils.printEnum(talk.getCanal());					
 					case DUREE:
 						return ControlUtils.printDuration( talk.getDuration());					
+					case MOTIF:
+						return ControlUtils.printEnum( talk.getMotif1());					
+					case COLLAB:
+						Employee e = talk.getEmployee();
+						return e.getNomUsuel();
 				}
 			}
 			return "";

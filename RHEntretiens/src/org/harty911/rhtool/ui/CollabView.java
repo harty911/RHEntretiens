@@ -33,7 +33,7 @@ public class CollabView extends Composite {
 	private Text filterText;
 	private TextFilter viewerFilter;
 
-	private Object[] lastFiltereds = new Object[]{};
+	private Object[] filteredList = new Object[]{};
 
 	/**
 	 * Create the composite.
@@ -64,6 +64,7 @@ public class CollabView extends Composite {
 				viewerFilter.setFilterText(filterText.getText());
 				tableViewer.refresh();
 				selectAll();
+				System.out.println("filter");
 			}
 		});
 		
@@ -113,7 +114,7 @@ public class CollabView extends Composite {
 
 	private void selectAll() {
 		tableViewer.getTable().selectAll();
-		tableViewer.setSelection( new StructuredSelection(lastFiltereds));		
+		tableViewer.setSelection( new StructuredSelection(filteredList));		
 	}
 	
 	/** Employee from RHModel content provider */
@@ -186,9 +187,8 @@ public class CollabView extends Composite {
 
 		@Override
 		public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
-			lastFiltereds = super.filter(viewer, parent, elements);
-			selectAll();
-			return lastFiltereds;
+			filteredList = super.filter(viewer, parent, elements);
+			return filteredList;
 		}
 
 	}

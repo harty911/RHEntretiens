@@ -178,7 +178,6 @@ public class TalkPageCommon extends WizardPage implements SelectionListener, Mod
 		toModel();
 		
 		setControl(container);
-				
 	}
 	
 	
