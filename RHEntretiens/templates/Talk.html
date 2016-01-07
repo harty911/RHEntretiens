@@ -48,7 +48,7 @@ ul {
 	border-width:1px; 
 	border-color:black;
 	border-style:dashed;
-	margin-top:0.5em;
+	margin-top:1em;
 	margin-left:15px;
 	margin-right:15px;
 	margin-bottom:1em;
@@ -146,32 +146,31 @@ $NEXTDATE
 </tbody></table>
 <hr>
 <h5>Compte-rendu de l'entretien:</h5>
-<p class='textbox'>
+<div class='textbox'>
 $RESUME
-<br>&nbsp
-</p>
+</div>
 <h5>Actions à mener:</h5>
-<p class='textbox actionbox $ACTION_CLASS'>
+<div class='textbox actionbox $ACTION_CLASS'>
 ##HAS_ACTION{
 	<b>$ACTION&nbsp&nbsp-&nbsp&nbsp(Echéance: $ACTION_DATE )</b><br><br>
 	$ACTION_TEXT
 ##}
 ##HASNT_ACTION{
 	Pas d'action à mener.
-##}
 	<br>&nbsp
-</p>
+##}
+</div>
 <h5>Mesures d'accompagnement:</h5>
-<p class='textbox actionbox $ACCOMP_CLASS'>
+<div class='textbox actionbox $ACCOMP_CLASS'>
 ##HAS_ACCOMP{
 	<b>$ACCOMP</b><br><br>
 	$ACCOMP_TEXT
 ##}
 ##HASNT_ACCOMP{
 	Pas d'action à mener.
-##}
 	<br>&nbsp
-</p>
+##}
+</div>
 
 <hr>
 ##HAS_PJ{

@@ -14,6 +14,7 @@ import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.core.model.objects.TalkDoc;
 import org.harty911.rhtool.core.model.objects.User;
+import org.harty911.rhtool.core.utils.TextFormater;
 
 public class TalkPrinter extends TemplatePrinter {
 	
@@ -47,40 +48,7 @@ public class TalkPrinter extends TemplatePrinter {
 		
 		initVariables();
 	}
-	
-	public static String escapeHTML(String s) {
-	    StringBuilder builder = new StringBuilder();
-	    boolean previousWasASpace = false;
-	    for( char c : s.toCharArray() ) {
-	        if( c == ' ' ) {
-	            if( previousWasASpace ) {
-	                builder.append("&nbsp;");
-	                previousWasASpace = false;
-	                continue;
-	            }
-	            previousWasASpace = true;
-	        } else {
-	            previousWasASpace = false;
-	        }
-	        switch(c) {
-	            case '<': builder.append("&lt;"); break;
-	            case '>': builder.append("&gt;"); break;
-	            case '&': builder.append("&amp;"); break;
-	            case '"': builder.append("&quot;"); break;
-	            case '\n': builder.append("<br>"); break;
-	            // We need Tab support here, because we print StackTraces as HTML
-	            case '\t': builder.append("&nbsp;&nbsp;&nbsp;&nbsp;"); break;  
-	            default:
-	                if( c < 128 ) {
-	                    builder.append(c);
-	                } else if(c < 256){
-	                    builder.append("&#").append((int)c).append(";");
-	                }    
-	        }
-	    }
-	    return builder.toString();
-	}
-	
+		
 	///////////////////////////////////////////////////////////
 	// Variables du template
 	///////////////////////////////////////////////////////////
@@ -178,8 +146,8 @@ public class TalkPrinter extends TemplatePrinter {
 		INIT_TEXT = talk.getInitiativeDetail();
 		CANAL = ControlUtils.printEnum( talk.getCanal());
 
-		RESUME = escapeHTML(talk.getDetail());
-		
+		RESUME = TextFormater.toRichHTML(talk.getDetail());
+
 		hasAction = !talk.getActionStatus().isNothing();;
 		isActionOpen = talk.getActionStatus().isOpen();
 		isActionOver = ( isActionOpen && talk.getActionDate()!=null && 
@@ -188,13 +156,13 @@ public class TalkPrinter extends TemplatePrinter {
 		ACTION = talk.getActionStatus().toString();
 		ACTION_CLASS = hasAction ? ( isActionOpen ? ( isActionOver ? "late" : "open") : "close" ) : "off";
 		ACTION_DATE = ControlUtils.printDate(talk.getActionDate());
-		ACTION_TEXT = escapeHTML(talk.getActionDetail());		
+		ACTION_TEXT = TextFormater.toRichHTML(talk.getActionDetail());		
 		
 		hasAccomp = !talk.getAccompStatus().isNothing();
 		isAccompOpen = talk.getAccompStatus().isOpen();
 		ACCOMP = talk.getAccompStatus().toString();
 		ACCOMP_CLASS = hasAccomp ? ( isAccompOpen ? "open" : "close" ) : "off";
-		ACCOMP_TEXT = escapeHTML(talk.getAccompDetail());
+		ACCOMP_TEXT = TextFormater.toRichHTML(talk.getAccompDetail());
 		
 		hasNextDate = ( talk.getNextDate()!=null );
 		NEXTDATE = ControlUtils.printDate(talk.getNextDate());

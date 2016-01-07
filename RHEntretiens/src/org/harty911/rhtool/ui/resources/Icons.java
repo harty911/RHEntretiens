@@ -14,6 +14,7 @@ public class Icons {
 	public static final String TALKS		= "talks_tab.gif";
 	public static final String HELP			= "help.gif";
 	public static final String IMPORT 		= "import.gif";
+	public static final String EXPORT       = "export.gif";
 	
 	public static final String CREATE	= "add_obj.gif";
 	public static final String EDIT		= "edit_obj.gif";
@@ -22,6 +23,7 @@ public class Icons {
 
 	public static final String COPY 	= "copy.gif";
 	public static final String PASTE 	= "paste.gif";
+
 	
 	private static ImageRegistry imgReg;
 
