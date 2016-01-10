@@ -88,7 +88,24 @@ public class RHModel {
 		return db.getDBFields(clazz);
 	}	
 
-	
+
+	/**
+	 * Lists RHModelObject (not deleted) for the specified class
+	 * @param clazz
+	 * @return objects list
+	 */
+	public <T extends RHModelObject> List<T> getObjects( Class<T> clazz) {
+		try {
+			LOGGER.fine( "List "+clazz.getSimpleName()+"[]");
+			Map<String, Object> fields = new LinkedHashMap<>();
+			fields.put("deleted", false);
+			return db.getByField(clazz, fields);
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE,"Unable to get "+clazz.getSimpleName()+"s", e);
+			return Collections.emptyList();
+		}
+	}	
+
 	/**
 	 * @return list of available users
 	 */

@@ -12,7 +12,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
-import org.harty911.rhtool.core.utils.XLSTalkExporter;
+import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.core.utils.XLSExporter;
 import org.harty911.rhtool.ui.resources.Icons;
 
 public class ExportTalksAction extends Action {
@@ -21,8 +22,11 @@ public class ExportTalksAction extends Action {
 		 										"Classeur Microsoft Excel 2007-.. (*.xlsx)" };
 	private static final String[] FILE_EXTS = { "*.xls", "*.xlsx"};
 
+	private static final File TEMPLATE = new File("templates/Talks.xls");
+	
 	private File currentDir = null; 
 
+	
 	public ExportTalksAction() {
 		super("&Exporter entretiens");
 		setImageDescriptor( Icons.getDescriptor(Icons.EXPORT));
@@ -54,16 +58,16 @@ public class ExportTalksAction extends Action {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-					XLSTalkExporter exp = new XLSTalkExporter( RHToolApp.getModel());
 					try {
+						XLSExporter<Talk> exp = new XLSExporter<Talk>( RHToolApp.getModel(), Talk.class, TEMPLATE);
 					
-						int estim = exp.prepareExportXLS("Entretiens");
+						int estim = exp.prepareExportXLS();
 						monitor.beginTask("Export Excel entretiens '"+file.getName()+"' :", estim);
 						
-						while(exp.performExportXLS())
+						while(exp.performImportXLS())
 							monitor.worked(1);
 
-						exp.finishExportXLS(file);
+						exp.finishImportXLS(file);
 						
 					} catch( Exception e) {
 						throw new InvocationTargetException(e);
@@ -75,7 +79,7 @@ public class ExportTalksAction extends Action {
 			});
 
 		} catch (InvocationTargetException e) {
-			RHToolApp.getWindow().reportException("Erreur d'import collaborateur XLS '"+file.getName()+"'", e.getCause());
+			RHToolApp.getWindow().reportException("Erreur d'export entretiens XLS '"+file.getName()+"'", e.getCause());
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		}		
