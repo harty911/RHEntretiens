@@ -29,6 +29,8 @@ public class User extends RHModelObject {
     private String nom ="";
     @DatabaseField
     private int role = ROLE_SET_STANDARD;
+    @DatabaseField
+    private int replace = -1;
 
     public User() {  
     }

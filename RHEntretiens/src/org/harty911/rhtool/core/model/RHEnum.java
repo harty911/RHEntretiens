@@ -6,6 +6,8 @@ public abstract class RHEnum extends RHModelObject {
 
 	@DatabaseField
 	private String text = "";
+	@DatabaseField
+	private int ordre = 0;
 	
 	public RHEnum() {
 		super();
@@ -22,5 +24,13 @@ public abstract class RHEnum extends RHModelObject {
 
 	public String getText() {
 		return text;
+	}
+
+	public void setOrder( int order) {
+		this.ordre = order;
+	}	
+
+	public int getOrder() {
+		return ordre;
 	}
 }

@@ -42,7 +42,7 @@ public class RHDbConnector {
 	
 	public static final String DB_FILENAME = "RHTool.db";
 
-	public final static int DB_SCHEMA_VERSION = 3;
+	public final static int DB_SCHEMA_VERSION = 4;
 	
 	private static final String SCHEMA_VERSION = "SCHEMA_VERSION";
 	
@@ -277,7 +277,19 @@ public class RHDbConnector {
 			Dao<Employee,?> dao = DaoManager.createDao(connectionSource, Employee.class);
 			dao.executeRaw("ALTER TABLE `t_collaborateur` ADD COLUMN replace INTEGER DEFAULT -1;");
 		}
-		
+		if( dbVersion < 4) {
+			LOGGER.info("Upgrade to DB schema version 4");
+			Dao<Employee,?> dao = DaoManager.createDao(connectionSource, Employee.class);
+			dao.executeRaw("ALTER TABLE `t_e_canal` ADD COLUMN ordre INTEGER DEFAULT 0;");
+			dao.executeRaw("ALTER TABLE `t_e_classif` ADD COLUMN ordre INTEGER DEFAULT 0;");
+			dao.executeRaw("ALTER TABLE `t_e_contrat` ADD COLUMN ordre INTEGER DEFAULT 0;");
+			dao.executeRaw("ALTER TABLE `t_e_intitiative` ADD COLUMN ordre INTEGER DEFAULT 0;");
+			dao.executeRaw("ALTER TABLE `t_e_motif` ADD COLUMN ordre INTEGER DEFAULT 0;");
+			dao.executeRaw("ALTER TABLE `t_e_typetalkdoc` ADD COLUMN ordre INTEGER DEFAULT 0;");
+			
+			// NOT SUPPORTED IN SQLITE : dao.executeRaw("ALTER TABLE `t_collaborateur` DROP COLUMN replace;");
+			dao.executeRaw("ALTER TABLE `t_utilisateur` ADD COLUMN replace INTEGER DEFAULT -1;");
+		}		
 		
 		setProperty(SCHEMA_VERSION, String.valueOf(DB_SCHEMA_VERSION));
 	}
