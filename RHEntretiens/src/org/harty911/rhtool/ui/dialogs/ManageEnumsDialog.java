@@ -53,6 +53,8 @@ public class ManageEnumsDialog<T extends RHEnum> extends Dialog {
 	private static final String CLIPBOARD_SEP = System.getProperty("line.separator");
 
 	private Clipboard clipboard;
+
+	private int newOrder = 999;
 	
 	/**
 	 * Create the dialog.
@@ -83,10 +85,12 @@ public class ManageEnumsDialog<T extends RHEnum> extends Dialog {
 		toolMgr.add(new DeleteAction());
 		toolMgr.add(new CopyAction());
 		toolMgr.add(new PasteAction());
+		toolMgr.add(new UpAction());
+		toolMgr.add(new DownAction());
 		ToolBar toolBar = toolMgr.createControl(area);
 		toolBar.setLayoutData(new GridData( SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		listViewer = new ListViewer(area, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		listViewer = new ListViewer(area, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL);
 		listViewer.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		listViewer.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -151,7 +155,19 @@ public class ManageEnumsDialog<T extends RHEnum> extends Dialog {
 
 	
 	public void refresh() {
-		listViewer.setInput( model.getEnumValues(enumClass));
+		List<T> lst = model.getEnumValues(enumClass);
+
+		// check and update order number
+		newOrder=0;
+		for(T e : lst) {
+			if( e.getOrder() != newOrder) {
+				e.setOrder(newOrder);
+				model.save(e);
+			}
+			newOrder++;
+		}
+
+		listViewer.setInput( lst);
 		listViewer.refresh();
 	}
 
@@ -189,6 +205,7 @@ public class ManageEnumsDialog<T extends RHEnum> extends Dialog {
 	
 		try {
 			T rhe = enumClass.newInstance();
+			rhe.setOrder(newOrder++);
 			rhe.setText(text);
 			model.save(rhe);
 		} catch ( Exception e) {
@@ -211,7 +228,7 @@ public class ManageEnumsDialog<T extends RHEnum> extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(405, 309);
+		return new Point(465, 309);
 	}
 	
 	@Override
@@ -231,6 +248,7 @@ public class ManageEnumsDialog<T extends RHEnum> extends Dialog {
 		public void run() {
 			try {
 				T rhe = enumClass.newInstance();
+				rhe.setOrder(newOrder++);
 				editEnumText( rhe);
 			} catch ( Exception e) {
 				RHToolApp.LOGGER.log(Level.SEVERE, "Unable to create '"+enumClass.getSimpleName()+"'", e);
@@ -324,4 +342,69 @@ public class ManageEnumsDialog<T extends RHEnum> extends Dialog {
 		}
 	}
 
+	public class UpAction extends Action {
+		public UpAction() {
+			super("Monter", Icons.getDescriptor(Icons.UP));
+		}
+
+		@Override
+		public void run() {
+			IStructuredSelection sel = (IStructuredSelection)listViewer.getSelection();
+			if(sel.size()!=1)
+				return;
+			@SuppressWarnings("unchecked")
+			T rhe = (T)sel.getFirstElement();
+			@SuppressWarnings("unchecked")
+			List<T> lst = (List<T>)listViewer.getInput();
+			int o = rhe.getOrder();
+			if( o > 0) {
+				T swap = lst.get(o-1);
+				swap.setOrder(o);
+				model.save(swap);
+				rhe.setOrder(o-1);
+				model.save(rhe);
+				int t = listViewer.getList().getTopIndex();
+				refresh();
+				listViewer.setSelection(sel);
+				if( o-1 < t)
+					t--;
+				listViewer.getList().setTopIndex(t);
+			}
+		}
+		
+	}
+
+	public class DownAction extends Action {
+		
+		public DownAction() {
+			super("Descendre", Icons.getDescriptor(Icons.DOWN));
+		}
+
+		@Override
+		public void run() {
+			IStructuredSelection sel = (IStructuredSelection)listViewer.getSelection();
+			if(sel.size()!=1)
+				return;
+			@SuppressWarnings("unchecked")
+			T rhe = (T)sel.getFirstElement();
+			@SuppressWarnings("unchecked")
+			List<T> lst = (List<T>)listViewer.getInput();
+			int o = rhe.getOrder();
+			if( o < lst.size()-1) {
+				T swap = lst.get(o+1);
+				swap.setOrder(o);
+				model.save(swap);
+				rhe.setOrder(o+1);
+				model.save(rhe);
+				int t = listViewer.getList().getTopIndex();
+				refresh();
+				listViewer.setSelection(sel);
+				int nb = listViewer.getList().getSize().y/listViewer.getList().getItemHeight();
+				if( o > t+nb-2)
+					t++;
+				listViewer.getList().setTopIndex(t);
+			}
+		}
+		
+	}
 }

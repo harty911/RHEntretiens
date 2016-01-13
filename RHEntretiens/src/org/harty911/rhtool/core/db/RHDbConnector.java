@@ -159,7 +159,7 @@ public class RHDbConnector {
 			w.eq( entry.getKey(), new SelectArg(entry.getValue()));
 		w.and(fieldValues.size());
 		
-		if( fieldOrders!=null && fieldOrders.size() == 0)
+		if( fieldOrders!=null && fieldOrders.size() != 0)
 			for(  Map.Entry<String,Boolean> entry :fieldOrders.entrySet())
 				qb.orderBy(entry.getKey(), entry.getValue());
 		

@@ -130,7 +130,9 @@ public class RHModel {
 			LOGGER.fine( "List "+clazz.getSimpleName()+"[]");
 			Map<String, Object> fields = new LinkedHashMap<>();
 			fields.put("deleted", false);
-			return db.getByField(clazz, fields);
+			Map<String, Boolean> orders = new LinkedHashMap<>();
+			orders.put("ordre", true);
+			return db.getByQuery(clazz, fields, orders);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable to get "+clazz.getSimpleName()+"s", e);
 			return Collections.emptyList();

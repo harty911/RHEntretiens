@@ -24,6 +24,9 @@ public class Icons {
 	public static final String COPY 	= "copy.gif";
 	public static final String PASTE 	= "paste.gif";
 
+	public static final String UP 	= "up.gif";
+	public static final String DOWN	= "down.gif";
+
 	
 	private static ImageRegistry imgReg;
 
