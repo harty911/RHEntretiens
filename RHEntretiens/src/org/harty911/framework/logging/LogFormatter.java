@@ -1,7 +1,7 @@
 package org.harty911.framework.logging;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -15,7 +15,9 @@ public final class LogFormatter extends Formatter {
         StringBuilder sb = new StringBuilder();
 
         Date dt = new Date(record.getMillis());
-        sb.append(DateFormat.getInstance().format(dt))
+        SimpleDateFormat df = new SimpleDateFormat("dd/mm hh:mm:ss.SSS"); 
+
+        sb.append(df.format(dt))
             .append(" [")
             .append(record.getLevel().getName())
             .append("] ");

@@ -39,7 +39,7 @@ public class LogUtil {
 		    }
 
 		    // add log file
-		    FileHandler fileTxt = new FileHandler("RHtool_%g.log",40960,5);
+		    FileHandler fileTxt = new FileHandler("RHtool_%g.log",40960,5,true);
 		    fileTxt.setLevel(Level.ALL);
 		    fileTxt.setFormatter(formatter);
 		    logger.addHandler(fileTxt);
