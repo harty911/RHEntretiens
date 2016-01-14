@@ -64,7 +64,6 @@ public class CollabView extends Composite {
 				viewerFilter.setFilterText(filterText.getText());
 				tableViewer.refresh();
 				selectAll();
-				System.out.println("filter");
 			}
 		});
 		
