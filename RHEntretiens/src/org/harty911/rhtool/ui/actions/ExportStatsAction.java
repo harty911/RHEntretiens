@@ -2,6 +2,11 @@ package org.harty911.rhtool.ui.actions;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -14,9 +19,10 @@ import org.harty911.rhtool.RHToolApp;
 import org.harty911.rhtool.core.model.RHModel;
 import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.core.utils.XLSExporter;
+import org.harty911.rhtool.core.utils.XLSExporter.ExportFilter;
 import org.harty911.rhtool.ui.resources.Icons;
 
-public class ExportTalksAction extends Action {
+public class ExportStatsAction extends Action {
 
 	private static final String[] FILE_TYPES = {"Classeur Microsoft Excel 97-2003 (*.xls)" };
 	private static final String[] FILE_EXTS = { "*.xls" };
@@ -25,17 +31,34 @@ public class ExportTalksAction extends Action {
 	
 	private File currentDir = null; 
 
-	
-	public ExportTalksAction() {
-		super("&Exporter entretiens");
-		setImageDescriptor( Icons.getDescriptor(Icons.EXPORT));
+	public ExportStatsAction() {
+		super("&Exporter statistiques");
+		setImageDescriptor( Icons.getDescriptor(Icons.STATS));
 	}
 
+	class StatsFilter implements ExportFilter {
+		@Override
+		public Collection<Map<String, Object>> modifyBeforeExport(List<String> colNames, List<Map<String, Object>> listData) {
+			Map<String,Map<String, Object>> out = new LinkedHashMap<>();
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy");
+			
+			// Supprime les doublons (Année/Motif1/Collab)
+			for( Map<String, Object> row : listData) {
+				Talk obj = (Talk)row.get(ExportFilter.OBJECTCOLUMN); 
+				String grpkey = obj.getEmployee().getId()+"/"+obj.getMotif1()+"/"+fmt.format(obj.getDate());
+				if( !out.containsKey(grpkey))
+					out.put(grpkey,row);
+			}
+			
+			return out.values();
+		}
+	}
+	
 	@Override
 	public void run() {
 		Shell shell = RHToolApp.getWindow().getShell();
 		FileDialog dlg = new FileDialog( shell, SWT.SAVE);
-		dlg.setText("Exporter les entretiens");
+		dlg.setText("Exporter les statistiques");
 		dlg.setFilterNames(FILE_TYPES);
 		dlg.setFilterExtensions(FILE_EXTS);
 		if( currentDir!=null)
@@ -60,7 +83,9 @@ public class ExportTalksAction extends Action {
 					try {
 						XLSExporter<Talk> exp = new XLSExporter<Talk>( RHToolApp.getModel(), Talk.class, TEMPLATE);
 					
-						monitor.beginTask("Export Excel entretiens '"+file.getName()+"' :", 2);
+						exp.setFilter( new StatsFilter());
+						
+						monitor.beginTask("Export Excel statistiques '"+file.getName()+"' :", 2);
 						monitor.worked(1);
 						exp.exportXLS(file);
 						

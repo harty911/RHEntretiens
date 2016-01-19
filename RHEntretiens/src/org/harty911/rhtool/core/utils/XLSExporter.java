@@ -5,9 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -33,10 +37,18 @@ public class XLSExporter <T extends RHModelObject> {
 	private Chrono chrono;
 	private Workbook workbook;
 	private Sheet sheet;
-	List<Field> colFields = new ArrayList<>();
-	private Iterator<T> objects = null;
+	private Iterator<Map<String,Object>> rowDataItr = null;
+	private List<String> colNames = null;
 	
 	private int nbExported;
+	
+	public static interface ExportFilter {
+		public static final String OBJECTCOLUMN = "RowObject";
+		
+		public abstract Collection<Map<String, Object>> modifyBeforeExport(List<String> colNames, List<Map<String, Object>> listData);
+	}
+	private ExportFilter filter;
+	
 	
 	public XLSExporter( RHModel rhModel, Class<T> clazz, File xlsTemplate) throws InvalidFormatException, IOException {
 		this.model = rhModel;
@@ -45,10 +57,8 @@ public class XLSExporter <T extends RHModelObject> {
 	}
 
 	public void exportXLS( File xlsFile) throws Exception {
-		
 		try {
 			prepareExportXLS();
-			
 			while( performImportXLS());
 		}
 		catch( Exception e) {
@@ -74,7 +84,6 @@ public class XLSExporter <T extends RHModelObject> {
 		
 		sheet = null;
 		workbook = WorkbookFactory.create(xlsTemplate);
-		colFields.clear();
 
 		sheet = workbook.getSheetAt(0);
 		if( sheet==null)
@@ -91,6 +100,8 @@ public class XLSExporter <T extends RHModelObject> {
 			throw new InvalidFormatException("No Field row (3) found");
 		
 		List<Field> fields = model.getDBFields( clazz);
+		List<Field> colFields = new ArrayList<>();
+		colNames = new ArrayList<>();
 
 		Cell cTitle, cFormat, cField;
 		int n = 0;
@@ -112,16 +123,38 @@ public class XLSExporter <T extends RHModelObject> {
 				}
 			}
 			colFields.add(field);
+			colNames.add(nField);
 		}
 		
 		// remove field row
 		sheet.removeRow(rField);
 		
-		// get objects
-		List<T> list = model.getObjects(clazz);
-		objects = list.iterator();
+		// Get objects and fill Data
+		List<Map<String,Object>> listData = new LinkedList<>();
+		
+		List<T> objects = model.getObjects(clazz);
+		for( T obj : objects) {
+			Map<String,Object> rowData = new LinkedHashMap<>();
+			
+			rowData.put(ExportFilter.OBJECTCOLUMN, obj);
+			
+			for( int col=0; col<colNames.size(); col++) {
+				Field field = colFields.get(col);
+				Object value = (field==null) ? null : field.get(obj);
+				rowData.put( colNames.get(col), value);
+			}
+			listData.add(rowData);
+		}
+		
+		// HOOK: Filter/Modifiy data before export
+		Collection<Map<String,Object>> list = listData;
+		if( filter!=null) {
+			list = filter.modifyBeforeExport( colNames, listData);
+		}
+	
+		rowDataItr = list.iterator();
 		nbExported = 0;
-		return list.size();
+		return listData.size();
 	}
 
 	
@@ -132,28 +165,24 @@ public class XLSExporter <T extends RHModelObject> {
 	 * @throws Exception
 	 */
 	public boolean performImportXLS() throws Exception {
-		if( !objects.hasNext() || sheet == null)
+		if( rowDataItr==null || !rowDataItr.hasNext() || sheet == null)
 			return false;
-		T obj = objects.next();
+		Map<String,Object> rowData = rowDataItr.next();
 
 		// take the current row
 		Row row = sheet.getRow(nbExported+1);
-		if( objects.hasNext()) {
+		if( rowDataItr.hasNext()) {
 			// insert a row after
 			copyRowAfter(row);
 		}
 				
 		// fill data
-		for( int col=0; col<colFields.size(); col++) {
-			Field field = colFields.get(col);
-			if( field==null)
-				setValue( row.getCell(col), null);
-			else
-				setValue( row.getCell(col), field.get(obj));
+		for( int col=0; col<colNames.size(); col++) {
+			setValue( row.getCell(col), rowData.get( colNames.get(col)));
 		}
 
 		nbExported++;		
-		return objects.hasNext();
+		return rowDataItr.hasNext();
 	}
 
 	
@@ -163,6 +192,8 @@ public class XLSExporter <T extends RHModelObject> {
 	 */
 	public void finishImportXLS(File xlsFile) throws IOException {
 		RHModel.LOGGER.log(Level.INFO, nbExported +" objects exported in "+chrono);
+		rowDataItr = null;
+		colNames = null;
 		if( sheet != null) {
 			try {
 				FileOutputStream fileOut = new FileOutputStream(xlsFile);
@@ -200,7 +231,6 @@ public class XLSExporter <T extends RHModelObject> {
 		}
 		else 
 			cell.setCellValue(val.toString());
-		
 	}
 
 	protected void copyRowAfter(Row row) {
@@ -243,6 +273,10 @@ public class XLSExporter <T extends RHModelObject> {
 		            break;
 		    }
 		}
+	}
+
+	public void setFilter( ExportFilter filter) {
+		this.filter = filter;		
 	}
 }
 

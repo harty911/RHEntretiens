@@ -38,6 +38,7 @@ import org.harty911.rhtool.ui.actions.EditProfileAction;
 import org.harty911.rhtool.ui.actions.EmployeeCreateAction;
 import org.harty911.rhtool.ui.actions.EmployeeDeleteAction;
 import org.harty911.rhtool.ui.actions.EmployeeEditAction;
+import org.harty911.rhtool.ui.actions.ExportStatsAction;
 import org.harty911.rhtool.ui.actions.ExportTalksAction;
 import org.harty911.rhtool.ui.actions.ImportEmployeeAction;
 import org.harty911.rhtool.ui.actions.ManageEnumsAction;
@@ -62,6 +63,7 @@ public class MainWindow extends ApplicationWindow {
 	private Action actionQuit;
 	private Action actionImport;
 	private Action actionExport;
+	private Action actionExportStat;
 
 	private Action actionEmployeeCreate;
 	private ContextAction actionEmployeeEdit;
@@ -115,6 +117,7 @@ public class MainWindow extends ApplicationWindow {
 		actionQuit = new QuitAction();
 		actionImport = new ImportEmployeeAction();
 		actionExport = new ExportTalksAction();
+		actionExportStat = new ExportStatsAction();
 		actionAbout = new AboutAction();
 		actionManageUser = new ManageUsersAction();
 		actionEditProfile = new EditProfileAction();
@@ -156,6 +159,7 @@ public class MainWindow extends ApplicationWindow {
 			adminMenu.add(actionManageUser);
 			adminMenu.add(actionImport);
 			adminMenu.add(actionExport);
+			adminMenu.add(actionExportStat);
 			MenuManager enumMenu =  new MenuManager("Listes de choix");
 			enumMenu.add(actionManageClassif);
 			enumMenu.add(actionManageContract);
