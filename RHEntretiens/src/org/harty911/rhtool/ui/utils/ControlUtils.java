@@ -85,9 +85,7 @@ public class ControlUtils {
 
 	public static Date getControlDate( DateTime control) {
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, control.getDay());
-		cal.set(Calendar.MONTH, control.getMonth());
-		cal.set(Calendar.YEAR, control.getYear());
+		cal.set(control.getYear(), control.getMonth(), control.getDay(), 0, 0, 0);
 		return cal.getTime();
 	}
 

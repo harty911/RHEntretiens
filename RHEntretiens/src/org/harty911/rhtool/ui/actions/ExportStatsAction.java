@@ -105,7 +105,5 @@ public class ExportStatsAction extends Action {
 		}		
 		
 		model.setBatchMode(false);
-		
-		RHToolApp.getWindow().updateFromModel();
 	}
 }

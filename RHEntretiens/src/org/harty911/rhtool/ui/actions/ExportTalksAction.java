@@ -80,7 +80,5 @@ public class ExportTalksAction extends Action {
 		}		
 		
 		model.setBatchMode(false);
-		
-		RHToolApp.getWindow().updateFromModel();
 	}
 }
