@@ -1,5 +1,6 @@
 package org.harty911.rhtool.ui.actions;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
@@ -73,6 +74,8 @@ public class ExportPptStatsAction extends Action {
 
 						exp.export( file);
 						monitor.worked(1);
+						
+						Desktop.getDesktop().open(file); 
 
 					} catch( Exception e) {
 						throw new InvocationTargetException(e);
