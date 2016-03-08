@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -105,8 +106,7 @@ public class PPTStatsExporter {
 	}
 
 	protected void _addMotifCount(XSLFSlide slide, HashMap<RHEMotif, Integer> motifCount) {
-		Set<RHEMotif> motifs = motifCount.keySet();
-
+		
 		XSLFTable table = slide.createTable();
 		table.setAnchor(new Rectangle(100, 150, 1000, 1000));
 
@@ -115,9 +115,12 @@ public class PPTStatsExporter {
 		_addCell(row, true,"Nbre");
 
         for( RHEMotif m : motifs) {
+       		Integer nb = motifCount.get(m);
+       		if( nb==null) continue;
+       		
         	row = table.addRow(); 
     		_addCell(row, false, m.getText());
-    		_addCell(row, false, motifCount.get(m).toString());
+     		_addCell(row, false, nb.toString());
  	    }
 
 	    table.setColumnWidth(0, 450);
@@ -160,13 +163,15 @@ public class PPTStatsExporter {
 	}
 
 
-	HashMap<RHEMotif,Integer> globalMotifCount;
-	HashMap<User,HashMap<RHEMotif,Integer>> userMotifCount;
+	private HashMap<RHEMotif,Integer> globalMotifCount;
+	private HashMap<User,HashMap<RHEMotif,Integer>> userMotifCount;
+	private List<RHEMotif> motifs;
 	
 	private void _computeStats() {
 		
 		globalMotifCount = new HashMap<>();
 		userMotifCount = new HashMap<>();
+		motifs = model.getEnumValues(RHEMotif.class);
 		
 		Set<String> globalGroup = new HashSet<>();
 		Set<String> userGroup = new HashSet<>();
