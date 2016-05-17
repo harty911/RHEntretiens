@@ -8,7 +8,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -59,6 +58,9 @@ public class LoginDialog extends TitleAreaDialog {
 		Composite container = new Composite(area, SWT.NONE);
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		GridLayout gl_container = new GridLayout(2, false);
+		gl_container.marginTop = 20;
+		gl_container.marginRight = 20;
+		gl_container.marginLeft = 20;
 		gl_container.marginHeight = 10;
 		gl_container.marginWidth = 10;
 		gl_container.horizontalSpacing = 10;
@@ -130,14 +132,6 @@ public class LoginDialog extends TitleAreaDialog {
 		
 		super.okPressed();
 	}	
-	
-	/**
-	 * Return the initial size of the dialog.
-	 */
-	@Override
-	protected Point getInitialSize() {
-		return new Point(303, 218);
-	}
 	
 	public RHModel getModel() {
 		return model;
