@@ -1,8 +1,84 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head>
 <meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"><title>Actions</title>
+<style type="text/css">
+body {
+	background-color: white;
+	font-family: "Arial",Arial,Sans-serif;
+	font-size: 12px;
+}
+a {
+	font-style: italic;
+}
+.open{
+	background-color: yellow;
+}
+.close{
+	background-color: lightgreen;
+}
+.late{
+	background-color: red;
+}
+.off{
+	color: gray;
+	background-color: lightgray;
+}
+.nodate{
+	color: gray;
+	background-color: lightgray;	
+}
+
+table {
+	width: 100%;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+th {
+	background-color: teal;
+	color: white;
+	text-align: center;
+	vertical-align: top;
+	font-size: 12px;
+	font-weight: bold;
+	white-space: nowrap;
+	border: solid 1px gray;
+	
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+td {
+	text-align: left;
+	vertical-align: top;
+	font-size: 12px;
+	border: solid 1px gray;
+	white-space: nowrap;
+	
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+td.text {
+	white-space: normal;
+}
+</style>
 </head>
 <body>
-	<center><i><small>Prochainement ici : La liste des actions...</small></i></center>
+<table>
+<tr>
+<th>Statut</td>
+<th>Echéance</td>
+<th>Action</td>
+</tr>
+##FOREACH_ACTION{ 
+<tr>
+<td class='$ACTION_STATUS_CLASS'><a href='$URI'>$ACTION_STATUS</a></td>
+<td class='$ACTION_DATE_CLASS'>$ACTION_DATE</td>
+<td class='text'>$ACTION_TEXT</td>
+</tr>
+##}
+</table>
 </body>
 </html>
