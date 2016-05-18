@@ -2,8 +2,6 @@ package org.harty911.rhtool.core.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -34,7 +32,6 @@ public abstract class RHDocument extends RHModelObject {
     private String origName = null;
     @DatabaseField
     private String baseref = null;
-	public static final String SCHEME = "rhdoc";
     
     private static final CopyOption[] options = new CopyOption[]{
     	      StandardCopyOption.REPLACE_EXISTING,
@@ -118,14 +115,5 @@ public abstract class RHDocument extends RHModelObject {
 		if( isDeleted() && dbF.exists())
 			dbF.delete();
 	}
-	
-	public URI toURI() {
-		try {
-			return new URI( SCHEME, getClass().getSimpleName(), String.valueOf(getId()));
-		} catch (URISyntaxException e) {
-			return null;
-		}
-	}
-	
 
 }

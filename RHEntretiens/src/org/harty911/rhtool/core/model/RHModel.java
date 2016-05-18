@@ -1,7 +1,6 @@
 package org.harty911.rhtool.core.model;
 
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -106,6 +105,52 @@ public class RHModel {
 		}
 	}	
 
+	/**
+	 * Get RHModelObject (not deleted) for the specified class and id
+	 * @param clazz
+	 * @param id
+	 * @return object
+	 */
+	public <T extends RHModelObject> T getObject( Class<T> clazz, String id) {
+		try {
+			LOGGER.fine( "Get "+clazz.getSimpleName()+"[id="+id+"]");
+			Map<String, Object> fields = new LinkedHashMap<>();
+			fields.put("deleted", false);
+			fields.put("id", id);
+			List<T> objs = db.getByField( clazz, fields);
+			if( objs==null || objs.isEmpty()){
+				LOGGER.log(Level.WARNING,"No Object found");
+				return null;
+			}
+			return objs.get(0);
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE,"Unable to get "+clazz.getSimpleName()+"[id="+id+"]", e);
+			return null;
+		}
+	}	
+
+	/**
+	 * Get specific ModelObject class from SimpleName
+	 * @param simpleName
+	 * @return the class or null
+	 * @throws ClassNotFoundException 
+	 */
+	public Class<? extends RHModelObject> getClass( String simpleName) throws ClassNotFoundException {
+		Class<?> cls = null;
+		String pkg = User.class.getPackage().getName();
+		cls = Class.forName(pkg+"."+simpleName);
+		if( !RHModelObject.class.isAssignableFrom(cls)) {
+			LOGGER.log(Level.SEVERE, "Type '" + simpleName + "' is not a RHModelObject");
+			throw new ClassNotFoundException("Type '" + simpleName + "' is not a RHModelObject");
+		}
+		// was checked before...
+		@SuppressWarnings("unchecked")
+		Class<? extends RHModelObject> objcls = (Class<? extends RHModelObject>)cls;
+		
+		return objcls;		
+	}
+	
+	
 	/**
 	 * @return list of available users
 	 */
@@ -255,43 +300,6 @@ public class RHModel {
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE,"Unable to switch BatchMode to "+batch, e);
 			e.printStackTrace();
-		}
-	}
-
-
-	public RHDocument getDoc( URI uri) {
-			LOGGER.fine( "Get Document "+uri);
-			if( !uri.getScheme().equals(RHDocument.SCHEME)){
-				LOGGER.log(Level.SEVERE, "Bad URI (scheme should be rhdoc)");
-				return null;
-			}
-			
-			Class<?> cls = null;
-			try {
-				String pkg = User.class.getPackage().getName();
-				cls = Class.forName(pkg+"."+uri.getSchemeSpecificPart());
-			} catch (ClassNotFoundException e1) {}
-			if( cls==null || !RHDocument.class.isAssignableFrom(cls)) {
-				LOGGER.log(Level.SEVERE, "Type '" + uri.getSchemeSpecificPart() + "' is not a Document");
-				return null;
-			}
-			// was checked before...
-			@SuppressWarnings("unchecked")
-			Class<? extends RHDocument> doccls = (Class<? extends RHDocument>)cls;
-			
-		try {
-			Map<String, Object> fields = new LinkedHashMap<>();
-			fields.put("deleted", false);
-			fields.put("id", uri.getFragment());
-			List<? extends RHDocument> docs = db.getByField( doccls, fields);
-			if( docs==null || docs.isEmpty()){
-				LOGGER.log(Level.WARNING,"No document found for "+uri);
-				return null;
-			}
-			return docs.get(0);	
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE,"Unable to get Document", e);
-			return null;
 		}
 	}
 

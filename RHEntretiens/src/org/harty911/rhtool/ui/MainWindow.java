@@ -15,9 +15,11 @@ import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -27,12 +29,16 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.harty911.rhtool.AppInfos;
 import org.harty911.rhtool.RHToolApp;
+import org.harty911.rhtool.core.model.RHModelObject;
+import org.harty911.rhtool.core.model.objects.Employee;
 import org.harty911.rhtool.core.model.objects.RHECanal;
 import org.harty911.rhtool.core.model.objects.RHEClassif;
 import org.harty911.rhtool.core.model.objects.RHEContrat;
 import org.harty911.rhtool.core.model.objects.RHEInitiative;
 import org.harty911.rhtool.core.model.objects.RHEMotif;
 import org.harty911.rhtool.core.model.objects.RHETypeTalkDoc;
+import org.harty911.rhtool.core.model.objects.Talk;
+import org.harty911.rhtool.ui.BrowserView.IHTMLProvider;
 import org.harty911.rhtool.ui.actions.AboutAction;
 import org.harty911.rhtool.ui.actions.EditProfileAction;
 import org.harty911.rhtool.ui.actions.EmployeeCreateAction;
@@ -47,15 +53,21 @@ import org.harty911.rhtool.ui.actions.QuitAction;
 import org.harty911.rhtool.ui.actions.TalkCreateAction;
 import org.harty911.rhtool.ui.actions.TalkDeleteAction;
 import org.harty911.rhtool.ui.actions.TalkEditAction;
+import org.harty911.rhtool.ui.printer.ActionsPrinter;
+import org.harty911.rhtool.ui.printer.DashboardPrinter;
 import org.harty911.rhtool.ui.utils.BigToolBarManager;
 import org.harty911.rhtool.ui.utils.ContextAction;
 
 public class MainWindow extends ApplicationWindow {
-	
+		
 	private static final String PREF_RATIO_TOP = "MainWindow.ratioTop";
 	private static final String PREF_RATIO_LEFT = "MainWindow.ratioLeft";
+	private static final String PREF_RATIO_RIGHT = "MainWindow.ratioRight";
 	private static final String PREF_HEIGHT = "MainWindow.height";
 	private static final String PREF_WIDTH = "MainWindow.width";
+
+	private static final int SASH_WIDTH = 6;
+	private static final Color SASH_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 
 	public final static Logger LOGGER = Logger.getLogger( MainWindow.class.getName());
 
@@ -89,15 +101,18 @@ public class MainWindow extends ApplicationWindow {
 	private TalkView talkView;
 	private CollabView collabView;
 	private TalkPreview talkPreview;
+	private BrowserView dashboardView;
+	private BrowserView actionView;
 	
 	public MainWindow() {
 		super(null);	
 		
 		PreferenceStore ps = RHToolApp.getPreferenceStore();
-		ps.setDefault(PREF_HEIGHT, 768);
-		ps.setDefault(PREF_WIDTH, 1024);
-		ps.setDefault(PREF_RATIO_LEFT, 25);
-		ps.setDefault(PREF_RATIO_TOP, 25);
+		ps.setDefault(PREF_HEIGHT, 800);
+		ps.setDefault(PREF_WIDTH, 1200);
+		ps.setDefault(PREF_RATIO_LEFT, 20);
+		ps.setDefault(PREF_RATIO_RIGHT, 20);
+		ps.setDefault(PREF_RATIO_TOP, 27);
 		
 		createActions(); 		
 		addToolBar( SWT.FLAT | SWT.WRAP); 		
@@ -199,14 +214,12 @@ public class MainWindow extends ApplicationWindow {
 	@Override
 	protected Control createContents(Composite parent) {
 		mainSash = new SashForm(parent, SWT.HORIZONTAL);
+		mainSash.SASH_WIDTH = SASH_WIDTH;
+		mainSash.setBackground(SASH_COLOR);
 		
 		// Collaborateurs
 				
-		final Group grpCollab = new Group(mainSash, SWT.NONE);
-		grpCollab.setText("Collaborateurs");
-		grpCollab.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		collabView = new CollabView( grpCollab, SWT.NONE);
+		collabView = new CollabView( mainSash);
 		collabView.getViewer().addSelectionChangedListener(actionEmployeeDelete);
 		collabView.getViewer().addSelectionChangedListener(actionEmployeeEdit);
 		collabView.getViewer().addSelectionChangedListener(actionTalkCreate);
@@ -217,6 +230,8 @@ public class MainWindow extends ApplicationWindow {
 		grpTalk.setText("Entretiens");
 		grpTalk.setLayout(new FillLayout(SWT.VERTICAL));
 		talkSash = new SashForm(grpTalk, SWT.VERTICAL);
+		talkSash.SASH_WIDTH = SASH_WIDTH;
+		talkSash.setBackground(SASH_COLOR);
 		
 		// liste des entretiens
 		
@@ -230,9 +245,28 @@ public class MainWindow extends ApplicationWindow {
 		talkPreview = new TalkPreview( talkSash, SWT.BORDER);
 		talkView.getViewer().addSelectionChangedListener( talkPreview);
 		
-		// TODO ENHANCE save restore window layout
+		// Tableau de bord
+
+		SashForm rightSash = new SashForm(mainSash, SWT.VERTICAL);
+		rightSash.SASH_WIDTH = SASH_WIDTH;
+		rightSash.setBackground(SASH_COLOR);
+		dashboardView = new BrowserView( rightSash, "Tableau de bord", new IHTMLProvider() {
+			@Override
+			public String getHTML() {
+				return DashboardPrinter.toHTML();
+			}
+		});
+		actionView = new BrowserView( rightSash, "Actions", new IHTMLProvider() {
+			@Override
+			public String getHTML() {
+				return ActionsPrinter.toHTML();
+			}
+		});
+		
 		PreferenceStore ps = RHToolApp.getPreferenceStore();
-		mainSash.setWeights( new int[] { ps.getInt(PREF_RATIO_LEFT), 100-ps.getInt(PREF_RATIO_LEFT) });
+		int left = ps.getInt(PREF_RATIO_LEFT);
+		int right = ps.getInt(PREF_RATIO_RIGHT);
+		mainSash.setWeights( new int[] { left, 100-left-right, right });
 		talkSash.setWeights( new int[] { ps.getInt(PREF_RATIO_TOP),  100-ps.getInt(PREF_RATIO_TOP) });
 		
 		return mainSash;
@@ -261,7 +295,8 @@ public class MainWindow extends ApplicationWindow {
 		int[] ws = talkSash.getWeights(); 
 		ps.setValue(PREF_RATIO_TOP, ws[0]*100/(ws[0]+ws[1]));
 		ws = mainSash.getWeights();
-		ps.setValue(PREF_RATIO_LEFT, ws[0]*100/(ws[0]+ws[1]));
+		ps.setValue(PREF_RATIO_LEFT, ws[0]*100/(ws[0]+ws[1]+ws[2]));
+		ps.setValue(PREF_RATIO_RIGHT, ws[2]*100/(ws[0]+ws[1]+ws[2]));
 		
 		// and close
 		return super.close();
@@ -286,6 +321,27 @@ public class MainWindow extends ApplicationWindow {
 	
 
 
+	public void updateFromModel() {
+		// TODO This method is BRUTE FORCE UPDATE, can be removed when Observer is managed
+		collabView.refresh();
+		talkView.refresh();
+		talkPreview.refresh();
+		dashboardView.refresh();
+		actionView.refresh();
+	}
+
+	
+	public void select( RHModelObject obj) {
+		if( obj instanceof Talk) {
+			Talk tlk = (Talk)obj;
+			collabView.getViewer().setSelection( new StructuredSelection(tlk.getEmployee()), true);
+			talkView.getViewer().setSelection( new StructuredSelection(tlk), true);
+		}
+		else if( obj instanceof Employee)
+			collabView.getViewer().setSelection( new StructuredSelection(obj), true);
+		
+	}
+	
 	///////////////////////////////////////////////////////////////////////////
 	// ERROR REPORTING
 	///////////////////////////////////////////////////////////////////////////
@@ -317,10 +373,4 @@ public class MainWindow extends ApplicationWindow {
 	}
 
 
-	public void updateFromModel() {
-		// TODO This method is BRUTE FORCE UPDATE, can be removed when Observer is managed
-		collabView.refresh();
-		talkView.refresh();
-		talkPreview.refresh();
-	}
 }

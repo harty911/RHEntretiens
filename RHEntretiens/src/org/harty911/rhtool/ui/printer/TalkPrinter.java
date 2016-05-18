@@ -1,10 +1,11 @@
-package org.harty911.rhtool.ui.utils;
+package org.harty911.rhtool.ui.printer;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.util.Date;
 
 import org.harty911.framework.report.TemplatePrinter;
@@ -15,6 +16,9 @@ import org.harty911.rhtool.core.model.objects.Talk;
 import org.harty911.rhtool.core.model.objects.TalkDoc;
 import org.harty911.rhtool.core.model.objects.User;
 import org.harty911.rhtool.core.utils.TextFormater;
+import org.harty911.rhtool.ui.actions.HyperlinkHandler;
+import org.harty911.rhtool.ui.utils.ControlUtils;
+import org.harty911.rhtool.ui.utils.UIModelUtils;
 
 public class TalkPrinter extends TemplatePrinter {
 	
@@ -251,7 +255,8 @@ public class TalkPrinter extends TemplatePrinter {
 				continue;
 			RHToolApp.getModel().refresh(doc);
 			PJ_NUM++;
-			PJ_URI  = doc.toURI().toString();
+			URI uri = HyperlinkHandler.toURI(HyperlinkHandler.SCHEME_DOC, doc);
+			PJ_URI  = uri==null?"":uri.toString();
 			PJ_TYPE = ControlUtils.printEnum(doc.getType());
 			PJ_NAME = ControlUtils.print( doc.getName());
 			printTemplate();

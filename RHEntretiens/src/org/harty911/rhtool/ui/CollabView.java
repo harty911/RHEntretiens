@@ -16,10 +16,12 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -35,28 +37,25 @@ public class CollabView extends Composite {
 
 	private Object[] filteredList = new Object[]{};
 
-	/**
-	 * Create the composite.
-	 * @param parent
-	 * @param style
-	 */
-	public CollabView(Composite parent, int style) {
-		super(parent, style);
+
+	public CollabView(Composite parent) {
+		super(parent, SWT.NONE);
+		setLayout(new FillLayout(SWT.HORIZONTAL));		
 		
-		//setText("Collaborateurs");
-		setLayout(new GridLayout(3, false));
-		
-		createContents();
+		createContents( this);
 	}
 
 
-	private void createContents() {
-		
-		Label lblFiltre = new Label(this, SWT.NONE);
+	private void createContents( Composite parent) {
+		Group group = new Group(this, SWT.NONE); 
+		group.setText("Collaborateurs");
+		group.setLayout(new GridLayout(3, false));
+
+		Label lblFiltre = new Label(group, SWT.NONE);
 		lblFiltre.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblFiltre.setText("Filtre:");
 		
-		filterText = new Text(this, SWT.BORDER);
+		filterText = new Text(group, SWT.BORDER);
 		filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		filterText.addModifyListener(new ModifyListener() {
 			@Override
@@ -67,7 +66,7 @@ public class CollabView extends Composite {
 			}
 		});
 		
-		Button butAll = new Button(this, SWT.NONE);
+		Button butAll = new Button(group, SWT.NONE);
 		butAll.setText("Tous");
 		butAll.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -76,7 +75,7 @@ public class CollabView extends Composite {
 			}			
 		});
 		
-		tableViewer = new TableViewer(this, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.VIRTUAL | SWT.MULTI );
+		tableViewer = new TableViewer(group, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.VIRTUAL | SWT.MULTI );
 		Table table = tableViewer.getTable();
 		GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 		gd_table.widthHint = 259;
