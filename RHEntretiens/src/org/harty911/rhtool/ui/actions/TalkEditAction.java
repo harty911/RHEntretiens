@@ -26,13 +26,19 @@ public class TalkEditAction extends ContextAction {
 
 	@Override
 	protected boolean execute(IStructuredSelection sel) {
-		Shell shell = Display.getCurrent().getActiveShell();
 		Talk talk = (Talk)sel.getFirstElement();
 
+		return edit(talk);
+	}
+
+	
+	public static boolean edit(Talk talk) {
 		if( !UIModelUtils.refreshAndCheck(talk))
 			return false;
 
-		WizardDialog dlg = new WizardDialog(shell, new TalkWizard( talk));
+		Shell shell = Display.getCurrent().getActiveShell();
+		TalkWizard wiz = new TalkWizard( talk);
+		WizardDialog dlg = new WizardDialog(shell, wiz);
 		if( dlg.open() == Window.OK) {
 			MainWindow.LOGGER.info( talk+" modified");
 			// save is done in wizard

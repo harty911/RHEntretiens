@@ -10,18 +10,11 @@ body {
 a {
 	font-style: italic;
 }
-.open{
-	background-color: yellow;
-}
-.close{
-	background-color: lightgreen;
-}
 .late{
-	background-color: red;
+	background-color: orange;
 }
-.off{
-	color: gray;
-	background-color: lightgray;
+.me{
+	font-weight: bold;
 }
 .nodate{
 	color: gray;
@@ -32,6 +25,16 @@ table {
 	width: 100%;
 	border-spacing: 0px;
 	border-collapse: collapse;
+}
+h2 {
+	font-size: 12px;
+	font-weight: bold;
+	margin-top: 2px;
+	margin-bottom: 4px;
+}
+p {
+	margin-top: 2px;
+	margin-bottom: 2px;
 }
 th {
 	background-color: teal;
@@ -74,9 +77,9 @@ td.text {
 </tr>
 ##FOREACH_ACTION{ 
 <tr>
-<td class='$ACTION_STATUS_CLASS'><a href='$URI'>$ACTION_STATUS</a></td>
+<td class='$ACTION_STATUS_CLASS'><a href='$URI_MOD'>$ACTION_STATUS</a><br><i>$ACTION_USER</i></td>
 <td class='$ACTION_DATE_CLASS'>$ACTION_DATE</td>
-<td class='text'>$ACTION_TEXT</td>
+<td class='text'><a href='$URI_SEL'><h2>$ACTION_TITLE</h2></a>$ACTION_TEXT</td>
 </tr>
 ##}
 </table>

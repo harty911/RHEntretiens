@@ -27,7 +27,8 @@ public class HyperlinkHandler extends LocationAdapter {
 
 	public static final String SCHEME_DOC    = "rhdoc";
 	public static final String SCHEME_SELECT = "rhsel";
-//	public static final String SCHEME_EDIT   = "rhmod";
+	public static final String SCHEME_EDIT   = "rhmod";
+
 	
 	@Override
 	public void changing(LocationEvent event) {
@@ -39,6 +40,10 @@ public class HyperlinkHandler extends LocationAdapter {
 			}
 			else if( uri.getScheme().equalsIgnoreCase(SCHEME_SELECT)) {
 				selectObject(uri);
+				event.doit = false;
+			}
+			else if( uri.getScheme().equalsIgnoreCase(SCHEME_EDIT)) {
+				editObject(uri);
 				event.doit = false;
 			}
 		}
@@ -56,6 +61,16 @@ public class HyperlinkHandler extends LocationAdapter {
 		}
 		else {
 			throw new IllegalArgumentException("unable to select (type) "+ obj);
+		}
+	}
+	
+	protected void editObject(URI uri) {
+		RHModelObject obj = fromURI(uri);	
+		if( obj instanceof Talk) {
+			TalkEditAction.edit((Talk)obj);
+		}
+		else {
+			throw new IllegalArgumentException("unable to edit (type) "+ obj);
 		}
 	}
 	
