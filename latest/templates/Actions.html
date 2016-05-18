@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"><title>Actions</title>
+<style type="text/css">
+body {
+	background-color: white;
+	font-family: "Arial",Arial,Sans-serif;
+	font-size: 12px;
+}
+a {
+	font-style: italic;
+}
+.late{
+	background-color: orange;
+}
+.me{
+	font-weight: bold;
+}
+.nodate{
+	color: gray;
+	background-color: lightgray;	
+}
+
+table {
+	width: 100%;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+h2 {
+	font-size: 12px;
+	font-weight: bold;
+	margin-top: 2px;
+	margin-bottom: 4px;
+}
+p {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+th {
+	background-color: teal;
+	color: white;
+	text-align: center;
+	vertical-align: top;
+	font-size: 12px;
+	font-weight: bold;
+	white-space: nowrap;
+	border: solid 1px gray;
+	
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+td {
+	text-align: left;
+	vertical-align: top;
+	font-size: 12px;
+	border: solid 1px gray;
+	white-space: nowrap;
+	
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+td.text {
+	white-space: normal;
+}
+</style>
+</head>
+<body>
+<table>
+<tr>
+<th>Statut</td>
+<th>Echéance</td>
+<th>Action</td>
+</tr>
+##FOREACH_ACTION{ 
+<tr>
+<td class='$ACTION_STATUS_CLASS'><a href='$URI_MOD'>$ACTION_STATUS</a><br><i>$ACTION_USER</i></td>
+<td class='$ACTION_DATE_CLASS'>$ACTION_DATE</td>
+<td class='text'><a href='$URI_SEL'><h2>$ACTION_TITLE</h2></a>$ACTION_TEXT</td>
+</tr>
+##}
+</table>
+</body>
+</html>
