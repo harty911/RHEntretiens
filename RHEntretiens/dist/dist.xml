@@ -110,6 +110,9 @@
 
 		<target name="compil" depends="init" description="Compile sources">
 			
+			<delete>
+			    <fileset dir="../bin" includes="**/*.class"/>
+			</delete>
 			<javac includeantruntime="false" debug="true" srcdir="../src" destdir="../bin">
 				<classpath refid="project.classpath"/>
 			</javac>
@@ -150,6 +153,9 @@
 
 	<target name="singlejar" description="Create ONE Application jar including dependencies" depends="compil">
 
+		<delete>
+		    <fileset dir="../bin" includes="**/*.class"/>
+		</delete>	
 		<javac destdir="../bin" includeantruntime="false">
 			<src path="../src"/>
 		    <classpath refid="project.classpath"/>
