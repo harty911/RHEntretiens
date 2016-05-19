@@ -71,7 +71,7 @@ public class RHToolApp {
 				 * pour ne pas polluer la base à chaque essai 
 				 */ 
 				File dbDir = new File( ".");
-				File dbSrcDir = new File("./testingDB");
+				File dbSrcDir = new File("./RHtestingDB");
 				LOGGER.info("--- TESTING MODE --- : Create new DB from "+dbSrcDir);
 				File srcDB = new File(dbSrcDir, RHDbConnector.DB_FILENAME);
 				if( !RHDbConnector.isDatabase(dbSrcDir)) {

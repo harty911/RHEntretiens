@@ -113,7 +113,7 @@
 			<delete>
 			    <fileset dir="../bin" includes="**/*.class"/>
 			</delete>
-			<javac includeantruntime="false" debug="true" srcdir="../src" destdir="../bin">
+			<javac includeantruntime="false" target="1.7" source="1.7"  srcdir="../src" destdir="../bin">
 				<classpath refid="project.classpath"/>
 			</javac>
 			
@@ -123,12 +123,7 @@
 	<!--*** MULTIJAR : create application jar + external jars 						   ***-->
 
 	<target name="multijar" description="Create Application jar and copy dependencies" depends="compil">
-
-		<javac destdir="../bin" includeantruntime="false">
-			<src path="../src"/>
-		    <classpath refid="project.classpath"/>
-		</javac>	
-		
+	
 		<manifest file="build/MANIFEST.MF">
 	        <attribute name="Built-By" value="harty911"/>
 	        <attribute name="Implementation-Version" value="${version}_b${build.number}"/> 
@@ -152,14 +147,6 @@
 	<!--*** SINGLEJAR : create one application jar                                     ***-->
 
 	<target name="singlejar" description="Create ONE Application jar including dependencies" depends="compil">
-
-		<delete>
-		    <fileset dir="../bin" includes="**/*.class"/>
-		</delete>	
-		<javac destdir="../bin" includeantruntime="false">
-			<src path="../src"/>
-		    <classpath refid="project.classpath"/>
-		</javac>	
 		
 		<manifest file="build/MANIFEST.MF">
 	        <attribute name="Built-By" value="harty911"/>
